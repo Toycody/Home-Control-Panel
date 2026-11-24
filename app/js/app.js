@@ -1,8 +1,12 @@
 // Home Control Panel — Phase 1 (Home page, Home Assistant only).
 import { HAClient } from './ha.js';
+import * as Energy from './pages/energy.js';
+import * as Network from './pages/network.js';
+import * as Servers from './pages/servers.js';
 
-const VERSION = '0.1.0';
-const C = window.PANEL_CONFIG;
+const VERSION = '0.2.0';
+// Defaults from config.example.js, overridden section by section by the host's config.js.
+const C = Object.assign({}, window.PANEL_DEFAULTS || {}, window.PANEL_CONFIG || {});
 const $ = (sel, el) => (el || document).querySelector(sel);
 const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
@@ -98,6 +102,10 @@ function configEntries() {
   out.push(['climate', C.climate.entity, C.climate.friendly, C.climate.name]);
   out.push(['weather', C.weather.entity, C.weather.friendly, 'Weather']);
   C.cameras.forEach((c, i) => { out.push(['camStill' + i, c.still, null, c.name + ' (tile)']); out.push(['camLive' + i, c.live, null, c.name + ' (full screen)']); });
+  for (const [prefix, group, title] of [['en.', C.energy, 'Energy'], ['sl.', C.starlink, 'Starlink']]) {
+    if (!group) continue;
+    for (const k in group) { const v = group[k]; if (v && typeof v === 'object' && v.entity) out.push([prefix + k, v.entity, v.friendly, title + ': ' + (v.label || k)]); }
+  }
   return out;
 }
 function resolveAll(states) {
@@ -114,6 +122,13 @@ function resolveAll(states) {
 }
 const rid = (key) => (S.res[key] ? S.res[key].id : null);
 const ent = (key) => { const id = rid(key); return id ? S.ents[id] : null; };
+const okId = (key) => (S.res[key] && S.res[key].how !== 'missing' ? S.res[key].id : null);
+const num = (key) => { const e = ent(key); if (!e) return null; const v = parseFloat(e.state); return isNaN(v) ? null : v; };
+function stats(ids, start, period, types, units) {
+  if (!ids.length) return Promise.resolve({});
+  return ha.send({ type: 'recorder/statistics_during_period', start_time: start.toISOString(), end_time: new Date().toISOString(), statistic_ids: ids, period, types, units: units || {} });
+}
+const ctx = { S, C, ha, $, esc, svg: (...a) => svg(...a), toast: (m) => toast(m), ent, rid, okId, num, stats };
 
 // ---------------------------------------------------------------- HA connection
 ha.onStatus = (st, detail) => {
@@ -131,6 +146,7 @@ ha.onConnect = async () => {
     if (ids.length) await ha.subscribe({ type: 'subscribe_entities', entity_ids: ids }, onEntities);
     subscribeForecasts();
     onChange();
+    loadPageData(true);
     if (S.overlay === 'settings') renderOverlay();
   } catch (e) { console.error('Setup after connect failed', e); }
 };
@@ -156,7 +172,9 @@ function call(domain, service, data, entityId) {
   return ha.callService(domain, service, data, entityId).catch((e) => toast('Couldn’t reach Home Assistant: ' + e.message));
 }
 function onChange() {
-  if (S.page === 'home') { updateLights(); updateScenes(); updateAc(); renderWeather(); }
+  if (S.page === 'home') { updateLights(); updateScenes(); updateAc(); renderWeather(); renderGlance(); }
+  else if (S.page === 'energy') Energy.update(ctx);
+  else if (S.page === 'network') Network.update(ctx);
   if (S.overlay === 'ac') renderOverlay();
 }
 
@@ -165,7 +183,7 @@ function renderShell() {
   $('#root').innerHTML =
     '<header>' +
       '<div style="flex:1 1 auto;min-width:0"><div class="clock" id="clock"></div><div class="date" id="date"></div></div>' +
-      '<div id="conn"></div>' +
+      '<div id="alert"></div><div id="conn"></div>' +
       '<button class="gear small p" data-act="settings" aria-label="Settings">' + svg('gear', 26, 1.8) + '</button>' +
     '</header>' +
     '<main id="main"></main>' +
@@ -194,13 +212,14 @@ function setPage(p) {
 function renderPage() {
   const m = $('#main');
   m.style.animation = 'none'; void m.offsetWidth; m.style.animation = '';
+  m.className = S.page === 'home' ? '' : 'page';
   if (S.page === 'home') { renderHome(); return; }
+  if (S.page === 'energy') { Energy.render(ctx); Energy.load(ctx); return; }
+  if (S.page === 'network') { Network.render(ctx); Network.load(ctx); return; }
+  if (S.page === 'servers') { Servers.render(ctx); return; }
   const info = {
-    energy: ['Energy', 'Solar and home-use graphs from Home Assistant. Coming in phase 3, once we know the inverter and meter entities.'],
-    servers: ['Servers', 'Uptime Kuma status for all monitors. Comes with the dashboard service in phase 2.'],
-    shopping: ['Shopping', 'The shopping list shared with Vesta through Obsidian. Comes with the dashboard service in phase 2.'],
-    cameras: ['Cameras', 'Large live views of both cameras with recent events. Coming in phase 3 — tap a camera on Home for full screen meanwhile.'],
-    network: ['Network', 'Internet usage against the Starlink plan, dish health and the Omada network. Comes with the dashboard service in phase 2.']
+    shopping: ['Shopping', 'The shopping list shared with Vesta through Obsidian. Comes once the vault sync is set up.'],
+    cameras: ['Cameras', 'Large live views of both cameras with recent events. Coming later — tap a camera on Home for full screen meanwhile.']
   }[S.page];
   m.innerHTML = '<section class="glass card soon">' + svg(S.page, 44, 1.6, 'var(--text-2)') + '<h2>' + info[0] + '</h2><p>' + info[1] + '</p></section>';
 }
@@ -239,13 +258,58 @@ function renderHome() {
             '<button class="small p" data-act="acstep" data-v="1" aria-label="Raise target">' + svg('plus', 22, 2.4) + '</button></div>' +
         '</div>' +
       '</section>' +
-      '<section class="glance glass card" aria-label="Network and servers at a glance">' +
-        '<div class="gl pending"><span style="flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:2px"><span class="k">Internet</span><span class="v">↓ — ↑ —<span style="font-size:13px;color:var(--text-2)"> Mbps</span></span><span class="s">Starlink + Omada · phase 2</span></span>' + svg('network', 34, 1.5, 'var(--text-4)') + '</div>' +
-        '<div class="gl pending"><span style="flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:2px"><span class="k">Servers</span><span class="v">—/—<span style="font-size:13px;color:var(--text-2)"> up</span></span><span class="s">Uptime Kuma · phase 2</span></span>' + svg('servers', 34, 1.5, 'var(--text-4)') + '</div>' +
-      '</section>' +
+      '<section class="glance glass card" id="glance" aria-label="Network and servers at a glance"></section>' +
     '</div>' +
     '<section class="weather glass card" id="weather" aria-label="Weather"></section>';
-  updateLights(); updateScenes(); updateAc(); renderWeather(); refreshCams(true);
+  updateLights(); updateScenes(); updateAc(); renderWeather(); renderGlance(); refreshCams(true);
+}
+
+// ---------------------------------------------------------------- glance card (Starlink + Uptime Kuma)
+function renderGlance() {
+  const el = $('#glance'); if (!el) return;
+  const down = Network.mbps(ctx, 'sl.down'), up = Network.mbps(ctx, 'sl.up');
+  const ping = num('sl.ping'), drop = num('sl.drop');
+  const f = (v) => (v == null ? '—' : v >= 100 ? Math.round(v) : v.toFixed(1));
+  const ser = Network.glanceSeries();
+  let spark = svg('network', 34, 1.5, 'var(--text-4)');
+  if (ser && ser.length > 1) {
+    const plan = (C.plan && C.plan.down) || 300, t0 = ser[0][0], t1 = ser[ser.length - 1][0];
+    const Y = (v) => 42 - Math.min(v, plan * 1.3) / (plan * 1.3) * 38, X = (t) => (t - t0) / Math.max(1, t1 - t0) * 92;
+    const line = ser.map((p, i) => (i ? 'L' : 'M') + X(p[0]).toFixed(1) + ',' + Y(p[1]).toFixed(1)).join('');
+    spark = '<svg width="92" height="44" viewBox="0 0 92 44" aria-hidden="true" style="flex:0 0 auto"><line x1="0" x2="92" y1="' + Y(plan).toFixed(1) + '" y2="' + Y(plan).toFixed(1) + '" stroke="rgba(127,169,238,0.45)" stroke-dasharray="2 3"/>' +
+      '<path d="' + line + 'L92,44L0,44Z" fill="rgba(79,142,232,0.16)"/><path d="' + line + '" fill="none" stroke="#4F8EE8" stroke-width="1.6" stroke-linejoin="round"/></svg>';
+  }
+  const k = Servers.summary();
+  let srvV, srvS, srvCls = '', dots = svg('servers', 34, 1.5, 'var(--text-4)');
+  if (k.ready) {
+    srvV = k.up + '/' + k.total + '<span style="font-size:13px;color:var(--text-2)"> up</span>';
+    srvS = k.down.length ? '<span class="bad">' + esc(k.down.map((m) => m.name).join(', ')) + ' down</span>' : 'All services healthy';
+    dots = '<span class="dots">' + k.monitors.slice(0, 18).map((m) => '<i style="background:' + (m.status === 0 ? '#E8434A;box-shadow:0 0 8px rgba(232,67,74,0.7)' : m.status === 1 ? '#4CC38A' : '#F5C46B') + ';opacity:' + (m.status === 0 ? 1 : 0.8) + '"></i>').join('') + '</span>';
+  } else { srvV = '—/—<span style="font-size:13px;color:var(--text-2)"> up</span>'; srvS = k.err === 'not configured' ? 'Uptime Kuma not configured' : k.err ? 'Uptime Kuma unreachable' : 'Loading…'; srvCls = ' pending'; }
+  el.innerHTML =
+    '<button class="gl p' + (down == null ? ' pending' : '') + '" data-act="page" data-v="network"><span style="flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:2px"><span class="k">Internet</span>' +
+      '<span class="v"><span class="dn">↓</span> ' + f(down) + ' <span class="up">↑</span> ' + f(up) + '<span style="font-size:13px;color:var(--text-2)"> Mbps</span></span>' +
+      '<span class="s">' + (ping != null ? 'Starlink ' + Math.round(ping) + ' ms' + (drop != null ? ' · drop ' + (drop < 1 ? drop.toFixed(2) : drop.toFixed(1)) + '%' : '') : 'Starlink') + '</span></span>' + spark + '</button>' +
+    '<button class="gl p' + srvCls + '" data-act="page" data-v="servers"><span style="flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:2px"><span class="k">Servers</span>' +
+      '<span class="v">' + srvV + '</span><span class="s" style="overflow:hidden;text-overflow:ellipsis">' + srvS + '</span></span>' + dots + '</button>';
+}
+function renderAlert() {
+  const el = $('#alert'); if (!el) return;
+  const k = Servers.summary();
+  if (!k.ready || !k.down.length) { el.innerHTML = ''; return; }
+  el.innerHTML = '<button class="alert p" data-act="page" data-v="servers">' + svg('M12 7.5v5.5M12 16.5h.01', 22, 2, '#FF5C62', '') .replace('<path', '<circle cx="12" cy="12" r="9"></circle><path') +
+    '<span>' + esc(k.down.length === 1 ? k.down[0].name + ' down' : k.down.length + ' services down') + '</span></button>';
+}
+async function pollKuma() {
+  await Servers.poll(ctx);
+  renderAlert();
+  if (S.page === 'home') renderGlance();
+  if (S.page === 'servers') Servers.render(ctx);
+}
+function loadPageData(force) {
+  Network.load2h(ctx, force).then(() => { if (S.page === 'home') renderGlance(); });
+  if (S.page === 'energy') Energy.load(ctx, force);
+  if (S.page === 'network') Network.load(ctx, force);
 }
 
 // ---------------------------------------------------------------- lights
@@ -453,14 +517,19 @@ function renderWeather() {
 
 // ---------------------------------------------------------------- cameras
 let camBusy = {};
-function camUrl(key) { const e = ent(key); return e && e.attributes.entity_picture ? e.attributes.entity_picture : null; }
+function camUrl(key) { const e = ent(key); return e && e.state !== 'unavailable' && e.attributes.entity_picture ? e.attributes.entity_picture : null; }
 function refreshCams(first) {
   if (S.page !== 'home' || document.visibilityState !== 'visible' || (S.overlay && S.overlay.cam !== undefined)) return;
   C.cameras.forEach((c, i) => {
     const img = $('#camimg' + i), msg = $('#cammsg' + i), live = $('#camlive' + i);
     if (!img) return;
-    const url = camUrl('camStill' + i);
-    if (!url) { msg.textContent = S.conn === 'connected' ? 'Camera not found' : ''; live.classList.add('stale'); return; }
+    // Sub-stream snapshot, falling back to the main stream if the sub-stream entity is missing or unavailable.
+    const url = camUrl('camStill' + i) || camUrl('camLive' + i);
+    if (!url) {
+      const e = ent('camStill' + i) || ent('camLive' + i);
+      msg.textContent = S.conn !== 'connected' ? '' : e ? 'Camera unavailable in Home Assistant' : 'Camera not found';
+      live.classList.add('stale'); return;
+    }
     if (camBusy[i]) return;
     camBusy[i] = true;
     const pre = new Image();
@@ -594,6 +663,8 @@ function bindInput() {
       case 'acfan': call('climate', 'set_fan_mode', { fan_mode: v }, rid('climate')); break;
       case 'theme': settings.theme = +v; saveSettings(); applyTheme(); renderOverlay(); break;
       case 'homeafter': settings.homeAfter = +v; saveSettings(); renderOverlay(); break;
+      case 'enview': Energy.setView(ctx, v); break;
+      case 'netwin': Network.setWin(ctx, v); break;
       case 'reload': location.reload(); break;
       case 'signout': ha.signOut(); break;
     }
@@ -612,6 +683,8 @@ function startTimers() {
     if (S.page === 'home') { updateLights(); updateAc(); }   // expire stale optimistic state
   }, 5000);
   setInterval(() => { if (S.page === 'home') renderWeather(); }, 5 * 60 * 1000); // roll the hourly strip forward
+  setInterval(pollKuma, 60 * 1000); pollKuma();
+  setInterval(() => loadPageData(false), 60 * 1000);
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { S.lastInteract = 0; refreshCams(true); } });
 }
 

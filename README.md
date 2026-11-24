@@ -19,7 +19,8 @@ A custom wall-mounted touch dashboard for the house: one-tap Home Assistant cont
 - ✅ Requirements, architecture proposal and design system documented.
 - ✅ Tablet design (Vesta style) agreed: 6-tab nav; Home = cameras, 4 lights + House off / Theater, compact AC with one-tap power, network/server glance, full-width weather.
 - ✅ **Phase 1 built:** Home page live against Home Assistant (`docs/09-phase1-build.md`). Ready for a trial on the tablet.
-- ⏳ Next: deploy to the LXC, confirm entity IDs in Settings → Diagnostics, then Phase 2.
+- ✅ **Phase 2a built:** Energy, Network (Starlink via HA), Servers (Uptime Kuma status page) and a live glance card.
+- ⏳ Next: shopping list once the vault-sync LXC is ready.
 
 ## Plan to first trial on the tablet
 

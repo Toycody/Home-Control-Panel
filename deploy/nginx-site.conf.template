@@ -32,6 +32,14 @@ server {
     proxy_read_timeout 1h;
   }
 
+  #KUMA_BEGIN
+  # Uptime Kuma status-page JSON (read-only, public data).
+  location /kuma/ {
+    proxy_pass @KUMA_URL@/;
+    proxy_set_header Host $proxy_host;
+  }
+  #KUMA_END
+
   # Token exchange/refresh for the one-time login.
   location = /auth/token {
     proxy_pass @HA_URL@;

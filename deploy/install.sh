@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Home Control Panel — install or update on a Debian 13 LXC. Run as root.
 #
-#   First install:  bash install.sh http://192.168.1.20:8123
+#   First install:  bash install.sh http://<HA-IP>:8123 [http://<KUMA-IP>:3001]
 #   Update later:   bash /opt/home-control-panel/deploy/install.sh
 #
 # Safe to re-run: it pulls the latest code, keeps your app/config.js, and only
@@ -11,6 +11,7 @@ set -euo pipefail
 REPO_URL="${REPO_URL:-https://github.com/Toycody/Home-Control-Panel.git}"
 APP_ROOT=/opt/home-control-panel
 HA_URL="${1:-}"
+KUMA_URL="${2:-}"
 
 if [[ $EUID -ne 0 ]]; then echo "Run as root." >&2; exit 1; fi
 
@@ -36,7 +37,14 @@ if [[ -n "$HA_URL" ]]; then
   if [[ ! "$HA_URL" =~ ^https?://[^/]+$ ]]; then echo "HA address should look like http://192.168.1.20:8123" >&2; exit 1; fi
   echo "==> Pointing the panel at $HA_URL"
   sed -i "s#haUrl: '[^']*'#haUrl: '$HA_URL'#" "$CONFIG"
-  sed -e "s#@HA_URL@#$HA_URL#g" -e "s#@APP_DIR@#$APP_ROOT/app#g" \
+  KUMA_URL="${KUMA_URL%/}"
+  if [[ -n "$KUMA_URL" ]]; then
+    echo "==> Uptime Kuma at $KUMA_URL"
+    KUMA_SED=(-e "s#@KUMA_URL@#$KUMA_URL#g")
+  else
+    KUMA_SED=(-e '/#KUMA_BEGIN/,/#KUMA_END/d')
+  fi
+  sed -e "s#@HA_URL@#$HA_URL#g" -e "s#@APP_DIR@#$APP_ROOT/app#g" "${KUMA_SED[@]}" \
     "$APP_ROOT/deploy/nginx-site.conf.template" > /etc/nginx/sites-available/home-control-panel
   ln -sf /etc/nginx/sites-available/home-control-panel /etc/nginx/sites-enabled/home-control-panel
   rm -f /etc/nginx/sites-enabled/default
@@ -52,3 +60,7 @@ echo
 echo "Done. Panel: http://$IP/"
 echo "Check HA is reachable through the proxy (expect 401 = good, HA answered):"
 echo "  curl -s -o /dev/null -w '%{http_code}\n' http://localhost/api/"
+if [[ -n "$KUMA_URL" ]]; then
+  echo "Check Uptime Kuma through the proxy (expect 200):"
+  echo "  curl -s -o /dev/null -w '%{http_code}\n' http://localhost/kuma/api/status-page/<your-slug>"
+fi

@@ -41,3 +41,33 @@ If an ID is wrong, the panel falls back to a same-domain entity with the matchin
 
 ## Not in Phase 1
 Uptime Kuma, Omada/Starlink figures (glance card shows placeholders), Energy, Shopping, Network pages, wake/sleep control (Fully Kiosk handles screen timeout for now).
+
+---
+
+# Phase 2a — Energy, Network, Servers (v0.2, 2026-11-24)
+
+## Decisions
+| # | Decision |
+|---|---|
+| D33 | **Energy entirely from Home Assistant** (Shelly dual-channel clamp: *Shelly Inverter* = solar, *Shelly Meter Main* = grid). Home use = solar + import − export. |
+| D34 | **Month / Quarter / Year toggle** on Energy shows **average kWh per day** (solar vs used) for the last 12 months / 8 quarters / 4 years, from HA long-term statistics. Tap a bar for import, export and self-supplied %. |
+| D35 | **Internet usage = Starlink dish throughput via HA**, not the Omada API (supersedes P7 for WAN). 2 h graph from raw history, 12 h from 5-minute statistics. Omada only returns later if LAN stats are wanted. |
+| D36 | **Uptime Kuma via its status-page JSON** (`/api/status-page/<slug>` + `/heartbeat/<slug>`), proxied by nginx at `/kuma/`. No embed/iframe, no API key. Slug: `obsidian`. |
+| D37 | Shopping list **deferred** until the vault-sync LXC is set up. It's now the only piece that needs a backend. |
+
+## Entities
+Configured by expected ID with a friendly-name fallback (Settings → Diagnostics shows what was used):
+- Shelly: Inverter *Power*, *Energy*, *Returned Energy*; Meter Main *Power*, *Total Active Energy*, *Total Returned Energy*. Which inverter channel is solar is detected automatically (the one that has counted more). Grid sign is configurable (`gridPowerSign`).
+- Starlink: downlink/uplink throughput, ping, ping drop rate, power, energy, download/upload (data), last restart, connectivity, obstructed, thermal throttle, motors stuck, unexpected location, Ethernet speeds, mast near vertical, heating, update, sleep, stowed.
+
+## Pages
+- **Home:** glance card is live: Starlink ↓/↑ now, ping, drop rate and a 2 h sparkline against the plan; Uptime Kuma N/M up with a status dot per monitor. Header shows a red alert chip when a monitor is down (tap → Servers).
+- **Energy:** live Solar / Home use / Importing-Exporting with today's kWh; last 24 h power chart with crosshair; daily-average bars.
+- **Network:** Internet card (now, peak, average vs 300/30 plan; 2 h / 12 h graph with plan lines); Starlink dish card (connection + uptime, ping + 12 h average, drop rate, sky view, dish power + kWh today, data this month, worst 5-min ping, firmware; active alerts in the subtitle); 12 h ping chart.
+- **Servers:** Up / Down / average 24 h uptime, then every monitor with status, last 24 checks and 24 h uptime (down monitors first).
+
+## Camera fix
+Tiles fall back to the main-stream snapshot when the sub-stream entity is missing or unavailable, and say "unavailable in Home Assistant" instead of "not found" when the entity exists.
+
+## Config
+`index.html` loads `config.example.js` as defaults, then the host's `config.js` overrides section by section, so new sections (energy, starlink, plan, kuma) work without editing an existing `config.js`.
