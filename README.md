@@ -10,12 +10,16 @@ A custom wall-mounted touch dashboard for the house: one-tap Home Assistant cont
 |---|---|
 | `docs/` | Requirements, architecture, design system, decisions log, hardware research, settings, tablet target and tablet page scope. Start with `01` and `08`. |
 | `design/` | Design-canvas mockups (`*.dc.html`) and the canvas layout (`canvas.json`). `TabletVesta.dc.html` is the current tablet design. These are design references: they need the Claude design-canvas runtime to render and are not the production app. |
+| `app/` | **The panel (Phase 1).** Plain HTML/CSS/JS, no build step. `config.example.js` → `config.js` on the host. |
+| `deploy/` | Debian 13 LXC install script and nginx site. See `deploy/README.md`. |
+| `test/` | `mock-ha.mjs`: run the panel locally against a fake Home Assistant. |
 
 ## Status
 
 - ✅ Requirements, architecture proposal and design system documented.
-- ✅ Tablet design (Vesta style) agreed: 6-tab nav; Home = cameras, 4 lights + House off / Cinema, compact AC with one-tap power, network/server glance, full-width weather.
-- ⏳ **Next: integration discovery, then a Home-page-only build** (see below).
+- ✅ Tablet design (Vesta style) agreed: 6-tab nav; Home = cameras, 4 lights + House off / Theater, compact AC with one-tap power, network/server glance, full-width weather.
+- ✅ **Phase 1 built:** Home page live against Home Assistant (`docs/09-phase1-build.md`). Ready for a trial on the tablet.
+- ⏳ Next: deploy to the LXC, confirm entity IDs in Settings → Diagnostics, then Phase 2.
 
 ## Plan to first trial on the tablet
 

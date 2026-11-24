@@ -1,0 +1,40 @@
+# Home Control Panel — nginx site. install.sh fills in @HA_URL@ and @APP_DIR@.
+# Serves the panel and proxies Home Assistant's API + token endpoint, so the panel
+# talks to HA same-origin (no CORS changes needed in Home Assistant).
+
+map $http_upgrade $hcp_connection_upgrade {
+  default upgrade;
+  ''      close;
+}
+
+server {
+  listen 80 default_server;
+  listen [::]:80 default_server;
+  server_name _;
+
+  root @APP_DIR@;
+  index index.html;
+
+  # The panel itself. Tiny files; always revalidate so updates show up on reload.
+  location / {
+    try_files $uri $uri/ /index.html;
+    add_header Cache-Control "no-cache";
+  }
+
+  # Home Assistant WebSocket + REST (camera snapshots, HLS streams).
+  location /api/ {
+    proxy_pass @HA_URL@;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection $hcp_connection_upgrade;
+    proxy_set_header Host $proxy_host;
+    proxy_buffering off;
+    proxy_read_timeout 1h;
+  }
+
+  # Token exchange/refresh for the one-time login.
+  location = /auth/token {
+    proxy_pass @HA_URL@;
+    proxy_set_header Host $proxy_host;
+  }
+}

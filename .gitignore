@@ -22,3 +22,6 @@ build/
 Thumbs.db
 .vscode/
 .idea/
+
+# Site config lives on the host (copied from config.example.js)
+app/config.js
