@@ -65,7 +65,7 @@ svg { display: block; }
   content: ''; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none;
   background: linear-gradient(180deg, color-mix(in srgb, var(--press) 30%, transparent), color-mix(in srgb, var(--press) 16%, transparent));
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--press) 40%, transparent);
-  opacity: 0; transition: opacity 95ms ease-out;
+  opacity: 0; transition: opacity 95ms ease-out; will-change: opacity;
 }
 .p.down { transform: translateY(1px) scale(0.985); }
 .p.down::after { opacity: 1; transition-duration: 45ms; }
