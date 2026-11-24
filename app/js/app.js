@@ -114,7 +114,8 @@ function resolveAll(states) {
     if (S.allIds.has(id)) { S.res[key] = { id, how: 'ok' }; continue; }
     const dom = id.split('.')[0];
     const inDom = states.filter((s) => s.entity_id.startsWith(dom + '.'));
-    const byName = friendly && inDom.find((s) => String(s.attributes.friendly_name || '').toLowerCase() === friendly.toLowerCase());
+    const names = (Array.isArray(friendly) ? friendly : [friendly]).filter(Boolean).map((n) => n.toLowerCase());
+    const byName = names.length && inDom.find((s) => names.includes(String(s.attributes.friendly_name || '').toLowerCase()));
     if (byName) { S.res[key] = { id: byName.entity_id, how: 'name' }; continue; }
     if (dom === 'weather' && inDom.length === 1) { S.res[key] = { id: inDom[0].entity_id, how: 'only' }; continue; }
     S.res[key] = { id, how: 'missing' };

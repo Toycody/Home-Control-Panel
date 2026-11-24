@@ -15,12 +15,24 @@ function solarSign(ctx) {
 }
 export function live(ctx) {
   const k = ctx.C.energy || {};
-  const sp = ctx.num('en.solarPower'), gp = ctx.num('en.gridPower');
+  const sp = watts(ctx, 'en.solarPower'), gp = watts(ctx, 'en.gridPower');
   if (sp == null && gp == null) return null;
   const ss = solarSign(ctx);
   const solar = sp == null ? 0 : (ss ? Math.max(0, ss * sp) : Math.abs(sp));
   const grid = gp == null ? 0 : gp * (k.gridPowerSign || 1);   // + import, − export
   return { solar, grid, home: Math.max(0, solar + grid) };
+}
+
+// Live power in watts, whatever unit HA displays the sensor in (W / kW / MW).
+function watts(ctx, key) {
+  const v = ctx.num(key); if (v == null) return null;
+  const u = (ctx.ent(key) || {}).attributes || {};
+  return v * ({ kW: 1e3, MW: 1e6, mW: 1e-3 }[u.unit_of_measurement] || 1);
+}
+function kwh(ctx, key) {
+  const v = ctx.num(key); if (v == null) return null;
+  const u = (ctx.ent(key) || {}).attributes || {};
+  return v * ({ Wh: 1e-3, MWh: 1e3, GJ: 277.778, MJ: 0.277778 }[u.unit_of_measurement] || 1);
 }
 
 // ---- data loading
@@ -36,15 +48,21 @@ export async function load(ctx, force) {
   const gi = ctx.okId('en.gridImport'), ge = ctx.okId('en.gridExport');
   const now = new Date(), dayStart = new Date(now); dayStart.setHours(0, 0, 0, 0);
   const yearStart = new Date(dayStart); yearStart.setDate(yearStart.getDate() - 400);
-  const pw = [sp, gp].filter(Boolean), cn = [gi, ge].filter(Boolean);
+  const se = ctx.okId('en.solarEnergy'), sr = ctx.okId('en.solarReturned');
+  const pw = [sp, gp].filter(Boolean), cn = [gi, ge, se, sr].filter(Boolean);
   try {
-    const [days, hours, fivemin, cDays, cHours] = await Promise.all([
+    const [days, fivemin, cDays, cHours] = await Promise.all([
       ctx.stats(pw, yearStart, 'day', ['mean'], { power: 'W' }),
-      ctx.stats(pw, dayStart, 'hour', ['mean'], { power: 'W' }),
-      ctx.stats(pw, new Date(now - 24 * 3600e3), '5minute', ['mean'], { power: 'W' }),
+      ctx.stats(pw, new Date(Math.min(now - 24 * 3600e3, +dayStart)), '5minute', ['mean'], { power: 'W' }),
       ctx.stats(cn, yearStart, 'day', ['change'], { energy: 'kWh' }),
-      ctx.stats(cn, dayStart, 'hour', ['change'], { energy: 'kWh' })
+      ctx.stats(cn, dayStart, 'hour', ['change', 'state'], { energy: 'kWh' })
     ]);
+    // Solar energy: the inverter channel's own counter (what HA's Daily Solar uses), on whichever
+    // channel has counted more. Falls back to integrating the power sensor.
+    const yearSum = (id) => (cDays[id] || []).reduce((a, r) => a + (r.change || 0), 0);
+    const solarCounter = se || sr ? ((sr && yearSum(sr) > yearSum(se)) ? sr : se) : null;
+    const solarCounterKey = solarCounter === sr ? 'en.solarReturned' : 'en.solarEnergy';
+    E.solarCounter = solarCounter;
     // Work out the solar sign from the last 24 h: generation dominates the inverter channel.
     const s5 = (fivemin[sp] || []).map((r) => r.mean || 0);
     const pos = s5.reduce((a, v) => a + Math.max(0, v), 0), neg = s5.reduce((a, v) => a + Math.max(0, -v), 0);
@@ -58,20 +76,27 @@ export async function load(ctx, force) {
     for (const r of days[gp] || []) row(r.start).gMean = r.mean;
     for (const r of cDays[gi] || []) { const x = row(r.start); x.imp = (x.imp || 0) + (r.change || 0); }
     for (const r of cDays[ge] || []) { const x = row(r.start); x.exp = (x.exp || 0) + (r.change || 0); }
+    for (const r of cDays[solarCounter] || []) { const x = row(r.start); x.sCount = (x.sCount || 0) + (r.change || 0); }
     map.delete(dayStart.toDateString()); // today is built from hourly data below
     for (const x of map.values()) {
       if (x.sMean == null && x.gMean == null) continue;
       const s = ss * (x.sMean || 0), g = gs * (x.gMean || 0);
       x.solar = Math.max(0, s) * 24 / 1000; x.home = Math.max(0, s + g) * 24 / 1000;
     }
-    // today, from hourly means (+ the energy counters' hourly change)
-    const gAt = new Map((hours[gp] || []).map((r) => [+new Date(r.start), r.mean]));
-    const today = { date: dayStart, solar: 0, home: 0, imp: cn.length ? 0 : null, exp: cn.length ? 0 : null, partial: true };
-    for (const r of hours[sp] || []) { const s = ss * (r.mean || 0), g = gs * (gAt.get(+new Date(r.start)) || 0); today.solar += Math.max(0, s) / 1000; today.home += Math.max(0, s + g) / 1000; }
-    if (!(hours[sp] || []).length) for (const r of hours[gp] || []) today.home += Math.max(0, gs * (r.mean || 0)) / 1000;
-    for (const r of cHours[gi] || []) today.imp += r.change || 0;
-    for (const r of cHours[ge] || []) today.exp += r.change || 0;
-    if (!gi) today.imp = null; if (!ge) today.exp = null;
+    for (const x of map.values()) if (x.sCount != null) x.solar = x.sCount;
+    // today: home use from 5-minute power means since midnight (only ~5 min behind);
+    // solar from HA's Daily Solar meter if present, else the counter (completed hours + live reading).
+    const g5 = new Map((fivemin[gp] || []).map((r) => [+new Date(r.start), r.mean]));
+    const today = { date: dayStart, solar: 0, home: 0, imp: gi ? 0 : null, exp: ge ? 0 : null, partial: true };
+    const todayRows = (fivemin[sp] || []).filter((r) => +new Date(r.start) >= +dayStart);
+    for (const r of todayRows) { const s = ss * (r.mean || 0), g = gs * (g5.get(+new Date(r.start)) || 0); today.solar += Math.max(0, s) / 12000; today.home += Math.max(0, s + g) / 12000; }
+    if (!todayRows.length) for (const r of (fivemin[gp] || []).filter((x) => +new Date(x.start) >= +dayStart)) today.home += Math.max(0, gs * (r.mean || 0)) / 12000;
+    const sinceLastHour = (id, key) => { const rows = cHours[id] || []; const done = rows.reduce((a, r) => a + (r.change || 0), 0); const last = rows[rows.length - 1]; const liveV = kwh(ctx, key); return done + (last && last.state != null && liveV != null ? Math.max(0, liveV - last.state) : 0); };
+    const daily = ctx.num('en.dailySolar');
+    if (daily != null) today.solar = kwh(ctx, 'en.dailySolar');
+    else if (solarCounter) today.solar = sinceLastHour(solarCounter, solarCounterKey);
+    if (gi) today.imp = sinceLastHour(gi, 'en.gridImport');
+    if (ge) today.exp = sinceLastHour(ge, 'en.gridExport');
     E.days = [...map.values()].filter((x) => x.sMean != null || x.gMean != null).concat([today]).sort((a, b) => a.date - b.date);
     E.today = today;
     // 24 h power
