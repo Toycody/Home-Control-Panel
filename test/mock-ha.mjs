@@ -27,10 +27,11 @@ const states = {
   'camera.vigi_c540_mainstream': { s: 'idle', a: { friendly_name: 'Drive main', entity_picture: '/api/camera_proxy/camera.vigi_c540_mainstream?token=abc' } },
   'sensor.other': { s: '1', a: { friendly_name: 'Something else' } },
   // Shelly: IDs deliberately differ for one entity to exercise friendly-name matching
-  'sensor.shelly_inverter_power': { s: '-3240', a: { friendly_name: 'Shelly Inverter Power', unit_of_measurement: 'W' } },
+  'sensor.shelly_inverter_power': { s: '-3.24', a: { friendly_name: 'Shelly Inverter Power', unit_of_measurement: 'kW' } },
+  'sensor.daily_solar': { s: '39.7', a: { friendly_name: 'Daily Solar', unit_of_measurement: 'kWh' } },
   'sensor.shelly_inverter_energy': { s: '210.4', a: { friendly_name: 'Shelly Inverter Energy', unit_of_measurement: 'kWh' } },
   'sensor.shelly_inverter_returned_energy_2': { s: '9120.2', a: { friendly_name: 'Shelly Inverter Returned Energy', unit_of_measurement: 'kWh' } },
-  'sensor.shelly_meter_main_power': { s: '-2150', a: { friendly_name: 'Shelly Meter Main Power', unit_of_measurement: 'W' } },
+  'sensor.shelly_meter_main_power': { s: '-2.15', a: { friendly_name: 'Shelly Meter Main Power', unit_of_measurement: 'kW' } },
   'sensor.shelly_meter_main_total_active_energy': { s: '4021', a: { friendly_name: 'Shelly Meter Main Total Active Energy', unit_of_measurement: 'kWh' } },
   'sensor.shelly_meter_main_total_returned_energy': { s: '5233', a: { friendly_name: 'Shelly Meter Main Total Returned Energy', unit_of_measurement: 'kWh' } },
   'sensor.starlink_downlink_throughput': { s: '64.2', a: { friendly_name: 'Starlink Downlink throughput', unit_of_measurement: 'Mbit/s' } },

@@ -44,6 +44,8 @@ window.PANEL_CONFIG = {
     gridPower: { entity: 'sensor.shelly_meter_main_power', friendly: 'Shelly Meter Main Power', label: 'grid power' },
     gridImport: { entity: 'sensor.shelly_meter_main_total_active_energy', friendly: 'Shelly Meter Main Total Active Energy', label: 'grid import' },
     gridExport: { entity: 'sensor.shelly_meter_main_total_returned_energy', friendly: 'Shelly Meter Main Total Returned Energy', label: 'grid export' },
+    // HA's own daily solar meter, used for today's solar so it matches Home Assistant exactly.
+    dailySolar: { entity: 'sensor.shelly_inverter_daily_solar', friendly: ['Shelly Inverter Daily Solar', 'Daily Solar'], label: 'daily solar (HA meter)' },
     // 'auto' picks whichever inverter channel (Energy / Returned Energy) has counted more — that's the solar.
     solarFrom: 'auto',
     // Grid power should be positive when importing. Set to -1 if Home use reads wrong while exporting.
