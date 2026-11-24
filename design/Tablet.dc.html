@@ -1,0 +1,1219 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Home Dashboard — Lenovo Tab portrait</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0E131D}
+*{-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+input{-webkit-user-select:text;user-select:text}
+button,select,input{font-family:inherit}
+button:focus,a:focus,select:focus,input:focus,div:focus{outline:none}
+select option{background:#1A2130;color:#E9EDF5}
+@keyframes shopArrive{from{opacity:0;transform:translateY(28px)}}
+@keyframes dropIn{from{opacity:0;transform:translateY(-8px)}}
+@keyframes sheetIn{from{opacity:0;transform:translateY(-12px) scale(.98)}}
+@keyframes sheetUp{from{opacity:0;transform:translateY(40px)}}
+@keyframes fadeIn{from{opacity:0}}
+@keyframes pageIn{from{opacity:0;transform:translateX(18px)}}
+@keyframes livePulse{0%,100%{opacity:1}50%{opacity:.35}}
+.noscroll{scrollbar-width:none}.noscroll::-webkit-scrollbar{display:none}
+.edgeRange{-webkit-appearance:none;appearance:none;width:100%;height:36px;border-radius:12px;margin:0;cursor:pointer}
+.edgeRange::-webkit-slider-thumb{-webkit-appearance:none;width:32px;height:32px;border-radius:50%;background:linear-gradient(180deg,#FFFFFF,#D9DCE3);box-shadow:0 2px 6px rgba(0,0,0,.5),inset 0 -2px 3px rgba(0,0,0,.12)}
+.edgeRange::-moz-range-thumb{width:32px;height:32px;border:0;border-radius:50%;background:linear-gradient(180deg,#FFFFFF,#D9DCE3);box-shadow:0 2px 6px rgba(0,0,0,.5)}
+</style>
+</helmet>
+<div style="{{rootStyle}}">
+
+  <header style="flex: 0 0 auto; display: flex; align-items: center; gap: 16px; height: 72px">
+    <div style="display: flex; flex-direction: column; gap: 2px; flex: 1 1 auto; min-width: 0">
+      <div style="font-size: 46px; font-weight: 300; line-height: 1; letter-spacing: -1.5px">09:31</div>
+      <div style="font-size: 18px; color: #A9B2C3">Tuesday 24 November</div>
+    </div>
+    <button type="button" onClick="{{goServers}}" style="{{chipAlert}}" onPointerDown="{{pAlert.down}}" onPointerUp="{{pAlert.up}}" onPointerLeave="{{pAlert.up}}" onPointerCancel="{{pAlert.up}}">
+      <span aria-hidden="true" style="{{pAlert.tint}}"></span>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF5C62" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5.5M12 16.5h.01"></path></svg>
+      NAS backup down
+    </button>
+    <button type="button" aria-label="Settings" onClick="{{openSettings}}" style="{{pGear.style}}" onPointerDown="{{pGear.down}}" onPointerUp="{{pGear.up}}" onPointerLeave="{{pGear.up}}" onPointerCancel="{{pGear.up}}">
+      <span aria-hidden="true" style="{{pGear.tint}}"></span>
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"></path><circle cx="16" cy="7" r="2"></circle><circle cx="10" cy="17" r="2"></circle></svg>
+    </button>
+  </header>
+
+  <!-- ===================== HOME ===================== -->
+  <sc-if value="{{isHome}}" hint-placeholder-val="{{ true }}">
+    <main style="flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 18px; animation: pageIn .22s cubic-bezier(.2,.8,.2,1)">
+
+      <section aria-label="Cameras" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px">
+        <sc-for list="{{cams}}" as="c" hint-placeholder-count="2">
+          <button type="button" onClick="{{c.open}}" aria-label="{{c.aria}}" style="{{c.style}}" onPointerDown="{{c.down}}" onPointerUp="{{c.up}}" onPointerLeave="{{c.up}}" onPointerCancel="{{c.up}}">
+            <span aria-hidden="true" style="{{c.scene}}"></span>
+            <span aria-hidden="true" style="{{c.ground}}"></span>
+            <span aria-hidden="true" style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0) 65%, rgba(0,0,0,0.55) 100%)"></span>
+            <span style="position: absolute; left: 14px; top: 12px; display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 600">
+              <span style="width: 9px; height: 9px; border-radius: 50%; background: #FF5C62; animation: livePulse 2s ease-in-out infinite"></span>LIVE
+            </span>
+            <span style="position: absolute; left: 14px; bottom: 12px; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-align: left">
+              <span style="font-size: 19px; font-weight: 600">{{c.name}}</span>
+              <span style="font-size: 14px; color: #C7CEDB">{{c.meta}}</span>
+            </span>
+            <span aria-hidden="true" style="position: absolute; right: 12px; bottom: 12px; color: rgba(255,255,255,0.8)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"></path></svg></span>
+          </button>
+        </sc-for>
+      </section>
+
+      <section aria-label="Lights" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px">
+        <sc-for list="{{lights}}" as="t" hint-placeholder-count="4">
+          <div style="{{t.boxStyle}}">
+            <span aria-hidden="true" style="{{t.tint}}"></span>
+            <button type="button" onClick="{{t.toggle}}" onPointerDown="{{t.down}}" onPointerUp="{{t.up}}" onPointerLeave="{{t.up}}" onPointerCancel="{{t.up}}" aria-pressed="{{t.pressed}}" style="position: absolute; left: 0; right: 0; top: 0; height: 92px; box-sizing: border-box; padding: 16px 16px 0; display: flex; align-items: center; gap: 12px; background: transparent; border: 0; color: inherit; cursor: pointer; text-align: left">
+              <span style="{{t.iconWrap}}">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.4 1 1.1 1 1.9V16h5v-.2c0-.8.4-1.5 1-1.9A6 6 0 0 0 12 3z"></path></svg>
+              </span>
+              <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+                <span style="font-size: 19px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{t.name}}</span>
+                <span style="{{t.subStyle}}">{{t.sub}}</span>
+              </span>
+            </button>
+            <div onPointerDown="{{t.sDown}}" onPointerMove="{{t.sMove}}" onPointerUp="{{t.sUp}}" onPointerCancel="{{t.sUp}}" style="{{t.trackStyle}}">
+              <span style="{{t.fillStyle}}"></span>
+              <sc-for list="{{t.ticks}}" as="tk" hint-placeholder-count="9">
+                <span style="{{tk.style}}"></span>
+              </sc-for>
+              <span style="{{t.pctStyle}}">{{t.pctLabel}}</span>
+              <button type="button" aria-label="{{t.upLabel}}" onClick="{{t.stepUp}}" style="position: absolute; left: 0; right: 0; top: 0; height: 50%; border: 0; padding: 10px 0 0; background: transparent; color: rgba(255,255,255,0.62); display: flex; justify-content: center; align-items: flex-start; cursor: pointer">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"></path></svg>
+              </button>
+              <button type="button" aria-label="{{t.downLabel}}" onClick="{{t.stepDown}}" style="position: absolute; left: 0; right: 0; bottom: 0; height: 50%; border: 0; padding: 0 0 10px; background: transparent; color: rgba(255,255,255,0.62); display: flex; justify-content: center; align-items: flex-end; cursor: pointer">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+              </button>
+            </div>
+          </div>
+        </sc-for>
+      </section>
+
+      <div style="flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px">
+        <section aria-label="Air conditioning" style="{{cardStyle}}">
+          <div style="display: flex; justify-content: space-between; align-items: center">
+            <h2 style="margin: 0; font-size: 22px; font-weight: 600">Air con</h2>
+            <span style="font-size: 16px; color: #A9B2C3">{{acStatus}}</span>
+          </div>
+          <div style="position: relative; height: 236px; display: flex; justify-content: center">
+            <svg width="236" height="236" viewBox="0 0 236 236" role="img" aria-label="{{acAria}}">
+              <path d="{{arcTrack}}" fill="none" stroke="rgba(0,0,0,0.35)" stroke-width="16" stroke-linecap="round"></path>
+              <path d="{{arcTrack}}" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="16" stroke-linecap="round" transform="translate(0,-1)"></path>
+              <path d="{{arcActive}}" fill="none" stroke="{{acColor}}" stroke-width="16" stroke-linecap="round" opacity="{{arcOpacity}}"></path>
+              <circle cx="{{curX}}" cy="{{curY}}" r="6" fill="#E9EDF5" stroke="#1A2130" stroke-width="3"></circle>
+              <circle cx="{{tgtX}}" cy="{{tgtY}}" r="13" fill="#FFFFFF" stroke="{{acColor}}" stroke-width="3"></circle>
+            </svg>
+            <div style="position: absolute; top: 64px; left: 0; right: 0; display: flex; flex-direction: column; align-items: center; gap: 2px; pointer-events: none">
+              <span style="font-size: 15px; color: #A9B2C3">Target</span>
+              <span style="font-size: 54px; font-weight: 300; line-height: 1">{{acTarget}}<span style="font-size: 26px; color: #A9B2C3">°</span></span>
+              <span style="font-size: 15px; color: #A9B2C3">Inside {{acCurrent}}°</span>
+            </div>
+            <button type="button" aria-label="Lower target 0.5 degrees" onClick="{{acDown}}" style="{{pMinus.style}}" onPointerDown="{{pMinus.down}}" onPointerUp="{{pMinus.up}}" onPointerLeave="{{pMinus.up}}" onPointerCancel="{{pMinus.up}}">
+              <span aria-hidden="true" style="{{pMinus.tint}}"></span>
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg>
+            </button>
+            <button type="button" aria-label="Raise target 0.5 degrees" onClick="{{acUp}}" style="{{pPlusT.style}}" onPointerDown="{{pPlusT.down}}" onPointerUp="{{pPlusT.up}}" onPointerLeave="{{pPlusT.up}}" onPointerCancel="{{pPlusT.up}}">
+              <span aria-hidden="true" style="{{pPlusT.tint}}"></span>
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+            </button>
+          </div>
+          <div role="group" aria-label="Mode" style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px">
+            <sc-for list="{{acModes}}" as="m" hint-placeholder-count="5">
+              <button type="button" aria-pressed="{{m.pressed}}" aria-label="{{m.label}}" onClick="{{m.pick}}" style="{{m.style}}" onPointerDown="{{m.down}}" onPointerUp="{{m.up}}" onPointerLeave="{{m.up}}" onPointerCancel="{{m.up}}">
+                <span aria-hidden="true" style="{{m.tint}}"></span>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{m.icon}}"></path></svg>
+                <span style="font-size: 13px; font-weight: 600">{{m.label}}</span>
+              </button>
+            </sc-for>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px">
+            <span style="font-size: 15px; color: #A9B2C3">Fan</span>
+            <div role="group" aria-label="Fan speed" style="{{segWrap}}">
+              <sc-for list="{{fanOpts}}" as="o" hint-placeholder-count="4">
+                <button type="button" aria-pressed="{{o.pressed}}" onClick="{{o.pick}}" style="{{o.style}}" onPointerDown="{{o.down}}" onPointerUp="{{o.up}}" onPointerLeave="{{o.up}}" onPointerCancel="{{o.up}}"><span aria-hidden="true" style="{{o.tint}}"></span>{{o.label}}</button>
+              </sc-for>
+            </div>
+          </div>
+        </section>
+
+        <section aria-label="Weather" style="{{cardStyle}}">
+          <div style="display: flex; justify-content: space-between; align-items: center">
+            <h2 style="margin: 0; font-size: 22px; font-weight: 600">Weather</h2>
+            <span style="font-size: 16px; color: #A9B2C3">Rain from 4 pm</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 16px">
+            <svg width="68" height="68" viewBox="0 0 24 24" fill="none" stroke="#F2B35B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3v1.5M3.5 8H2M4.6 4.6l1 1M12.4 4.6l-1 1M10.5 9.2A3.5 3.5 0 0 0 5 8.3"></path><path d="M9 20h8a3.5 3.5 0 0 0 .5-7A5 5 0 0 0 8 13a3.5 3.5 0 0 0 1 7z" stroke="#C7CEDB"></path></svg>
+            <div style="display: flex; flex-direction: column; gap: 2px">
+              <span style="font-size: 54px; font-weight: 300; line-height: 1">24°</span>
+              <span style="font-size: 16px; color: #A9B2C3">Partly cloudy · 28° / 14°</span>
+            </div>
+          </div>
+          <div style="height: 1px; background: rgba(255,255,255,0.08)"></div>
+          <div style="display: flex; flex-direction: column; gap: 2px">
+            <sc-for list="{{hours}}" as="h" hint-placeholder-count="6">
+              <div style="display: grid; grid-template-columns: 70px 36px 1fr 60px; align-items: center; gap: 10px; height: 42px">
+                <span style="font-size: 17px; color: #A9B2C3">{{h.t}}</span>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="{{h.c}}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{h.icon}}"></path></svg>
+                <span style="font-size: 20px; font-weight: 500">{{h.temp}}°</span>
+                <span style="{{h.rainStyle}}">{{h.rain}}</span>
+              </div>
+            </sc-for>
+          </div>
+        </section>
+      </div>
+    </main>
+  </sc-if>
+
+  <!-- ===================== ENERGY ===================== -->
+  <sc-if value="{{isEnergy}}" hint-placeholder-val="{{ false }}">
+    <main style="flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 18px; animation: pageIn .22s cubic-bezier(.2,.8,.2,1)">
+      <section aria-label="Energy now" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px">
+        <sc-for list="{{nowCards}}" as="n" hint-placeholder-count="3">
+          <div style="{{n.style}}">
+            <span style="display: flex; align-items: center; gap: 8px; font-size: 17px; color: #A9B2C3; font-weight: 500"><span style="{{n.dot}}"></span>{{n.label}}</span>
+            <span style="font-size: 44px; font-weight: 500; line-height: 1.05">{{n.value}}<span style="font-size: 20px; color: #A9B2C3; font-weight: 400"> kW</span></span>
+            <span style="font-size: 15px; color: #8E98AA">{{n.sub}}</span>
+          </div>
+        </sc-for>
+      </section>
+
+      <section aria-label="Last 24 hours" style="{{cardStyle}}">
+        <div style="display: flex; justify-content: space-between; align-items: center">
+          <div style="display: flex; flex-direction: column; gap: 2px">
+            <h2 style="margin: 0; font-size: 22px; font-weight: 600">Last 24 hours</h2>
+            <span style="font-size: 15px; color: #A9B2C3">Generated 18.4 kWh · used 12.7 kWh · self-use 41%</span>
+          </div>
+          <div style="display: flex; gap: 16px; font-size: 15px; color: #A9B2C3">
+            <span style="display: flex; align-items: center; gap: 6px"><span style="width: 14px; height: 3px; border-radius: 2px; background: #B97D14"></span>Solar</span>
+            <span style="display: flex; align-items: center; gap: 6px"><span style="width: 14px; height: 3px; border-radius: 2px; background: #4F8EE8"></span>Home use</span>
+          </div>
+        </div>
+        <div style="position: relative; width: 704px; height: 300px">
+          <svg width="704" height="300" viewBox="0 0 704 300" role="img" aria-label="Solar generation and home use over the last 24 hours" style="display: block">
+            <line x1="40" x2="704" y1="270" y2="270" stroke="rgba(255,255,255,0.14)"></line>
+            <line x1="40" x2="704" y1="140" y2="140" stroke="rgba(255,255,255,0.07)"></line>
+            <line x1="40" x2="704" y1="10" y2="10" stroke="rgba(255,255,255,0.07)"></line>
+            <text x="32" y="275" text-anchor="end" fill="#8E98AA" font-size="13">0</text>
+            <text x="32" y="145" text-anchor="end" fill="#8E98AA" font-size="13">2.5</text>
+            <text x="32" y="15" text-anchor="end" fill="#8E98AA" font-size="13">5 kW</text>
+            <path d="{{solArea}}" fill="rgba(185,125,20,0.20)"></path>
+            <path d="{{useArea}}" fill="rgba(79,142,232,0.14)"></path>
+            <path d="{{solLine}}" fill="none" stroke="#B97D14" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"></path>
+            <path d="{{useLine}}" fill="none" stroke="#4F8EE8" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"></path>
+            <sc-for list="{{eTicks}}" as="et" hint-placeholder-count="5">
+              <text x="{{et.x}}" y="294" text-anchor="{{et.anchor}}" fill="#8E98AA" font-size="13">{{et.label}}</text>
+            </sc-for>
+            <sc-if value="{{eHas}}" hint-placeholder-val="{{ false }}">
+              <line x1="{{eHx}}" x2="{{eHx}}" y1="8" y2="270" stroke="rgba(255,255,255,0.45)"></line>
+              <circle cx="{{eHx}}" cy="{{eSolY}}" r="6" fill="#B97D14" stroke="#1A2130" stroke-width="2"></circle>
+              <circle cx="{{eHx}}" cy="{{eUseY}}" r="6" fill="#4F8EE8" stroke="#1A2130" stroke-width="2"></circle>
+            </sc-if>
+            <rect x="40" y="0" width="664" height="272" fill="transparent" onPointerMove="{{eMove}}" onPointerDown="{{eMove}}" onPointerLeave="{{eLeave}}"></rect>
+          </svg>
+          <sc-if value="{{eHas}}" hint-placeholder-val="{{ false }}">
+            <div style="{{eTip}}">
+              <div style="font-size: 15px; color: #A9B2C3; margin-bottom: 6px">{{eTime}}</div>
+              <div style="display: flex; align-items: center; gap: 8px; font-size: 17px"><span style="width: 12px; height: 3px; border-radius: 2px; background: #B97D14"></span>Solar <span style="margin-left: auto; font-weight: 600">{{eSol}} kW</span></div>
+              <div style="display: flex; align-items: center; gap: 8px; font-size: 17px"><span style="width: 12px; height: 3px; border-radius: 2px; background: #4F8EE8"></span>Use <span style="margin-left: auto; font-weight: 600">{{eUse}} kW</span></div>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section aria-label="Last 7 days" style="{{cardStyleFlex}}">
+        <div style="display: flex; justify-content: space-between; align-items: center">
+          <h2 style="margin: 0; font-size: 22px; font-weight: 600">Last 7 days</h2>
+          <span style="font-size: 16px; color: #A9B2C3">{{daySummary}}</span>
+        </div>
+        <div style="flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 10px; align-items: end">
+          <sc-for list="{{days7}}" as="d" hint-placeholder-count="7">
+            <button type="button" onClick="{{d.pick}}" aria-pressed="{{d.pressed}}" aria-label="{{d.aria}}" style="{{d.style}}">
+              <span style="display: flex; align-items: flex-end; justify-content: center; gap: 4px; width: 100%; height: 190px">
+                <span style="{{d.solBar}}"></span>
+                <span style="{{d.useBar}}"></span>
+              </span>
+              <span style="{{d.labelStyle}}">{{d.name}}</span>
+            </button>
+          </sc-for>
+        </div>
+      </section>
+    </main>
+  </sc-if>
+
+  <!-- ===================== SERVERS ===================== -->
+  <sc-if value="{{isServers}}" hint-placeholder-val="{{ false }}">
+    <main style="flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 16px; animation: pageIn .22s cubic-bezier(.2,.8,.2,1)">
+      <section aria-label="Summary" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px">
+        <sc-for list="{{srvStats}}" as="st" hint-placeholder-count="4">
+          <div style="{{st.style}}">
+            <span style="font-size: 14px; color: #A9B2C3">{{st.label}}</span>
+            <span style="font-size: 30px; font-weight: 500; line-height: 1.1">{{st.value}}</span>
+          </div>
+        </sc-for>
+      </section>
+      <section aria-label="Monitors" style="{{cardStyleFlex}}">
+        <div style="display: flex; justify-content: space-between; align-items: baseline">
+          <h2 style="margin: 0; font-size: 22px; font-weight: 600">Uptime Kuma</h2>
+          <span style="font-size: 15px; color: #8E98AA">12 monitors · checks every 60 s</span>
+        </div>
+        <div class="noscroll" style="flex: 1 1 0; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 8px">
+          <sc-for list="{{monitors}}" as="m" hint-placeholder-count="12">
+            <div style="{{m.rowStyle}}">
+              <span style="{{m.dot}}"></span>
+              <div style="display: flex; flex-direction: column; min-width: 0">
+                <span style="font-size: 19px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{m.name}}</span>
+                <span style="font-size: 14px; color: #8E98AA; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{m.meta}}</span>
+              </div>
+              <div style="display: flex; gap: 3px; align-items: center; height: 26px">
+                <sc-for list="{{m.beats}}" as="b" hint-placeholder-count="24">
+                  <span style="{{b.style}}"></span>
+                </sc-for>
+              </div>
+              <div style="display: flex; flex-direction: column; align-items: flex-end">
+                <span style="{{m.upStyle}}">{{m.uptime}}</span>
+                <span style="font-size: 14px; color: #8E98AA">{{m.resp}}</span>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+    </main>
+  </sc-if>
+
+  <!-- ===================== SHOPPING ===================== -->
+  <sc-if value="{{isShopping}}" hint-placeholder-val="{{ false }}">
+    <main style="flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 16px; animation: pageIn .22s cubic-bezier(.2,.8,.2,1)">
+      <section aria-label="Shopping list" style="{{cardStyleFlex}}">
+        <div style="display: flex; gap: 14px; align-items: center">
+          <span style="position: relative; display: block; flex: 1 1 auto; min-width: 0">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{accSoft}}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; left: 16px; top: 22px; pointer-events: none"><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6.2"></path><circle cx="10" cy="20.5" r="1"></circle><circle cx="17" cy="20.5" r="1"></circle></svg>
+            <select value="{{listName}}" onChange="{{onPickList}}" aria-label="Shopping list" style="{{selectStyle}}">
+              <sc-for list="{{listNames}}" as="ln" hint-placeholder-count="3">
+                <option value="{{ln}}">{{ln}}</option>
+              </sc-for>
+            </select>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#A9B2C3" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; right: 16px; top: 22px; pointer-events: none"><path d="M6 9l6 6 6-6"></path></svg>
+          </span>
+          <button type="button" aria-label="Add item" onClick="{{openKb}}" style="{{pPlus.style}}" onPointerDown="{{pPlus.down}}" onPointerUp="{{pPlus.up}}" onPointerLeave="{{pPlus.up}}" onPointerCancel="{{pPlus.up}}">
+            <span aria-hidden="true" style="{{pPlus.tint}}"></span>
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+          </button>
+        </div>
+        <div class="noscroll" style="flex: 1 1 0; min-height: 0; overflow-y: auto; overscroll-behavior: contain; margin: 0 -8px; padding: 0 8px">
+          <div style="display: flex; flex-direction: column; gap: 4px; min-height: 100%">
+            <sc-for list="{{openRows}}" as="it" hint-placeholder-count="6">
+              <button type="button" onClick="{{it.toggle}}" aria-pressed="{{it.pressed}}" onPointerDown="{{it.down}}" onPointerUp="{{it.up}}" onPointerLeave="{{it.up}}" onPointerCancel="{{it.up}}" style="{{it.rowStyle}}">
+                <span aria-hidden="true" style="{{it.tint}}"></span>
+                <span style="{{it.boxStyle}}">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" style="{{it.checkPath}}"></path></svg>
+                </span>
+                <span style="{{it.textWrap}}"><span style="{{it.titleStyle}}">{{it.name}}</span></span>
+                <span style="font-size: 18px; color: #8E98AA; margin-left: auto; white-space: nowrap">{{it.qty}}</span>
+              </button>
+            </sc-for>
+            <sc-if value="{{noOpen}}" hint-placeholder-val="{{ false }}">
+              <div style="padding: 18px 6px; font-size: 20px; color: #8E98AA">All sorted. Tap + to add.</div>
+            </sc-if>
+            <div style="flex: 1 1 auto; min-height: 12px"></div>
+            <button type="button" aria-expanded="{{doneExpanded}}" onClick="{{toggleDone}}" style="{{pDone.style}}" onPointerDown="{{pDone.down}}" onPointerUp="{{pDone.up}}" onPointerLeave="{{pDone.up}}" onPointerCancel="{{pDone.up}}">
+              <span aria-hidden="true" style="{{pDone.tint}}"></span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="{{doneChevron}}"><path d="M9 6l6 6-6 6"></path></svg>
+              <span>Completed · {{doneCount}}</span>
+            </button>
+            <sc-if value="{{showDone}}" hint-placeholder-val="{{ false }}">
+              <div style="display: flex; flex-direction: column; gap: 4px; padding-top: 8px; animation: dropIn .28s ease">
+                <sc-for list="{{doneRows}}" as="it" hint-placeholder-count="2">
+                  <button type="button" onClick="{{it.toggle}}" aria-pressed="{{it.pressed}}" onPointerDown="{{it.down}}" onPointerUp="{{it.up}}" onPointerLeave="{{it.up}}" onPointerCancel="{{it.up}}" style="{{it.rowStyle}}">
+                    <span aria-hidden="true" style="{{it.tint}}"></span>
+                    <span style="{{it.boxStyle}}">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" style="{{it.checkPath}}"></path></svg>
+                    </span>
+                    <span style="{{it.textWrap}}"><span style="{{it.titleStyle}}">{{it.name}}</span></span>
+                    <span style="font-size: 16px; color: #7C8698; margin-left: auto; white-space: nowrap">{{it.ago}}</span>
+                  </button>
+                </sc-for>
+                <div style="padding: 10px 6px 4px; font-size: 15px; color: #7C8698">Completed items clear after 14 days</div>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </section>
+    </main>
+  </sc-if>
+
+  <!-- ===================== CAMERAS ===================== -->
+  <sc-if value="{{isCameras}}" hint-placeholder-val="{{ false }}">
+    <main style="flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 18px; animation: pageIn .22s cubic-bezier(.2,.8,.2,1)">
+      <sc-for list="{{camsBig}}" as="c" hint-placeholder-count="2">
+        <section style="display: flex; flex-direction: column; gap: 10px">
+          <button type="button" onClick="{{c.open}}" aria-label="{{c.aria}}" style="{{c.style}}" onPointerDown="{{c.down}}" onPointerUp="{{c.up}}" onPointerLeave="{{c.up}}" onPointerCancel="{{c.up}}">
+            <span aria-hidden="true" style="{{c.scene}}"></span>
+            <span aria-hidden="true" style="{{c.ground}}"></span>
+            <span aria-hidden="true" style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.40) 0%, rgba(0,0,0,0) 25%, rgba(0,0,0,0) 75%, rgba(0,0,0,0.45) 100%)"></span>
+            <span style="position: absolute; left: 18px; top: 16px; display: flex; align-items: center; gap: 8px; font-size: 17px; font-weight: 600"><span style="width: 10px; height: 10px; border-radius: 50%; background: #FF5C62; animation: livePulse 2s ease-in-out infinite"></span>LIVE</span>
+            <span aria-hidden="true" style="position: absolute; right: 16px; bottom: 16px; color: rgba(255,255,255,0.85)"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"></path></svg></span>
+          </button>
+          <div style="display: flex; justify-content: space-between; align-items: baseline; padding: 0 6px">
+            <span style="font-size: 22px; font-weight: 600">{{c.name}}</span>
+            <span style="font-size: 16px; color: #A9B2C3">{{c.events}}</span>
+          </div>
+        </section>
+      </sc-for>
+    </main>
+  </sc-if>
+
+  <!-- ===================== NETWORK ===================== -->
+  <sc-if value="{{isNetwork}}" hint-placeholder-val="{{ false }}">
+    <main style="flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 18px; animation: pageIn .22s cubic-bezier(.2,.8,.2,1)">
+      <section aria-label="Internet" style="{{cardStyle}}">
+        <div style="display: flex; justify-content: space-between; align-items: center">
+          <div style="display: flex; flex-direction: column; gap: 2px">
+            <h2 style="margin: 0; font-size: 22px; font-weight: 600">Internet</h2>
+            <span style="font-size: 15px; color: #A9B2C3">Starlink via ER605 · 30 s samples</span>
+          </div>
+          <div role="group" aria-label="Time window" style="{{segWrap}}">
+            <sc-for list="{{winOpts}}" as="o" hint-placeholder-count="2">
+              <button type="button" aria-pressed="{{o.pressed}}" onClick="{{o.pick}}" style="{{o.style}}" onPointerDown="{{o.down}}" onPointerUp="{{o.up}}" onPointerLeave="{{o.up}}" onPointerCancel="{{o.up}}"><span aria-hidden="true" style="{{o.tint}}"></span>{{o.label}}</button>
+            </sc-for>
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px">
+          <sc-for list="{{netStats}}" as="n" hint-placeholder-count="4">
+            <div style="display: flex; flex-direction: column; gap: 4px">
+              <span style="display: flex; align-items: center; gap: 6px; font-size: 15px; color: #A9B2C3"><span style="{{n.key}}"></span>{{n.label}}</span>
+              <span style="font-size: 30px; font-weight: 500">{{n.value}} <span style="font-size: 15px; color: #A9B2C3; font-weight: 400">Mbps</span></span>
+              <span style="font-size: 14px; color: #8E98AA">{{n.sub}}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="position: relative; width: 704px; height: 280px">
+          <svg width="704" height="280" viewBox="0 0 704 280" role="img" aria-label="{{wChartLabel}}" style="display: block">
+            <line x1="44" x2="704" y1="{{wg0}}" y2="{{wg0}}" stroke="rgba(255,255,255,0.14)"></line>
+            <line x1="44" x2="704" y1="{{wg1}}" y2="{{wg1}}" stroke="rgba(255,255,255,0.07)"></line>
+            <line x1="44" x2="704" y1="{{wg2}}" y2="{{wg2}}" stroke="rgba(255,255,255,0.07)"></line>
+            <text x="36" y="{{wg0t}}" text-anchor="end" fill="#8E98AA" font-size="13">0</text>
+            <text x="36" y="{{wg1t}}" text-anchor="end" fill="#8E98AA" font-size="13">{{wMid}}</text>
+            <text x="36" y="{{wg2t}}" text-anchor="end" fill="#8E98AA" font-size="13">{{wMax}}</text>
+            <line x1="44" x2="704" y1="{{planDlY}}" y2="{{planDlY}}" stroke="#A9C6F2" stroke-width="1.5" stroke-dasharray="2 5" stroke-linecap="round" opacity="0.75"></line>
+            <line x1="44" x2="704" y1="{{planUlY}}" y2="{{planUlY}}" stroke="#E2B08E" stroke-width="1.5" stroke-dasharray="2 5" stroke-linecap="round" opacity="0.75"></line>
+            <text x="700" y="{{planDlLabelY}}" text-anchor="end" fill="#A9C6F2" font-size="13">300 plan</text>
+            <text x="700" y="{{planUlLabelY}}" text-anchor="end" fill="#E2B08E" font-size="13">30 up plan</text>
+            <path d="{{dlArea}}" fill="rgba(79,142,232,0.16)"></path>
+            <path d="{{ulArea}}" fill="rgba(201,115,60,0.18)"></path>
+            <path d="{{dlLine}}" fill="none" stroke="#4F8EE8" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"></path>
+            <path d="{{ulLine}}" fill="none" stroke="#C9733C" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"></path>
+            <text x="44" y="274" fill="#8E98AA" font-size="13">{{wStart}}</text>
+            <text x="374" y="274" text-anchor="middle" fill="#8E98AA" font-size="13">{{wMidT}}</text>
+            <text x="704" y="274" text-anchor="end" fill="#8E98AA" font-size="13">Now</text>
+            <sc-if value="{{wHas}}" hint-placeholder-val="{{ false }}">
+              <line x1="{{wHx}}" x2="{{wHx}}" y1="8" y2="{{wg0}}" stroke="rgba(255,255,255,0.45)"></line>
+              <circle cx="{{wHx}}" cy="{{wDlY}}" r="6" fill="#4F8EE8" stroke="#1A2130" stroke-width="2"></circle>
+              <circle cx="{{wHx}}" cy="{{wUlY}}" r="6" fill="#C9733C" stroke="#1A2130" stroke-width="2"></circle>
+            </sc-if>
+            <rect x="44" y="0" width="660" height="252" fill="transparent" onPointerMove="{{wMove}}" onPointerDown="{{wMove}}" onPointerLeave="{{wLeave}}"></rect>
+          </svg>
+          <sc-if value="{{wHas}}" hint-placeholder-val="{{ false }}">
+            <div style="{{wTip}}">
+              <div style="font-size: 15px; color: #A9B2C3; margin-bottom: 6px">{{wTime}}</div>
+              <div style="display: flex; align-items: center; gap: 8px; font-size: 17px"><span style="width: 12px; height: 3px; border-radius: 2px; background: #4F8EE8"></span>Down <span style="margin-left: auto; font-weight: 600">{{wDl}} Mbps</span></div>
+              <div style="display: flex; align-items: center; gap: 8px; font-size: 17px"><span style="width: 12px; height: 3px; border-radius: 2px; background: #C9733C"></span>Up <span style="margin-left: auto; font-weight: 600">{{wUl}} Mbps</span></div>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+      <section aria-label="Starlink health" style="{{cardStyle}}">
+        <div style="display: flex; justify-content: space-between; align-items: center">
+          <h2 style="margin: 0; font-size: 22px; font-weight: 600">Starlink health</h2>
+          <span style="display: flex; align-items: center; gap: 8px; font-size: 15px; color: #A9B2C3"><span style="width: 10px; height: 10px; border-radius: 50%; background: #4CC38A"></span>Connected · dish via HA</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px">
+          <sc-for list="{{starStats}}" as="st" hint-placeholder-count="4">
+            <div style="{{st.style}}">
+              <span style="font-size: 14px; color: #A9B2C3">{{st.label}}</span>
+              <span style="font-size: 28px; font-weight: 500; line-height: 1.1">{{st.value}}</span>
+              <span style="font-size: 13px; color: #8E98AA">{{st.sub}}</span>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+      <section aria-label="Home network" style="{{cardStyleFlex}}">
+        <div style="display: flex; justify-content: space-between; align-items: center">
+          <h2 style="margin: 0; font-size: 22px; font-weight: 600">Home network</h2>
+          <span style="font-size: 15px; color: #A9B2C3">Omada · 9 devices</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px">
+          <sc-for list="{{lanStats}}" as="st" hint-placeholder-count="4">
+            <div style="{{st.style}}">
+              <span style="font-size: 14px; color: #A9B2C3">{{st.label}}</span>
+              <span style="font-size: 28px; font-weight: 500; line-height: 1.1">{{st.value}}</span>
+              <span style="font-size: 13px; color: #8E98AA">{{st.sub}}</span>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+    </main>
+  </sc-if>
+
+  <!-- ===================== NAV ===================== -->
+  <nav aria-label="Pages" style="{{navStyle}}">
+    <sc-for list="{{tabs}}" as="tab" hint-placeholder-count="6">
+      <button type="button" aria-current="{{tab.current}}" onClick="{{tab.go}}" style="{{tab.style}}" onPointerDown="{{tab.down}}" onPointerUp="{{tab.up}}" onPointerLeave="{{tab.up}}" onPointerCancel="{{tab.up}}">
+        <span aria-hidden="true" style="{{tab.tint}}"></span>
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{tab.icon}}"></path></svg>
+        <span style="font-size: 14px; font-weight: 600">{{tab.label}}</span>
+      </button>
+    </sc-for>
+  </nav>
+
+  <!-- ===================== KEYBOARD SHEET ===================== -->
+  <sc-if value="{{kbShown}}" hint-placeholder-val="{{ false }}">
+    <section aria-label="Add to shopping list" style="{{panelKb}}">
+      <div style="display: flex; gap: 12px; align-items: center">
+        <span style="position: relative; flex: 0 0 190px; display: block">
+          <select value="{{kbList}}" onChange="{{onPickKbList}}" aria-label="Target list" style="{{kbSelectStyle}}">
+            <sc-for list="{{listNames}}" as="ln" hint-placeholder-count="3">
+              <option value="{{ln}}">{{ln}}</option>
+            </sc-for>
+          </select>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A9B2C3" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; right: 14px; top: 25px; pointer-events: none"><path d="M6 9l6 6 6-6"></path></svg>
+        </span>
+        <input type="text" value="{{kbText}}" onChange="{{onType}}" inputMode="none" autoComplete="off" spellCheck="false" aria-label="New item" placeholder="2L milk sat #groceries !!" style="{{inputStyle}}">
+        <button type="button" aria-label="Add to list" onClick="{{addItem}}" style="{{pAdd.style}}" onPointerDown="{{pAdd.down}}" onPointerUp="{{pAdd.up}}" onPointerLeave="{{pAdd.up}}" onPointerCancel="{{pAdd.up}}">
+          <span aria-hidden="true" style="{{pAdd.tint}}"></span>
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+        </button>
+      </div>
+      <div style="display: flex; gap: 8px; align-items: center; min-height: 36px; flex-wrap: wrap">
+        <span style="font-size: 15px; color: #8E98AA; margin-right: 4px">Parsed</span>
+        <sc-for list="{{chips}}" as="c" hint-placeholder-count="3">
+          <span style="{{c.style}}">{{c.label}}</span>
+        </sc-for>
+        <sc-if value="{{noChips}}" hint-placeholder-val="{{ true }}">
+          <span style="font-size: 16px; color: #7C8698">Item, quantity, day, #list and !priority</span>
+        </sc-if>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <sc-for list="{{kbRows}}" as="row" hint-placeholder-count="5">
+          <div style="display: grid; grid-template-columns: repeat(20, minmax(0, 1fr)); gap: 8px">
+            <sc-for list="{{row.keys}}" as="k" hint-placeholder-count="10">
+              <button type="button" aria-label="{{k.aria}}" onClick="{{k.press}}" onPointerDown="{{k.down}}" onPointerUp="{{k.up}}" onPointerLeave="{{k.up}}" onPointerCancel="{{k.up}}" style="{{k.style}}">
+                <span aria-hidden="true" style="{{k.tintStyle}}"></span>
+                <span style="position: relative; display: flex; align-items: center; justify-content: center">
+                  <sc-if value="{{k.hasIcon}}" hint-placeholder-val="{{ false }}">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{k.icon}}"></path></svg>
+                  </sc-if>
+                  <sc-if value="{{k.noIcon}}" hint-placeholder-val="{{ true }}">{{k.label}}</sc-if>
+                </span>
+              </button>
+            </sc-for>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+  </sc-if>
+
+  <!-- ===================== CAMERA FULL ===================== -->
+  <sc-if value="{{camOpen}}" hint-placeholder-val="{{ false }}">
+    <button type="button" aria-label="Close camera" onClick="{{closeCam}}" style="position: absolute; inset: 0; border: 0; padding: 0; background: rgba(3,5,10,0.86); cursor: default; animation: fadeIn .2s ease"></button>
+    <section role="dialog" aria-label="{{camFullName}}" style="position: absolute; left: 24px; right: 24px; top: 300px; display: flex; flex-direction: column; gap: 16px; animation: sheetIn .24s cubic-bezier(.2,.8,.2,1)">
+      <div style="{{camFullStyle}}">
+        <span aria-hidden="true" style="{{camFullScene}}"></span>
+        <span aria-hidden="true" style="{{camFullGround}}"></span>
+        <span style="position: absolute; left: 18px; top: 16px; display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 600"><span style="width: 10px; height: 10px; border-radius: 50%; background: #FF5C62; animation: livePulse 2s ease-in-out infinite"></span>LIVE · HD stream</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center">
+        <div style="display: flex; flex-direction: column; gap: 2px">
+          <span style="font-size: 24px; font-weight: 600">{{camFullName}}</span>
+          <span style="font-size: 16px; color: #A9B2C3">Last motion 08:52 · TP-Link (stream1 HD / stream2 sub)</span>
+        </div>
+        <button type="button" onClick="{{closeCam}}" style="{{pCamClose.style}}" onPointerDown="{{pCamClose.down}}" onPointerUp="{{pCamClose.up}}" onPointerLeave="{{pCamClose.up}}" onPointerCancel="{{pCamClose.up}}"><span aria-hidden="true" style="{{pCamClose.tint}}"></span>Close</button>
+      </div>
+    </section>
+  </sc-if>
+
+  <!-- ===================== SETTINGS ===================== -->
+  <sc-if value="{{settingsOpen}}" hint-placeholder-val="{{ false }}">
+    <button type="button" aria-label="Close settings" onClick="{{closeSettings}}" style="position: absolute; inset: 0; border: 0; padding: 0; background: rgba(5,8,14,0.62); cursor: default; animation: fadeIn .2s ease"></button>
+    <section role="dialog" aria-label="Settings" style="{{settingsPanel}}">
+      <div style="display: flex; justify-content: space-between; align-items: center">
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <h2 style="margin: 0; font-size: 26px; font-weight: 600">Settings</h2>
+          <span style="font-size: 15px; color: #8E98AA">Tablet profile · more at kiosk.lan/settings</span>
+        </div>
+        <button type="button" aria-label="Close settings" onClick="{{closeSettings}}" style="{{pClose.style}}" onPointerDown="{{pClose.down}}" onPointerUp="{{pClose.up}}" onPointerLeave="{{pClose.up}}" onPointerCancel="{{pClose.up}}">
+          <span aria-hidden="true" style="{{pClose.tint}}"></span>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+        </button>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 12px">
+        <span style="font-size: 17px; font-weight: 500">Accent colour · {{accentName}}</span>
+        <div style="display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 12px">
+          <sc-for list="{{swatches}}" as="sw" hint-placeholder-count="8">
+            <button type="button" aria-label="{{sw.name}}" aria-pressed="{{sw.pressed}}" onClick="{{sw.pick}}" style="{{sw.style}}"></button>
+          </sc-for>
+        </div>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 16px">
+        <div style="display: flex; flex-direction: column; gap: 3px">
+          <span style="font-size: 18px; font-weight: 500">Lite rendering</span>
+          <span style="font-size: 15px; color: #8E98AA">Fewer shadow layers for the Helio G85</span>
+        </div>
+        <button type="button" aria-pressed="{{tLite.pressed}}" aria-label="Lite rendering" onClick="{{tLite.pick}}" style="{{tLite.style}}" onPointerDown="{{tLite.down}}" onPointerUp="{{tLite.up}}" onPointerLeave="{{tLite.up}}" onPointerCancel="{{tLite.up}}"><span aria-hidden="true" style="{{tLite.tint}}"></span><span style="{{tLite.knob}}"></span></button>
+      </div>
+      <sc-if value="{{isVesta}}" hint-placeholder-val="{{ true }}">
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <div style="display: flex; justify-content: space-between; align-items: baseline">
+            <span style="font-size: 18px; font-weight: 500">Edge depth</span>
+            <span style="font-size: 16px; color: #A3A3A8">{{edgeLabel}}</span>
+          </div>
+          <input type="range" min="0" max="100" step="5" value="{{edge}}" onChange="{{onEdge}}" aria-label="Edge depth" class="edgeRange" style="{{edgeTrack}}">
+          <div style="display: flex; justify-content: space-between; font-size: 13px; color: #7A7A80"><span>Flat (Vesta)</span><span>Domed</span></div>
+        </div>
+      </sc-if>
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 16px">
+        <div style="display: flex; flex-direction: column; gap: 3px">
+          <span style="font-size: 18px; font-weight: 500">Return to Home</span>
+          <span style="font-size: 15px; color: #8E98AA">After this long idle, and on wake</span>
+        </div>
+        <div role="group" style="{{segWrap}}">
+          <sc-for list="{{homeOpts}}" as="o" hint-placeholder-count="3">
+            <button type="button" aria-pressed="{{o.pressed}}" onClick="{{o.pick}}" style="{{o.style}}" onPointerDown="{{o.down}}" onPointerUp="{{o.up}}" onPointerLeave="{{o.up}}" onPointerCancel="{{o.up}}"><span aria-hidden="true" style="{{o.tint}}"></span>{{o.label}}</button>
+          </sc-for>
+        </div>
+      </div>
+      <div style="display: grid; grid-template-columns: 130px 1fr; row-gap: 8px; font-size: 15px; color: #C7CEDB">
+        <span style="color: #8E98AA">Device</span><span>Lenovo Tab TB311FU · 800×1280 CSS px (est.)</span>
+        <span style="color: #8E98AA">Kiosk</span><span>Fully Kiosk Browser</span>
+        <span style="color: #8E98AA">Backend</span><span>dashboard-service on the homelab host</span>
+      </div>
+    </section>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"look":{"editor":"enum","options":["dome","vesta"],"default":"dome"},"accent":{"editor":"color","default":"#8B7CF6","options":["#8B7CF6","#E8705F","#4CC38A","#5B9BF5"]},"$preview":{"width":800,"height":1280}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = this.initialState();
+    this.drag = null;
+    this.shopTimers = {};
+    var seed = 1337;
+    function rnd() { seed |= 0; seed = seed + 0x6D2B79F5 | 0; var t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }
+    var dl = [], ul = [], burst = 0, level = 0, ulLevel = 0;
+    for (var i = 0; i < 1440; i++) {
+      var base = 22 + 10 * Math.sin(i / 55) + 6 * Math.sin(i / 13) + rnd() * 9;
+      var ubase = 3.5 + 1.5 * Math.sin(i / 40) + rnd() * 2;
+      if (burst <= 0 && rnd() < 0.025) { burst = 3 + Math.floor(rnd() * 16); level = 90 + rnd() * 170; ulLevel = rnd() < 0.4 ? 10 + rnd() * 18 : 0; }
+      if (burst > 0) { burst--; base = Math.max(base, level * (0.85 + rnd() * 0.15)); if (ulLevel) ubase = Math.max(ubase, ulLevel * (0.8 + rnd() * 0.2)); }
+      dl.push(base); ul.push(ubase);
+    }
+    dl[1439] = 64; ul[1439] = 7;
+    this.raw = { dl: dl, ul: ul };
+  }
+
+  initialState() {
+    var DAY = 86400000, now = Date.now(), n = 0;
+    var lists = {
+      Groceries: [
+        { name: 'Milk', qty: '2 L', done: false },
+        { name: 'Eggs', qty: '×12', done: false },
+        { name: 'Sourdough', qty: '', done: false },
+        { name: 'Bananas', qty: '×6', done: false },
+        { name: 'Coffee beans', qty: '1 kg', done: false },
+        { name: 'Baby spinach', qty: '', done: false },
+        { name: 'Greek yoghurt', qty: '1 kg', done: false },
+        { name: 'Butter', qty: '', done: true, doneAt: now - 1 * DAY },
+        { name: 'Olive oil', qty: '1 L', done: true, doneAt: now - 3 * DAY }
+      ],
+      Hardware: [
+        { name: 'Picture hooks', qty: '', done: false },
+        { name: 'AA batteries', qty: '×8', done: false },
+        { name: 'Wood glue', qty: '', done: true, doneAt: now - 2 * DAY }
+      ],
+      Pharmacy: [
+        { name: 'Sunscreen SPF50', qty: '', done: false },
+        { name: 'Toothpaste', qty: '×2', done: false }
+      ]
+    };
+    Object.keys(lists).forEach(function (key) { lists[key] = lists[key].map(function (x) { n++; return Object.assign({ id: 'seed' + n, doneAt: null }, x); }); });
+    return {
+      page: 'home', pressedId: null, pressedKey: null,
+      on: { living: true, kitchen: false, bedroom: false, porch: true },
+      level: { living: 80, kitchen: 100, bedroom: 40, porch: 60 },
+      ac: { mode: 'cool', target: 22, fan: 'auto', current: 24.5 },
+      cam: null, eHover: null, daySel: 6, win: '2h', wHover: null,
+      lists: lists, listName: 'Groceries', phase: {}, showDone: false,
+      kbOpen: false, kbText: '', kbList: 'Groceries', shift: false, numMode: false,
+      settingsOpen: false, accentIdx: null, lite: true, homeAfter: 120, edge: 50
+    };
+  }
+
+  armRelease() {
+    if (this.releaseArmed) return;
+    var self = this;
+    this.releaseArmed = true;
+    var clear = function () {
+      self.releaseArmed = false;
+      window.removeEventListener('pointerup', clear, true);
+      window.removeEventListener('pointercancel', clear, true);
+      window.removeEventListener('blur', clear);
+      self.stopBackspace();
+      if (self.state.pressedId || self.state.pressedKey) self.setState({ pressedId: null, pressedKey: null });
+    };
+    window.addEventListener('pointerup', clear, true);
+    window.addEventListener('pointercancel', clear, true);
+    window.addEventListener('blur', clear);
+  }
+
+  backspaceOnce() { var t = this.state.kbText; if (!t) { this.stopBackspace(); return; } this.setState({ kbText: t.slice(0, -1) }); }
+  startBackspace() {
+    var self = this; this.stopBackspace(); this.bsFromPointer = true; this.backspaceOnce();
+    this.bsDelay = setTimeout(function () { self.bsRepeat = setInterval(function () { self.backspaceOnce(); }, 70); }, 450);
+  }
+  stopBackspace() {
+    if (this.bsDelay) { clearTimeout(this.bsDelay); this.bsDelay = null; }
+    if (this.bsRepeat) { clearInterval(this.bsRepeat); this.bsRepeat = null; }
+  }
+  componentWillUnmount() { this.stopBackspace(); var T = this.shopTimers; Object.keys(T).forEach(function (key) { clearTimeout(T[key]); }); }
+
+  setPhase(id, ph) { var next = Object.assign({}, this.state.phase); if (ph) next[id] = ph; else delete next[id]; this.setState({ phase: next }); }
+  patchItem(list, id, patch) {
+    var lists = Object.assign({}, this.state.lists);
+    lists[list] = (lists[list] || []).map(function (x) { return x.id === id ? Object.assign({}, x, patch) : x; });
+    this.setState({ lists: lists });
+  }
+  buzz(ms) { try { if (navigator.vibrate) navigator.vibrate(ms); } catch (e) {} }
+  shopTap(list, id) {
+    var self = this, T = this.shopTimers;
+    var it = (this.state.lists[list] || []).find(function (x) { return x.id === id; });
+    if (!it) return;
+    var ph = this.state.phase[id];
+    if (!it.done) {
+      if (ph === 'checked') { clearTimeout(T[id]); delete T[id]; this.setPhase(id, null); return; }
+      if (ph) return;
+      this.setPhase(id, 'checked'); this.buzz(12);
+      T[id] = setTimeout(function () {
+        self.setPhase(id, 'leaving');
+        T[id] = setTimeout(function () { delete T[id]; self.patchItem(list, id, { done: true, doneAt: Date.now() }); self.setPhase(id, null); }, 400);
+      }, 2500);
+    } else {
+      if (ph) return;
+      this.setPhase(id, 'unchecking'); this.buzz(8);
+      T[id] = setTimeout(function () {
+        self.setPhase(id, 'leavingUp');
+        T[id] = setTimeout(function () {
+          self.patchItem(list, id, { done: false, doneAt: null }); self.setPhase(id, 'arriving');
+          T[id] = setTimeout(function () { delete T[id]; self.setPhase(id, null); }, 440);
+        }, 280);
+      }, 420);
+    }
+  }
+
+  setLevel(id, v) {
+    v = Math.max(0, Math.min(100, Math.round(v / 10) * 10));
+    var lv = Object.assign({}, this.state.level); var on = Object.assign({}, this.state.on);
+    if (v === 0) { on[id] = false; } else { lv[id] = v; on[id] = true; }
+    this.setState({ level: lv, on: on });
+  }
+  step(id, dir) { var cur = this.state.on[id] ? this.state.level[id] : 0; this.setLevel(id, cur + dir * 10); }
+
+  parse(raw, curList, names) {
+    var s = ' ' + raw + ' ';
+    var out = { list: curList, listIsNew: false, prio: 0, due: null, qty: '', name: '' };
+    var m = s.match(/\s#([A-Za-z][\w-]*)(?=\s)/);
+    if (m) {
+      var hit = names.find(function (n) { return n.toLowerCase() === m[1].toLowerCase(); });
+      out.list = hit || (m[1].charAt(0).toUpperCase() + m[1].slice(1)); out.listIsNew = !hit; s = s.replace(m[0], ' ');
+    }
+    m = s.match(/\s(!{1,3})(?=\s)/);
+    if (m) { out.prio = m[1].length; s = s.replace(m[0], ' '); }
+    m = s.match(/\s(?:(?:on|by|for|this|next)\s+)?(today|tonight|tomorrow|tmrw|weekend|week|sunday|sun|monday|mon|tuesday|tues|tue|wednesday|wed|thursday|thurs|thu|friday|fri|saturday|sat)(?=\s)/i);
+    if (m && !(m[1].toLowerCase() === 'week' && !/next\s+week/i.test(m[0]))) {
+      var w = m[1].toLowerCase(); var d = new Date(2026, 10, 24);
+      var dayIdx = { sun: 0, mon: 1, tue: 2, wed: 3, thu: 4, fri: 5, sat: 6 };
+      if (w === 'tomorrow' || w === 'tmrw') d.setDate(d.getDate() + 1);
+      else if (w === 'weekend') d.setDate(d.getDate() + (((6 - d.getDay()) + 7) % 7 || 7));
+      else if (w === 'week') d.setDate(d.getDate() + (((1 - d.getDay()) + 7) % 7 || 7));
+      else if (w !== 'today' && w !== 'tonight') { var di = dayIdx[w.slice(0, 3)]; d.setDate(d.getDate() + (((di - d.getDay()) + 7) % 7 || 7)); }
+      out.due = d; s = s.replace(m[0], ' ');
+    }
+    m = s.match(/\s(?:x|×)\s?(\d+)(?=\s)/i);
+    if (m) { out.qty = '×' + m[1]; s = s.replace(m[0], ' '); }
+    else {
+      m = s.match(/\s(\d+(?:\.\d+)?)\s?(kg|g|ml|l|lt|litres?|liters?|pk|packs?|dozen|x|×)?(?=\s)/i);
+      if (m) {
+        var nn = m[1], u = (m[2] || '').toLowerCase();
+        if (u === 'l' || u === 'lt' || u.indexOf('lit') === 0) out.qty = nn + ' L';
+        else if (u === 'kg' || u === 'g' || u === 'ml') out.qty = nn + ' ' + u;
+        else if (u.indexOf('p') === 0) out.qty = nn + ' pk';
+        else if (u === 'dozen') out.qty = '×' + (parseFloat(nn) * 12);
+        else out.qty = '×' + nn;
+        s = s.replace(m[0], ' ');
+      } else { m = s.match(/\s(?:a\s+)?dozen(?=\s)/i); if (m) { out.qty = '×12'; s = s.replace(m[0], ' '); } }
+    }
+    var name = s.replace(/\s+/g, ' ').trim().replace(/^(of|some)\s+/i, '');
+    out.name = name ? name.charAt(0).toUpperCase() + name.slice(1) : '';
+    return out;
+  }
+
+  renderVals() {
+    var self = this, s = this.state;
+    var vesta = (this.props.look ?? 'dome') === 'vesta';
+    var VACC = [['#4E3C99', '#7461C9', '#3E2F7A', 'Violet'], ['#7A2440', '#A3475F', '#6B1E36', 'Burgundy'], ['#5E3A6E', '#86639A', '#4E2E5E', 'Plum'], ['#3E5470', '#6E86A3', '#2F4462', 'Slate'], ['#2F5F63', '#5E8C8F', '#244C50', 'Dusk teal'], ['#4A6555', '#7A9584', '#3A5446', 'Sage'], ['#7A6550', '#A68F77', '#5E4C3C', 'Sand'], ['#4A4A50', '#7C7C84', '#3A3A40', 'Graphite'], ['#A85C77', '#CC8DA3', '#8E4D66', 'Rach']];
+    if (vesta) VACC.splice(7, 1);
+    var ACCENTS = vesta ? VACC.map(function (a) { return [a[1], a[3]]; }) : [['#8B7CF6', 'Violet'], ['#6366F1', 'Indigo'], ['#3B82F6', 'Blue'], ['#14B8A6', 'Teal'], ['#22C55E', 'Green'], ['#EC4899', 'Rose'], ['#F97316', 'Ember'], ['#71717A', 'Graphite']];
+    var vIdx = s.accentIdx != null ? s.accentIdx : 0;
+    var vA = VACC[vIdx] || VACC[0];
+    var accent = vesta ? vA[1] : (s.accentIdx != null ? ACCENTS[s.accentIdx][0] : (this.props.accent ?? '#8B7CF6'));
+    var lite = s.lite, dp = 1, ed = 1.75, cr = vesta ? 16 : 26;
+    var hx6 = accent.replace('#', ''); if (hx6.length === 3) hx6 = hx6[0] + hx6[0] + hx6[1] + hx6[1] + hx6[2] + hx6[2];
+    var ar = parseInt(hx6.slice(0, 2), 16), ag = parseInt(hx6.slice(2, 4), 16), ab = parseInt(hx6.slice(4, 6), 16);
+    function acc(o) { return 'rgba(' + ar + ',' + ag + ',' + ab + ',' + Math.max(0, Math.min(1, o)).toFixed(3) + ')'; }
+    function mixHex(t, r2, g2, b2) { function c(a, b) { var v = Math.round(a + (b - a) * t); return (v < 16 ? '0' : '') + v.toString(16); } return '#' + c(ar, r2) + c(ag, g2) + c(ab, b2); }
+    function mixRgba(t, r2, g2, b2, o) { return 'rgba(' + Math.round(ar + (r2 - ar) * t) + ',' + Math.round(ag + (g2 - ag) * t) + ',' + Math.round(ab + (b2 - ab) * t) + ',' + o + ')'; }
+    var accSoft = mixHex(0.55, 255, 255, 255), accPale = mixHex(0.75, 255, 255, 255);
+    var bgBase = 'rgb(' + Math.round(14 + (ar - 14) * 0.05) + ',' + Math.round(19 + (ag - 19) * 0.05) + ',' + Math.round(29 + (ab - 29) * 0.05) + ')';
+    var lr = Math.round(ar + (255 - ar) * 0.4), lg = Math.round(ag + (255 - ag) * 0.4), lb = Math.round(ab + (255 - ab) * 0.4);
+    function lightAcc(o) { return 'rgba(' + lr + ',' + lg + ',' + lb + ',' + o.toFixed(3) + ')'; }
+    function k(x) { return Math.max(0, Math.min(1, x * dp)).toFixed(3); }
+    function px(v) { return v.toFixed(1) + 'px'; }
+    function bevel(topHi, botSh, scale) {
+      var e = ed * (scale || 1);
+      return 'inset 0 ' + px(1.5 * e) + ' 0 rgba(255,255,255,' + k(topHi) + '), ' + (lite ? '' : 'inset 0 ' + px(3 * e) + ' ' + px(4 * e) + ' rgba(255,255,255,' + k(topHi * 0.25) + '), ') + 'inset 0 ' + px(-3 * e) + ' ' + px(6 * e) + ' rgba(0,0,0,' + k(botSh) + ')';
+    }
+    function drop(lift, m) {
+      if (lite) return '0 ' + px(3 * lift) + ' ' + px(8 * lift) + ' rgba(0,0,0,' + k(0.35 * lift * m) + ')';
+      return '0 ' + px(2 * lift) + ' ' + px(3 * lift) + ' rgba(0,0,0,' + k(0.35 * lift * m) + '), 0 ' + px(14 * lift) + ' ' + px(32 * lift) + ' rgba(0,0,0,' + k(0.30 * lift * m) + ')';
+    }
+    var glassBg = 'background: ' + (lite ? '' : 'radial-gradient(130% 90% at 30% 0%, rgba(255,255,255,' + k(0.10) + ') 0%, rgba(255,255,255,0) 55%), ') + 'linear-gradient(180deg, rgba(255,255,255,0.11) 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0.025) 100%); ';
+    function glass(lift) { return glassBg + 'border: 0; box-shadow: ' + bevel(0.22, 0.32) + ', inset 0 0 0 1px rgba(255,255,255,0.09), ' + drop(lift, 1) + '; '; }
+    function glassOn(lift) {
+      return 'background: ' + (lite ? '' : 'radial-gradient(130% 90% at 30% 0%, rgba(255,255,255,' + k(0.12) + ') 0%, rgba(255,255,255,0) 55%), ') + 'linear-gradient(180deg, ' + acc(0.34) + ' 0%, ' + acc(0.22) + ' 55%, ' + acc(0.14) + ' 100%), rgba(22,26,40,0.55); border: 0; ' +
+        'box-shadow: ' + bevel(0.30, 0.34) + ', inset 0 0 0 1px ' + acc(0.45) + ', ' + drop(lift, 1.1) + (lite ? '' : ', 0 0 ' + px(28 * lift) + ' ' + acc(0.22)) + '; ';
+    }
+    function glassSmall(lift) { return glassBg + 'border: 0; box-shadow: ' + bevel(0.22, 0.30, 0.6) + ', inset 0 0 0 1px rgba(255,255,255,0.09), 0 ' + px(2 * lift) + ' ' + px(6 * lift) + ' rgba(0,0,0,' + k(0.30) + '); '; }
+    function accentDome(glow) {
+      return 'color: #FFFFFF; background: radial-gradient(90% 70% at 35% 15%, rgba(255,255,255,' + k(0.35) + ') 0%, rgba(255,255,255,0) 60%), ' + accent + '; border: 0; box-shadow: inset 0 ' + px(1.2 * ed) + ' 0 rgba(255,255,255,' + k(0.45) + '), inset 0 ' + px(-2 * ed) + ' ' + px(4 * ed) + ' rgba(0,0,0,' + k(0.28) + ')' + (lite ? '' : ', 0 3px 10px ' + acc(glow || 0.45)) + '; ';
+    }
+    var recessed = 'background: rgba(0,0,0,0.24); border: 0; box-shadow: inset 0 ' + px(1.5 * ed) + ' ' + px(3 * ed) + ' rgba(0,0,0,' + k(0.40) + '), inset 0 -1px 0 rgba(255,255,255,' + k(0.10) + '); ';
+    if (vesta) {
+      var vBase = vA[0], vHi = vA[1], vGlow = vA[2];
+      var fin = 'linear-gradient(180deg, rgba(255,255,255,0.033), rgba(255,255,255,0) 45%, rgba(0,0,0,0.03))';
+      var finSh = 'inset 0 1px 0 rgba(255,255,255,0.075), inset 0 0 0 0.6px rgba(225,228,235,0.06), inset 0 -0.6px 0 rgba(0,0,0,0.05)';
+      var dd = (s.edge || 0) / 100;
+      var domeSh = function (sc) { if (!dd) return ''; var e = 1.75 * (sc || 1) * dd; return ', inset 0 ' + px(1.5 * e) + ' 0 rgba(255,255,255,' + (0.20 * dd).toFixed(3) + '), inset 0 ' + px(-3 * e) + ' ' + px(6 * e) + ' rgba(0,0,0,' + (0.32 * dd).toFixed(3) + ')'; };
+      var domeSheen = function () { return dd ? 'radial-gradient(130% 90% at 30% 0%, rgba(255,255,255,' + (0.09 * dd).toFixed(3) + ') 0%, rgba(255,255,255,0) 55%), ' : ''; };
+      glass = function (lift) { return 'background: ' + domeSheen() + 'linear-gradient(180deg, color-mix(in srgb, ' + vHi + ' 9%, rgba(255,255,255,0.045)) 0%, rgba(255,255,255,0.015) 55%, rgba(0,0,0,0.05) 100%), #16171A; border: 0; box-shadow: ' + finSh + domeSh() + ', 0 ' + px(6 * lift) + ' ' + px(16 * lift) + ' rgba(0,0,0,0.45); '; };
+      glassOn = function (lift) { return 'background: ' + domeSheen() + 'linear-gradient(180deg, color-mix(in srgb, ' + vHi + ' 42%, transparent) 0%, color-mix(in srgb, ' + vBase + ' 24%, transparent) 100%), #16171A; border: 0; box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), inset 0 0 0 1px color-mix(in srgb, ' + vHi + ' 55%, transparent)' + domeSh() + ', 0 ' + px(6 * lift) + ' ' + px(16 * lift) + ' rgba(0,0,0,0.45); '; };
+      glassSmall = function (lift) { return 'background: linear-gradient(180deg, color-mix(in srgb, ' + vHi + ' 7%, #2A2B31) 0%, #202126 100%); border: 0; box-shadow: ' + finSh + domeSh(0.6) + ', 0 ' + px(4 * lift) + ' ' + px(10 * lift) + ' rgba(0,0,0,0.40); '; };
+      accentDome = function () { return 'color: #FFFFFF; background: radial-gradient(120% 90% at 30% 8%, rgba(255,255,255,0.16), rgba(255,255,255,0) 50%), linear-gradient(180deg, ' + vHi + ', ' + vBase + '); border: 0; box-shadow: ' + finSh + ', 0 6px 14px color-mix(in srgb, ' + vBase + ' 28%, rgba(0,0,0,0.8)); '; };
+      recessed = 'background: rgba(255,255,255,0.05); border: 0; box-shadow: inset 0 1px 3px rgba(0,0,0,0.55), inset 0 -0.6px 0 rgba(255,255,255,0.05); ';
+    }
+    function press(id) {
+      var isDown = s.pressedId === id;
+      return {
+        isDown: isDown,
+        down: function () { self.setState({ pressedId: id }); self.armRelease(); },
+        up: function () { if (self.state.pressedId) self.setState({ pressedId: null }); },
+        tint: 'position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none; will-change: opacity; background: linear-gradient(180deg, ' + lightAcc(0.30) + ', ' + lightAcc(0.16) + '); box-shadow: inset 0 0 0 1px ' + lightAcc(0.40) + '; ' + (isDown ? 'opacity: 1; transition: opacity 45ms ease-out;' : 'opacity: 0; transition: opacity 95ms ease-out;'),
+        fx: 'position: relative; isolation: isolate; transition: transform 90ms cubic-bezier(.2,.8,.2,1), box-shadow 90ms; ' + (isDown ? 'transform: translateY(1px) scale(0.985); ' : 'transform: none; ')
+      };
+    }
+    function pbtn(id, base) { var q = press(id); return { down: q.down, up: q.up, tint: q.tint, style: q.fx + base }; }
+    var segBase = 'height: 48px; min-width: 64px; padding: 0 16px; border: 0; border-radius: ' + (vesta ? '12px' : '999px') + '; font-size: 16px; font-weight: 600; cursor: pointer; ';
+    var segOn = segBase + accentDome(0.35);
+    var segOff = segBase + 'background: transparent; color: #B8C0CE;';
+    function makeSeg(id, opts, cur, setter) {
+      return opts.map(function (o) {
+        var q = press(id + ':' + o[0]); var on = cur === o[0];
+        return { label: o[1], pressed: on ? 'true' : 'false', pick: function () { setter(o[0]); }, down: q.down, up: q.up, tint: q.tint, style: q.fx + (on ? segOn : segOff) };
+      });
+    }
+
+    // ---------- pages ----------
+    var PAGES = [['home', 'Home', 'M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z'], ['energy', 'Energy', 'M13 2L4 14h7l-1 8 9-12h-7z'], ['servers', 'Servers', 'M4 4h16v6H4zM4 14h16v6H4zM8 7h.01M8 17h.01'], ['shopping', 'Shopping', 'M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6.2M10 20.5h.01M17 20.5h.01'], ['cameras', 'Cameras', 'M3 7h3l2-2.5h8L18 7h3v12H3zM12 16.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z'], ['network', 'Network', 'M2 8.5a15 15 0 0 1 20 0M5 12a10.5 10.5 0 0 1 14 0M8.5 15.5a5.5 5.5 0 0 1 7 0M12 19h.01']];
+    var tabs = PAGES.map(function (p) {
+      var cur = s.page === p[0]; var q = press('tab:' + p[0]);
+      return { label: p[1], icon: p[2], current: cur ? 'page' : 'false', down: q.down, up: q.up, tint: q.tint,
+        go: function () { self.setState({ page: p[0], kbOpen: false, cam: null }); },
+        style: q.fx + 'height: 76px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; border-radius: ' + (vesta ? 14 : 22) + 'px; cursor: pointer; padding: 0; ' + (cur ? glassOn(0.5) + 'color: #FFFFFF;' : 'background: transparent; border: 0; color: #A9B2C3;') };
+    });
+
+    // ---------- cameras ----------
+    var CAMS = [
+      { id: 'front', name: 'Front door', meta: 'Sub-stream · 640×360', sky: ['#2A3C55', '#5B7A9A'], ground: ['#2D3326', '#1C2019'] },
+      { id: 'drive', name: 'Driveway', meta: 'Sub-stream · 640×360', sky: ['#3B4A66', '#8A9AB4'], ground: ['#3A3A3E', '#232327'] }
+    ];
+    var cams = CAMS.map(function (c) {
+      var q = press('cam:' + c.id);
+      return { name: c.name, meta: c.meta, aria: 'Open ' + c.name + ' camera full screen', down: q.down, up: q.up,
+        open: function () { self.setState({ cam: c.id }); },
+        style: q.fx + 'position: relative; overflow: hidden; height: 212px; border-radius: ' + cr + 'px; border: 0; padding: 0; cursor: pointer; color: #FFFFFF; background: #111; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.10), ' + drop(1, 1) + ';',
+        scene: 'position: absolute; inset: 0; background: linear-gradient(180deg, ' + c.sky[0] + ', ' + c.sky[1] + ' 58%);',
+        ground: 'position: absolute; left: -10%; right: -10%; bottom: -30%; height: 75%; border-radius: 50% 50% 0 0; background: linear-gradient(180deg, ' + c.ground[0] + ', ' + c.ground[1] + ');' };
+    });
+    var camsBig = CAMS.map(function (c, i) {
+      var q = press('camBig:' + c.id);
+      return { name: c.name, events: ['Motion 08:52 · Person 07:40', 'Motion 09:12 · Vehicle 06:58'][i], aria: 'Open ' + c.name + ' camera full screen', down: q.down, up: q.up,
+        open: function () { self.setState({ cam: c.id }); },
+        style: q.fx + 'position: relative; overflow: hidden; height: 404px; border-radius: ' + cr + 'px; border: 0; padding: 0; cursor: pointer; color: #FFFFFF; background: #111; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.10), ' + drop(1, 1) + ';',
+        scene: 'position: absolute; inset: 0; background: linear-gradient(180deg, ' + c.sky[0] + ', ' + c.sky[1] + ' 58%);',
+        ground: 'position: absolute; left: -10%; right: -10%; bottom: -30%; height: 75%; border-radius: 50% 50% 0 0; background: linear-gradient(180deg, ' + c.ground[0] + ', ' + c.ground[1] + ');' };
+    });
+    var camSel = CAMS.find(function (c) { return c.id === s.cam; }) || CAMS[0];
+
+    // ---------- lights ----------
+    var LIGHTS = [['living', 'Living'], ['kitchen', 'Kitchen'], ['bedroom', 'Bedroom'], ['porch', 'Porch']];
+    var lights = LIGHTS.map(function (L) {
+      var id = L[0], on = !!s.on[id], lvl = s.level[id] || 0, shown = on ? lvl : 0;
+      var isDown = s.pressedId === id, lift = isDown ? 0.45 : 1;
+      var tp = press(id);
+      var ticks = [];
+      for (var i = 1; i <= 9; i++) ticks.push({ style: 'position: absolute; left: 22px; right: 22px; height: 2px; border-radius: 1px; bottom: calc(' + (i * 10) + '% - 1px); background: ' + (i * 10 <= shown ? 'rgba(255,255,255,0.40)' : 'rgba(255,255,255,0.13)') + '; pointer-events: none;' });
+      return {
+        name: L[1], sub: on ? 'On · ' + lvl + '%' : 'Off', pressed: on ? 'true' : 'false', tint: tp.tint, down: tp.down, up: tp.up,
+        toggle: function () { var nx = Object.assign({}, self.state.on); nx[id] = !nx[id]; var lv = self.state.level; if (nx[id] && !lv[id]) { lv = Object.assign({}, lv); lv[id] = 50; } self.setState({ on: nx, level: lv }); },
+        boxStyle: 'position: relative; isolation: isolate; height: 330px; border-radius: ' + cr + 'px; color: #E9EDF5; transition: transform 90ms cubic-bezier(.2,.8,.2,1), box-shadow 90ms; ' + (isDown ? 'transform: translateY(1px) scale(0.985); ' : '') + (on ? glassOn(lift) : glass(lift)),
+        iconWrap: 'flex: 0 0 auto; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; ' + (on ? accentDome() : 'color: #C7CEDB; background: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.04)); box-shadow: inset 0 2px 0 rgba(255,255,255,0.18), inset 0 -3px 5px rgba(0,0,0,0.25);'),
+        subStyle: 'font-size: 15px; color: ' + (on ? accPale : '#A9B2C3') + ';',
+        trackStyle: 'position: absolute; left: 16px; right: 16px; top: 100px; bottom: 16px; border-radius: 22px; overflow: hidden; touch-action: none; cursor: ns-resize; ' + recessed,
+        fillStyle: 'position: absolute; left: 0; right: 0; bottom: 0; height: ' + shown + '%; border-radius: ' + (shown >= 100 ? '22px' : '0 0 22px 22px') + '; transition: height 75ms cubic-bezier(.2,.8,.2,1); pointer-events: none; background: ' + (lite ? '' : 'radial-gradient(120% 30% at 40% 0%, rgba(255,255,255,0.30) 0%, rgba(255,255,255,0) 70%), ') + accent + '; box-shadow: inset 0 ' + px(1.2 * ed) + ' 0 rgba(255,255,255,0.40);',
+        ticks: ticks,
+        pctLabel: on ? lvl + '%' : '',
+        pctStyle: 'position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); text-align: center; font-size: 22px; font-weight: 600; color: rgba(255,255,255,0.92); text-shadow: 0 1px 4px rgba(0,0,0,0.4); pointer-events: none;',
+        upLabel: 'Brighten ' + L[1] + ' by 10%', downLabel: 'Dim ' + L[1] + ' by 10%',
+        stepUp: function () { if (self.suppressClick) { self.suppressClick = false; return; } self.step(id, 1); },
+        stepDown: function () { if (self.suppressClick) { self.suppressClick = false; return; } self.step(id, -1); },
+        sDown: function (e) { self.drag = { id: id, y0: e.clientY, moved: false, el: e.currentTarget, pid: e.pointerId }; self.suppressClick = false; },
+        sMove: function (e) {
+          var dr = self.drag; if (!dr || dr.id !== id) return;
+          if (!dr.moved && Math.abs(e.clientY - dr.y0) < 6) return;
+          if (!dr.moved) { dr.moved = true; try { dr.el.setPointerCapture(dr.pid); } catch (err) {} }
+          var r = dr.el.getBoundingClientRect();
+          self.setLevel(id, (1 - (e.clientY - r.top) / r.height) * 100);
+        },
+        sUp: function () { if (self.drag && self.drag.moved) self.suppressClick = true; self.drag = null; }
+      };
+    });
+
+    // ---------- AC ----------
+    var ac = s.ac, MIN = 16, MAX = 30;
+    function pol(a, r) { var rad = a * Math.PI / 180; return [118 + r * Math.cos(rad), 118 + r * Math.sin(rad)]; }
+    function arc(a0, a1, r) { var p0 = pol(a0, r), p1 = pol(a1, r); var large = (a1 - a0) > 180 ? 1 : 0; return 'M' + p0[0].toFixed(1) + ',' + p0[1].toFixed(1) + ' A' + r + ',' + r + ' 0 ' + large + ' 1 ' + p1[0].toFixed(1) + ',' + p1[1].toFixed(1); }
+    function angOf(t) { return 135 + 270 * Math.max(0, Math.min(1, (t - MIN) / (MAX - MIN))); }
+    var acColor = ac.mode === 'heat' ? '#F28A4B' : (ac.mode === 'off' ? '#6B7385' : (ac.mode === 'fan' ? '#9AA4B5' : '#5AA7F0'));
+    var tgtP = pol(angOf(ac.target), 100), curP = pol(angOf(ac.current), 100);
+    function setAc(patch) { self.setState({ ac: Object.assign({}, self.state.ac, patch) }); }
+    var MODES = [['off', 'Off', 'M12 3v8M6.3 6.3a8 8 0 1 0 11.4 0'], ['cool', 'Cool', 'M12 2v20M4.9 7l14.2 10M4.9 17L19.1 7M9 4l3 3 3-3M9 20l3-3 3 3'], ['heat', 'Heat', 'M12 3c3 4 5 6.5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5.3 1.6 1.2 2.5 2.5 2.5-1-3 0-5.5.5-8z'], ['auto', 'Auto', 'M4 19l5.5-14h5L20 19M7 13h10'], ['fan', 'Fan', 'M12 12c0-4 1.5-8 4.5-8S20 7 16 9.5M12 12c4 0 8 1.5 8 4.5S17 20 14.5 16M12 12c0 4-1.5 8-4.5 8S4 17 8 14.5M12 12c-4 0-8-1.5-8-4.5S7 4 9.5 8']];
+    var acModes = MODES.map(function (m) {
+      var q = press('mode:' + m[0]); var on = ac.mode === m[0];
+      return { label: m[1], icon: m[2], pressed: on ? 'true' : 'false', down: q.down, up: q.up, tint: q.tint, pick: function () { setAc({ mode: m[0] }); },
+        style: q.fx + 'height: 60px; border-radius: ' + (vesta ? 12 : 16) + 'px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; padding: 0; ' + (on ? accentDome(0.3) : 'color: #B8C0CE; ' + glassSmall(0.6)) };
+    });
+    var fanOpts = makeSeg('fan', [['auto', 'Auto'], ['low', 'Low'], ['med', 'Med'], ['high', 'High']], ac.fan, function (v) { setAc({ fan: v }); });
+    var acStatus = ac.mode === 'off' ? 'Off' : (ac.mode === 'cool' ? (ac.current > ac.target ? 'Cooling' : 'Idle') : ac.mode === 'heat' ? (ac.current < ac.target ? 'Heating' : 'Idle') : ac.mode === 'auto' ? 'Auto' : 'Fan only');
+    var roundBtn = 'position: absolute; bottom: 4px; width: 72px; height: 72px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; color: #E9EDF5; ' + glassSmall(1);
+
+    // ---------- weather ----------
+    var I = {
+      sun: 'M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zM12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4',
+      partly: 'M8 3v1.5M3.5 8H2M4.6 4.6l1 1M12.4 4.6l-1 1M10.5 9.2A3.5 3.5 0 0 0 5 8.3M9 20h8a3.5 3.5 0 0 0 .5-7A5 5 0 0 0 8 13a3.5 3.5 0 0 0 1 7z',
+      cloud: 'M7 18h10a4 4 0 0 0 .6-8A6 6 0 0 0 6.2 9.5 4.3 4.3 0 0 0 7 18z',
+      rain: 'M7 15h10a4 4 0 0 0 .6-8A6 6 0 0 0 6.2 6.5 4.3 4.3 0 0 0 7 15zM9 18l-1 3M13 18l-1 3M17 18l-1 3'
+    };
+    var C = { sun: '#F2B35B', partly: '#E3C48A', cloud: '#C7CEDB', rain: '#8FB8F5' };
+    var hours = [['10 am', 'sun', 25, 0], ['11 am', 'sun', 26, 0], ['12 pm', 'partly', 27, 5], ['1 pm', 'partly', 28, 10], ['2 pm', 'cloud', 27, 30], ['3 pm', 'rain', 24, 70]].map(function (h) {
+      return { t: h[0], icon: I[h[1]], c: C[h[1]], temp: h[2], rain: h[3] ? h[3] + '%' : '–', rainStyle: 'font-size: 16px; text-align: right; ' + (h[3] >= 30 ? 'color: #8FB8F5; font-weight: 600;' : 'color: #7C8698;') };
+    });
+
+    // ---------- energy ----------
+    var N = 96, sol = [], use = [];
+    for (var i = 0; i < N; i++) {
+      var hr = (9.5 + i * 0.25) % 24;
+      var sv = Math.max(0, Math.sin((hr - 6) / 13 * Math.PI)) * 4.2;
+      if (i > 20 && i < 28) sv *= 0.55;
+      var uv = 0.35 + 0.15 * Math.sin(i / 7) + (hr > 17 && hr < 21.5 ? 1.4 * Math.sin((hr - 17) / 4.5 * Math.PI) : 0) + (hr > 6.5 && hr < 8.5 ? 0.9 : 0) + ((i % 23) === 5 ? 1.6 : 0);
+      sol.push(sv); use.push(uv);
+    }
+    var ex0 = 40, ex1 = 704, ey0 = 10, ey1 = 270, eMax = 5;
+    function EX(i) { return ex0 + i / (N - 1) * (ex1 - ex0); }
+    function EY(v) { return ey1 - v / eMax * (ey1 - ey0); }
+    function eLine(a) { var d = ''; for (var j = 0; j < a.length; j++) d += (j ? 'L' : 'M') + EX(j).toFixed(1) + ',' + EY(a[j]).toFixed(1); return d; }
+    function eArea(a) { return eLine(a) + 'L' + ex1 + ',' + ey1 + 'L' + ex0 + ',' + ey1 + 'Z'; }
+    function hhmmE(i) { var m = Math.round((9.5 * 60 + i * 15)) % 1440; var h = Math.floor(m / 60), mm = m % 60; return (h < 10 ? '0' : '') + h + ':' + (mm < 10 ? '0' : '') + mm; }
+    var eTicks = [[0, 'start', '09:30'], [26, 'middle', '16:00'], [50, 'middle', '22:00'], [74, 'middle', '04:00'], [95, 'end', 'Now']].map(function (t) { return { x: EX(t[0]), anchor: t[1], label: t[2] }; });
+    var eh = s.eHover, eHas = eh !== null && eh >= 0 && eh < N;
+    var eHx = eHas ? EX(eh) : 0;
+    var nowCards = [
+      { label: 'Solar', value: '3.2', sub: '9.1 kWh so far today', dot: 'width: 10px; height: 10px; border-radius: 50%; background: #B97D14;' },
+      { label: 'Home use', value: '1.1', sub: '4.6 kWh so far today', dot: 'width: 10px; height: 10px; border-radius: 50%; background: #4F8EE8;' },
+      { label: 'Exporting', value: '2.1', sub: 'Imported 0.4 kWh today', dot: 'width: 10px; height: 10px; border-radius: 50%; background: #4CC38A;' }
+    ].map(function (n) { n.style = 'display: flex; flex-direction: column; gap: 10px; padding: 20px 22px; border-radius: ' + cr + 'px; ' + glass(1); return n; });
+    var D7 = [['Wed', 21.4, 13.1], ['Thu', 17.9, 12.4], ['Fri', 9.6, 14.8], ['Sat', 22.8, 15.6], ['Sun', 23.5, 16.9], ['Mon', 19.2, 12.0], ['Tue', 9.1, 4.6]];
+    var dMax = 25;
+    var days7 = D7.map(function (d, i) {
+      var sel = s.daySel === i;
+      return { name: d[0] + (i === 6 ? ' (so far)' : ''), pressed: sel ? 'true' : 'false', aria: d[0] + ': generated ' + d[1] + ' kWh, used ' + d[2] + ' kWh',
+        pick: function () { self.setState({ daySel: i }); },
+        style: 'display: flex; flex-direction: column; align-items: center; gap: 8px; height: 100%; justify-content: flex-end; padding: 8px 0 6px; border: 0; border-radius: 16px; cursor: pointer; color: inherit; background: ' + (sel ? 'rgba(255,255,255,0.06)' : 'transparent') + ';',
+        solBar: 'width: 22px; height: ' + (d[1] / dMax * 100).toFixed(1) + '%; border-radius: 4px 4px 0 0; background: #B97D14;' + (sel ? '' : ' opacity: 0.75;'),
+        useBar: 'width: 22px; height: ' + (d[2] / dMax * 100).toFixed(1) + '%; border-radius: 4px 4px 0 0; background: #4F8EE8;' + (sel ? '' : ' opacity: 0.75;'),
+        labelStyle: 'font-size: 15px; white-space: nowrap; color: ' + (sel ? '#E9EDF5' : '#8E98AA') + '; font-weight: ' + (sel ? 600 : 400) + ';' };
+    });
+    var dsel = D7[s.daySel];
+    var daySummary = dsel[0] + (s.daySel === 6 ? ' so far' : '') + ': solar ' + dsel[1] + ' kWh · used ' + dsel[2] + ' kWh';
+
+    // ---------- network ----------
+    var rdl = this.raw.dl, rul = this.raw.ul, wd, wu, wstep, wraw;
+    if (s.win === '2h') { wd = rdl.slice(1200); wu = rul.slice(1200); wstep = 0.5; wraw = wd; }
+    else { wd = []; wu = []; for (var wi = 0; wi < 1440; wi += 4) { wd.push(Math.max(rdl[wi], rdl[wi + 1], rdl[wi + 2], rdl[wi + 3])); wu.push(Math.max(rul[wi], rul[wi + 1], rul[wi + 2], rul[wi + 3])); } wstep = 2; wraw = rdl; }
+    var wn = wd.length, wpeak = Math.max.apply(null, wraw), wavg = wraw.reduce(function (a, b) { return a + b; }, 0) / wraw.length;
+    var wymax = 400, wx0 = 44, wx1 = 704, wyT = 10, wyB = 252;
+    function WX(i) { return wx0 + i / (wn - 1) * (wx1 - wx0); }
+    function WY(v) { return wyB - v / wymax * (wyB - wyT); }
+    function wLine(a) { var d = ''; for (var j = 0; j < a.length; j++) d += (j ? 'L' : 'M') + WX(j).toFixed(1) + ',' + WY(a[j]).toFixed(1); return d; }
+    function wArea(a) { return wLine(a) + 'L' + wx1 + ',' + wyB + 'L' + wx0 + ',' + wyB + 'Z'; }
+    function wfmt(mins) { var t = ((9 * 60 + 31 + Math.round(mins)) % 1440 + 1440) % 1440; var hh = Math.floor(t / 60), mm = t % 60; return (hh < 10 ? '0' : '') + hh + ':' + (mm < 10 ? '0' : '') + mm; }
+    var wspan = (wn - 1) * wstep, wh = s.wHover, wHas = wh !== null && wh >= 0 && wh < wn, wHx = wHas ? WX(wh) : 0;
+    var keyDl = 'width: 12px; height: 3px; border-radius: 2px; background: #4F8EE8;', keyUl = 'width: 12px; height: 3px; border-radius: 2px; background: #C9733C;';
+    var netStats = [
+      { label: 'Down now', value: Math.round(rdl[1439]), sub: Math.round(rdl[1439] / 3) + '% of 300 plan', key: keyDl },
+      { label: 'Up now', value: Math.round(rul[1439]), sub: Math.round(rul[1439] / 0.3) + '% of 30 plan', key: keyUl },
+      { label: 'Peak ↓ ' + (s.win === '2h' ? '2 h' : '12 h'), value: Math.round(wpeak), sub: Math.round(wpeak / 3) + '% of plan', key: 'display: none;' },
+      { label: 'Avg ↓ ' + (s.win === '2h' ? '2 h' : '12 h'), value: Math.round(wavg), sub: Math.round(wavg / 3) + '% of plan', key: 'display: none;' }
+    ];
+    var smallStat = 'display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; border-radius: ' + (vesta ? 12 : 18) + 'px; ' + glassSmall(0.6);
+    var starStats = [['Uptime 24 h', '99.6%', 'drop rate 0.4%'], ['Uptime 7 d', '99.4%', '2 short outages'], ['Latency', '31 ms', 'to Starlink PoP'], ['Obstruction', '0.0%', 'clear sky view']].map(function (x) { return { label: x[0], value: x[1], sub: x[2], style: smallStat }; });
+    var lanStats = [['Clients', '26', '19 Wi-Fi · 7 wired'], ['Access points', '3/3', 'all online'], ['Switches', '4/4', 'all online'], ['PoE draw', '42 W', 'of 120 W budget']].map(function (x) { return { label: x[0], value: x[1], sub: x[2], style: smallStat }; });
+
+    // ---------- servers ----------
+    var MON = [
+      ['Home Assistant', 'HTTP · ha.lan:8123', 99.98, 42, null],
+      ['Jellyfin', 'HTTP · media.lan:8096', 99.91, 88, [17]],
+      ['Omada Controller', 'HTTPS · omada.lan:8043', 100, 61, null],
+      ['Sonarr', "'Arr stack · :8989", 99.95, 34, null],
+      ['Radarr', "'Arr stack · :7878", 99.95, 37, null],
+      ['Prowlarr', "'Arr stack · :9696", 99.87, 29, [9]],
+      ['qBittorrent', "'Arr stack · :8080", 99.62, 112, [20, 21]],
+      ['Immich', 'HTTP · photos.lan:2283', 99.93, 95, null],
+      ['Nginx Proxy Manager', 'HTTP · proxy.lan:81', 100, 18, null],
+      ['AdGuard Home', 'DNS · 10.0.0.2', 100, 4, null],
+      ['Syncthing (vault)', 'HTTP · sync.lan:8384', 99.89, 52, null],
+      ['NAS backup', 'Push · nightly job', 97.2, null, 'down']
+    ];
+    var monitors = MON.map(function (m) {
+      var down = m[4] === 'down'; var beats = [];
+      for (var i = 0; i < 24; i++) {
+        var bad = down ? i >= 16 : (Array.isArray(m[4]) && m[4].indexOf(i) >= 0);
+        beats.push({ style: 'flex: 1 1 0; height: ' + (bad ? 26 : 20) + 'px; border-radius: 3px; background: ' + (bad ? '#E8434A' : '#4CC38A') + '; opacity: ' + (bad ? 1 : 0.85) + ';' });
+      }
+      return { name: m[0], meta: m[1], beats: beats, uptime: m[2].toFixed(m[2] === 100 ? 0 : 2) + '%', resp: down ? 'down 14 min' : m[3] + ' ms',
+        dot: 'flex: 0 0 auto; width: 14px; height: 14px; border-radius: 50%; background: ' + (down ? '#E8434A' : '#4CC38A') + '; box-shadow: 0 0 10px ' + (down ? 'rgba(232,67,74,0.7)' : 'rgba(76,195,138,0.45)') + ';',
+        upStyle: 'font-size: 19px; font-weight: 600; color: ' + (down ? '#FF8A8E' : (m[2] < 99.7 ? '#F5C46B' : '#E9EDF5')) + ';',
+        rowStyle: 'flex: 0 0 auto; display: grid; grid-template-columns: 14px 230px 1fr 110px; gap: 16px; align-items: center; height: 72px; padding: 0 16px; border-radius: 16px; ' + (down ? 'background: linear-gradient(180deg, rgba(232,62,68,0.20), rgba(232,62,68,0.10)); box-shadow: inset 0 0 0 1px rgba(236,72,78,0.45);' : 'background: rgba(255,255,255,0.035); box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);') };
+    });
+    var statBox = 'display: flex; flex-direction: column; gap: 6px; padding: 16px 18px; border-radius: 18px; ' + glassSmall(0.6);
+    var srvStats = [
+      { label: 'Up', value: '11/12', style: statBox },
+      { label: 'Down', value: '1', style: statBox + 'color: #FFDADA; background: linear-gradient(180deg, rgba(232,62,68,0.30), rgba(232,62,68,0.14)); box-shadow: inset 0 0 0 1px rgba(236,72,78,0.55);' },
+      { label: 'Uptime 30 d', value: '99.7%', style: statBox },
+      { label: 'Avg resp.', value: '52 ms', style: statBox }
+    ];
+
+    // ---------- shopping ----------
+    var listNames = Object.keys(s.lists);
+    var curItems = s.lists[s.listName] || [];
+    var nowMs = Date.now(), DAYMS = 86400000;
+    function agoLabel(t) { if (!t) return ''; var d = Math.floor((nowMs - t) / DAYMS); if (d <= 0) return 'Today'; if (d === 1) return 'Yesterday'; return d + ' days ago'; }
+    function makeRow(it) {
+      var ph = s.phase[it.id]; var ip = press('shop:' + it.id);
+      var checkedLook = it.done ? (ph !== 'unchecking' && ph !== 'leavingUp') : (ph === 'checked' || ph === 'leaving');
+      var row = 'flex: 0 0 auto; display: flex; align-items: center; gap: 16px; height: 68px; box-sizing: border-box; overflow: hidden; padding: 0 12px; margin: 0 -6px; border: 0; border-radius: 16px; background: transparent; color: inherit; text-align: left; cursor: pointer; ' + ip.fx + 'transition: transform .38s ease, opacity .35s, height .38s ease; ';
+      if (ph === 'leaving') row += 'height: 0; opacity: 0; transform: translateY(24px) scale(0.98); pointer-events: none; ';
+      else if (ph === 'leavingUp') row += 'height: 0; opacity: 0; transform: translateY(-28px) scale(0.98); transition-duration: .26s; pointer-events: none; ';
+      else if (it.done && !ph) row += 'opacity: 0.6; ';
+      if (ph === 'arriving') row += 'animation: shopArrive .42s cubic-bezier(.2,.8,.2,1); ';
+      return { name: it.name, qty: it.qty, ago: agoLabel(it.doneAt), pressed: checkedLook ? 'true' : 'false', down: ip.down, up: ip.up, tint: ip.tint, rowStyle: row,
+        boxStyle: 'flex: 0 0 auto; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; transition: background .2s, box-shadow .2s, border-color .2s, transform .15s; ' + (ip.isDown ? 'transform: scale(0.85); ' : '') + (checkedLook ? 'border: 2px solid ' + accent + '; background: ' + accent + '; box-shadow: 0 0 10px ' + acc(0.45) + ';' : 'border: 2px solid rgba(255,255,255,0.32); background: transparent; box-shadow: inset 0 1px 2px rgba(0,0,0,0.35);'),
+        checkPath: 'stroke-dasharray: 22; stroke-dashoffset: ' + (checkedLook ? 0 : 22) + '; transition: stroke-dashoffset .3s .1s;',
+        textWrap: 'flex: 1 1 auto; min-width: 0; font-size: 22px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;',
+        titleStyle: 'background-image: linear-gradient(currentColor, currentColor); background-position: 0 58%; background-repeat: no-repeat; background-size: ' + (checkedLook ? '100%' : '0%') + ' 2px; transition: background-size .35s ease, color .35s; color: ' + (checkedLook ? '#7C8698' : '#E9EDF5') + ';',
+        toggle: function () { self.shopTap(self.state.listName, it.id); } };
+    }
+    var openRows = curItems.filter(function (x) { return !x.done; }).map(makeRow);
+    var cutoff = nowMs - 14 * DAYMS;
+    var doneVisible = curItems.filter(function (x) { return x.done && (x.doneAt || 0) >= cutoff; }).sort(function (a, b) { return (b.doneAt || 0) - (a.doneAt || 0); });
+    var doneRows = doneVisible.map(makeRow);
+    var pDoneQ = press('donehead');
+
+    var P = this.parse(s.kbText, s.kbList, listNames);
+    var chips = [];
+    var chipBase = 'display: inline-flex; align-items: center; height: 36px; padding: 0 14px; border-radius: 999px; font-size: 16px; ';
+    if (P.name) chips.push({ label: P.name, style: chipBase + 'font-weight: 600; ' + accentDome(0.25) });
+    if (P.qty) chips.push({ label: 'Qty ' + P.qty, style: chipBase + 'color: #D5DBE6; ' + glassSmall(0.6) });
+    if (P.due) { var DN = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']; chips.push({ label: 'Due ' + DN[P.due.getDay()] + ' ' + P.due.getDate() + ' Nov', style: chipBase + 'color: #D5DBE6; ' + glassSmall(0.6) }); }
+    if (s.kbText.trim()) chips.push({ label: (P.listIsNew ? 'New list ' : 'List ') + P.list, style: chipBase + 'color: #D5DBE6; ' + glassSmall(0.6) });
+    if (P.prio) chips.push({ label: ['', 'Priority medium', 'Priority high', 'Priority highest'][P.prio], style: chipBase + 'color: #FFE1C7; background: rgba(201,115,60,0.22); box-shadow: inset 0 0 0 1px rgba(201,115,60,0.5);' });
+    function addFromParse() {
+      var p = self.parse(self.state.kbText, self.state.kbList, Object.keys(self.state.lists));
+      if (!p.name) return;
+      var lists = Object.assign({}, self.state.lists);
+      var nid = 'n' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+      lists[p.list] = [{ id: nid, name: p.name, qty: p.qty, done: false, doneAt: null }].concat(lists[p.list] || []);
+      var phs = Object.assign({}, self.state.phase); phs[nid] = 'arriving';
+      setTimeout(function () { self.setPhase(nid, null); }, 440);
+      self.setState({ lists: lists, phase: phs, listName: p.list, kbList: p.list, kbText: '', shift: false });
+    }
+    function typeChar(ch) { var c = self.state.shift ? ch.toUpperCase() : ch; self.setState({ kbText: self.state.kbText + c, shift: false }); }
+    var keyBase = 'position: relative; overflow: hidden; height: 64px; border-radius: 16px; font-size: 26px; font-weight: 500; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; transition: transform 45ms ease-out, box-shadow 45ms ease-out; touch-action: manipulation; ';
+    var keyStyle = keyBase + 'color: #E9EDF5; ' + glassSmall(0.7);
+    var keyMod = keyBase + 'color: #B8C0CE; font-size: 19px; background: rgba(255,255,255,0.03); border: 0; box-shadow: ' + bevel(0.14, 0.30, 0.6) + ', inset 0 0 0 1px rgba(255,255,255,0.07);';
+    var keyAccent = keyBase + 'font-size: 20px; font-weight: 600; ' + accentDome(0.35);
+    var keyPressed = ' transform: translateY(1px) scale(0.975); box-shadow: inset 0 1px 3px rgba(0,0,0,0.30), 0 1px 2px rgba(0,0,0,0.28);';
+    var tintBase = 'position: absolute; inset: 0; border-radius: inherit; pointer-events: none; will-change: opacity; background: linear-gradient(180deg, ' + acc(0.24) + ', ' + acc(0.14) + '); box-shadow: inset 0 0 0 1px ' + acc(0.35) + '; ';
+    function letter(ch, startCol) { var label = (s.shift && /[a-z]/.test(ch)) ? ch.toUpperCase() : ch; return { id: 'c:' + ch, label: label, aria: label, hasIcon: false, noIcon: true, icon: '', press: function () { typeChar(ch); }, style: keyStyle + 'grid-column: ' + (startCol ? startCol + ' / ' : '') + 'span 2;' }; }
+    function special(o) { return Object.assign({ id: 's:' + (o.aria || o.label), hasIcon: !!o.icon, noIcon: !o.icon, icon: o.icon || '', label: o.label || '' }, o); }
+    var rowsChars = s.numMode ? [['-', '/', ':', ';', '(', ')', '$', '&', '@', '"'], ['.', ',', '?', '!', '\'', '+', '%', '*', '='], ['_', '<', '>', '[', ']', '{', '}']] : [['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'], ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'], ['z', 'x', 'c', 'v', 'b', 'n', 'm']];
+    var r0 = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'].map(function (c) { return letter(c); });
+    var r1 = rowsChars[0].map(function (c) { return letter(c); });
+    var r2 = rowsChars[1].map(function (c, i) { return letter(c, i === 0 ? 2 : null); });
+    var shiftKey = s.numMode ? special({ label: 'ABC', aria: 'Letters', press: function () { self.setState({ numMode: false }); }, style: keyMod + 'grid-column: span 3;' })
+      : special({ icon: 'M12 4l8 8h-4.5v8h-7v-8H4z', aria: 'Shift', press: function () { self.setState({ shift: !self.state.shift }); }, style: (s.shift ? keyAccent : keyMod) + 'grid-column: span 3;' });
+    var r3 = [shiftKey].concat(rowsChars[2].map(function (c) { return letter(c); })).concat([special({ icon: 'M21 5H9l-6 7 6 7h12zM17 9l-5 6M12 9l5 6', aria: 'Backspace', hold: true, press: function () { if (self.bsFromPointer) { self.bsFromPointer = false; return; } self.backspaceOnce(); }, style: keyMod + 'grid-column: span 3;' })]);
+    var r4 = [
+      special({ label: s.numMode ? 'ABC' : '#+=', aria: s.numMode ? 'Letters' : 'Symbols', press: function () { self.setState({ numMode: !self.state.numMode }); }, style: keyMod + 'grid-column: span 3;' }),
+      special({ label: 'space', aria: 'Space', press: function () { self.setState({ kbText: self.state.kbText + ' ', numMode: false }); }, style: keyStyle + 'font-size: 19px; color: #A9B2C3; grid-column: span 9;' }),
+      special({ label: '#', aria: 'Hash, list tag', press: function () { typeChar('#'); }, style: keyStyle + 'grid-column: span 2;' }),
+      special({ label: 'Add', aria: 'Add to list', press: addFromParse, style: keyAccent + 'grid-column: span 3;' }),
+      special({ icon: 'M3 5h18v10H3zM7 9h.01M11 9h.01M15 9h.01M8 12h8M9 18l3 3 3-3', aria: 'Lower keyboard', press: function () { self.stopBackspace(); self.setState({ kbOpen: false, shift: false, numMode: false, pressedKey: null }); }, style: keyMod + 'grid-column: span 3;' })
+    ];
+    [r0, r1, r2, r3, r4].forEach(function (row) {
+      row.forEach(function (key) {
+        var kid = key.id, hold = !!key.hold, isDown = s.pressedKey === kid;
+        if (isDown) key.style = key.style + keyPressed;
+        key.tintStyle = tintBase + (isDown ? 'opacity: 1; transition: opacity 45ms ease-out;' : 'opacity: 0; transition: opacity 95ms ease-out;');
+        key.down = function () { self.setState({ pressedKey: kid }); self.armRelease(); if (hold) self.startBackspace(); };
+        key.up = function () { if (hold) self.stopBackspace(); if (self.state.pressedKey) self.setState({ pressedKey: null }); };
+      });
+    });
+
+    // ---------- settings ----------
+    var swatches = ACCENTS.map(function (a, i) {
+      var sel = accent.toLowerCase() === a[0].toLowerCase();
+      return { name: a[1], pressed: sel ? 'true' : 'false', pick: function () { self.setState({ accentIdx: i }); },
+        style: 'width: 56px; height: 56px; border-radius: 50%; border: 0; padding: 0; cursor: pointer; background: ' + (vesta ? 'linear-gradient(180deg, ' + VACC[i][1] + ', ' + VACC[i][0] + ')' : 'radial-gradient(90% 70% at 35% 15%, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0) 60%), ' + a[0]) + '; box-shadow: inset 0 ' + (vesta ? '1px 0 rgba(255,255,255,0.2)' : '2px 0 rgba(255,255,255,0.35), inset 0 -3px 6px rgba(0,0,0,0.30)') + (sel ? ', 0 0 0 3px ' + (vesta ? '#1D1E22' : '#0E131D') + ', 0 0 0 5px #FFFFFF' : '') + ';' };
+    });
+    var accName = vesta ? vA[3] : (ACCENTS.find(function (a) { return a[0].toLowerCase() === accent.toLowerCase(); }) || [accent, 'Custom'])[1];
+    var qLite = press('lite');
+
+    var cardBase = 'display: flex; flex-direction: column; gap: 12px; padding: 20px 22px; border-radius: ' + cr + 'px; box-sizing: border-box; min-height: 0; ';
+
+    return {
+      rootStyle: vesta ? 'position: relative; width: 800px; height: 1280px; box-sizing: border-box; padding: 22px 24px 22px; display: flex; flex-direction: column; gap: 18px; font-family: Inter, system-ui, sans-serif; color: #F2F2F2; font-variant-numeric: tabular-nums; overflow: hidden; background-color: #000000; background-image: radial-gradient(62% 40% at 96% 2%, color-mix(in srgb, ' + vA[2] + ' 60%, transparent), transparent 70%), radial-gradient(55% 34% at -8% 66%, color-mix(in srgb, ' + vA[2] + ' 18%, transparent), transparent 70%);' : 'position: relative; width: 800px; height: 1280px; box-sizing: border-box; padding: 22px 24px 22px; display: flex; flex-direction: column; gap: 18px; font-family: Inter, system-ui, sans-serif; color: #E9EDF5; font-variant-numeric: tabular-nums; overflow: hidden; background-color: ' + bgBase + '; background-image: radial-gradient(700px 600px at 8% 4%, ' + mixRgba(0.35, 0, 0, 0, 0.40) + ', rgba(0,0,0,0) 70%), radial-gradient(600px 700px at 96% 40%, ' + mixRgba(0.5, 40, 96, 150, 0.30) + ', rgba(0,0,0,0) 70%), radial-gradient(700px 600px at 30% 98%, ' + mixRgba(0.55, 150, 84, 60, 0.20) + ', rgba(0,0,0,0) 70%);',
+      accSoft: accSoft,
+      isHome: s.page === 'home', isEnergy: s.page === 'energy', isServers: s.page === 'servers', isShopping: s.page === 'shopping', isCameras: s.page === 'cameras', isNetwork: s.page === 'network',
+      tabs: tabs,
+      navStyle: 'flex: 0 0 auto; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; padding: 8px; border-radius: ' + (vesta ? 20 : 30) + 'px; ' + (vesta ? 'background: linear-gradient(180deg, rgba(255,255,255,0.033), rgba(255,255,255,0) 45%), #1D1E22; box-shadow: inset 0 1px 0 rgba(255,255,255,0.075), inset 0 0 0 0.6px rgba(225,228,235,0.06), 0 18px 44px rgba(0,0,0,0.7);' : glass(1)),
+      goServers: function () { self.setState({ page: 'servers', kbOpen: false }); },
+      chipAlert: press('alert').fx + 'display: flex; align-items: center; gap: 8px; height: 56px; padding: 0 18px 0 14px; border-radius: 999px; font-size: 17px; font-weight: 500; cursor: pointer; color: #FFDADA; background: linear-gradient(180deg, rgba(232,62,68,0.38), rgba(232,62,68,0.18)); border: 0; box-shadow: ' + bevel(0.22, 0.30, 0.6) + ', inset 0 0 0 1px rgba(236,72,78,0.62)' + (lite ? '' : ', 0 0 20px rgba(232,62,68,0.24)') + ';',
+      pAlert: press('alert'),
+      pGear: pbtn('gear', 'flex: 0 0 auto; width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; color: #C7CEDB; ' + glassSmall(1)),
+      cams: cams, lights: lights,
+      cardStyle: cardBase + glass(1),
+      cardStyleFlex: cardBase + 'flex: 1 1 auto; ' + glass(1),
+      segWrap: 'display: flex; padding: 4px; border-radius: ' + (vesta ? '14px' : '999px') + '; ' + recessed,
+      // AC
+      acStatus: acStatus, acTarget: ac.target.toFixed(1), acCurrent: ac.current.toFixed(1), acColor: acColor,
+      acAria: 'Target ' + ac.target.toFixed(1) + ' degrees, inside ' + ac.current + ' degrees, mode ' + ac.mode,
+      arcTrack: arc(135, 405, 100), arcActive: arc(135, Math.max(136, angOf(ac.target)), 100), arcOpacity: ac.mode === 'off' ? 0.35 : 1,
+      tgtX: tgtP[0], tgtY: tgtP[1], curX: curP[0], curY: curP[1],
+      acDown: function () { setAc({ target: Math.max(MIN, self.state.ac.target - 0.5) }); },
+      acUp: function () { setAc({ target: Math.min(MAX, self.state.ac.target + 0.5) }); },
+      pMinus: pbtn('acMinus', roundBtn + 'left: 0;'), pPlusT: pbtn('acPlus', roundBtn + 'right: 0;'),
+      acModes: acModes, fanOpts: fanOpts,
+      hours: hours,
+      // camera overlay
+      camOpen: !!s.cam, camFullName: camSel.name,
+      closeCam: function () { self.setState({ cam: null }); },
+      camFullStyle: 'position: relative; overflow: hidden; height: 423px; border-radius: ' + cr + 'px; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12), 0 20px 50px rgba(0,0,0,0.6);',
+      camFullScene: 'position: absolute; inset: 0; background: linear-gradient(180deg, ' + camSel.sky[0] + ', ' + camSel.sky[1] + ' 58%);',
+      camFullGround: 'position: absolute; left: -10%; right: -10%; bottom: -30%; height: 75%; border-radius: 50% 50% 0 0; background: linear-gradient(180deg, ' + camSel.ground[0] + ', ' + camSel.ground[1] + ');',
+      pCamClose: pbtn('camClose', 'height: 64px; padding: 0 28px; border-radius: 999px; font-size: 18px; font-weight: 600; cursor: pointer; color: #E9EDF5; ' + glassSmall(1)),
+      // energy
+      nowCards: nowCards, solLine: eLine(sol), useLine: eLine(use), solArea: eArea(sol), useArea: eArea(use), eTicks: eTicks,
+      eHas: eHas, eHx: eHx, eSolY: eHas ? EY(sol[eh]) : 0, eUseY: eHas ? EY(use[eh]) : 0,
+      eSol: eHas ? sol[eh].toFixed(1) : 0, eUse: eHas ? use[eh].toFixed(1) : 0, eTime: eHas ? hhmmE(eh) : '',
+      eMove: function (e) { var r = e.currentTarget.getBoundingClientRect(); var ratio = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)); self.setState({ eHover: Math.round(ratio * (N - 1)) }); },
+      eLeave: function () { self.setState({ eHover: null }); },
+      eTip: 'position: absolute; top: 4px; left: ' + (eHas ? (eHx > 470 ? eHx - 216 : eHx + 14) : 0).toFixed(0) + 'px; width: 200px; box-sizing: border-box; padding: 12px 14px; border-radius: 16px; background: rgba(20,26,38,0.96); border: 1px solid rgba(255,255,255,0.16); display: flex; flex-direction: column; gap: 4px; pointer-events: none;',
+      days7: days7, daySummary: daySummary,
+      // servers
+      monitors: monitors, srvStats: srvStats,
+      // cameras page
+      camsBig: camsBig,
+      // network
+      winOpts: makeSeg('win', [['2h', '2 h'], ['12h', '12 h']], s.win, function (v) { self.setState({ win: v, wHover: null }); }),
+      netStats: netStats, starStats: starStats, lanStats: lanStats,
+      dlLine: wLine(wd), ulLine: wLine(wu), dlArea: wArea(wd), ulArea: wArea(wu),
+      wg0: wyB, wg1: WY(200), wg2: WY(400), wg0t: wyB + 5, wg1t: WY(200) + 5, wg2t: WY(400) + 5, wMid: 200, wMax: 400,
+      planDlY: WY(300), planUlY: WY(30), planDlLabelY: WY(300) - 6, planUlLabelY: WY(30) - 6,
+      wStart: wfmt(-wspan), wMidT: wfmt(-wspan / 2),
+      wChartLabel: 'Download and upload over the last ' + (s.win === '2h' ? '2 hours' : '12 hours') + ', peak ' + Math.round(wpeak) + ' Mbps',
+      wHas: wHas, wHx: wHx, wDlY: wHas ? WY(wd[wh]) : 0, wUlY: wHas ? WY(wu[wh]) : 0, wDl: wHas ? Math.round(wd[wh]) : 0, wUl: wHas ? Math.round(wu[wh]) : 0,
+      wTime: wHas ? (wstep === 2 ? wfmt(-(wn - 1 - wh) * 2) + ' · 2 min max' : wfmt(-(wn - 1 - wh) * 0.5)) : '',
+      wMove: function (e) { var r = e.currentTarget.getBoundingClientRect(); var ratio = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)); self.setState({ wHover: Math.round(ratio * (wn - 1)) }); },
+      wLeave: function () { self.setState({ wHover: null }); },
+      wTip: 'position: absolute; top: 4px; left: ' + (wHas ? (wHx > 470 ? wHx - 216 : wHx + 14) : 0).toFixed(0) + 'px; width: 200px; box-sizing: border-box; padding: 12px 14px; border-radius: 14px; background: rgba(20,22,28,0.96); border: 1px solid rgba(255,255,255,0.14); display: flex; flex-direction: column; gap: 4px; pointer-events: none;',
+      // shopping
+      listNames: listNames, listName: s.listName,
+      onPickList: function (e) { self.setState({ listName: e.target.value, kbList: e.target.value }); },
+      selectStyle: 'appearance: none; -webkit-appearance: none; width: 100%; height: 68px; border-radius: 18px; padding: 0 48px 0 54px; font-size: 24px; font-weight: 600; color: #E9EDF5; cursor: pointer; ' + recessed,
+      pPlus: pbtn('plus', 'flex: 0 0 auto; width: 68px; height: 68px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; ' + accentDome()),
+      openRows: openRows, doneRows: doneRows, noOpen: openRows.length === 0,
+      showDone: s.showDone, doneExpanded: s.showDone ? 'true' : 'false', doneCount: doneVisible.length,
+      toggleDone: function () { self.setState({ showDone: !self.state.showDone }); },
+      pDone: { down: pDoneQ.down, up: pDoneQ.up, tint: pDoneQ.tint, style: 'flex: 0 0 auto; display: flex; align-items: center; gap: 10px; height: 56px; padding: 0 22px 0 18px; border-radius: 999px; font-size: 18px; font-weight: 600; color: #A9B2C3; cursor: pointer; align-self: flex-start; ' + pDoneQ.fx + glassSmall(0.8) },
+      doneChevron: 'transition: transform .25s; transform: rotate(' + (s.showDone ? 90 : 0) + 'deg);',
+      openKb: function () { self.setState({ kbOpen: true, kbList: self.state.listName }); },
+      kbShown: s.kbOpen && s.page === 'shopping',
+      panelKb: 'position: absolute; left: 0; right: 0; bottom: 0; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px; padding: 20px 24px 24px; border-radius: ' + (cr + 4) + 'px ' + (cr + 4) + 'px 0 0; animation: sheetUp .26s cubic-bezier(.2,.8,.2,1); background: ' + (vesta ? '#1B1C20' : 'linear-gradient(180deg, rgba(30,36,54,0.985), rgba(20,25,38,0.99))') + '; box-shadow: inset 0 ' + (vesta ? '1px 0 rgba(255,255,255,0.08)' : '2px 0 rgba(255,255,255,0.12)') + ', 0 -20px 50px rgba(0,0,0,0.6);',
+      kbText: s.kbText, kbList: s.kbList,
+      onType: function (e) { self.setState({ kbText: e.target.value }); },
+      onPickKbList: function (e) { self.setState({ kbList: e.target.value }); },
+      kbSelectStyle: 'appearance: none; -webkit-appearance: none; width: 100%; height: 72px; border-radius: 18px; padding: 0 40px 0 16px; font-size: 20px; font-weight: 600; color: #E9EDF5; cursor: pointer; ' + recessed,
+      inputStyle: 'flex: 1 1 auto; min-width: 0; height: 72px; box-sizing: border-box; padding: 0 18px; border-radius: 18px; font-size: 24px; color: #E9EDF5; caret-color: ' + accent + '; ' + recessed,
+      pAdd: pbtn('addBig', 'flex: 0 0 auto; width: 72px; height: 72px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; ' + accentDome()),
+      addItem: addFromParse, chips: chips, noChips: chips.length === 0,
+      kbRows: [{ keys: r0 }, { keys: r1 }, { keys: r2 }, { keys: r3 }, { keys: r4 }],
+      // settings
+      settingsOpen: s.settingsOpen,
+      openSettings: function () { self.setState({ settingsOpen: true, kbOpen: false }); },
+      closeSettings: function () { self.setState({ settingsOpen: false }); },
+      settingsPanel: 'position: absolute; top: 104px; left: 24px; right: 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 24px; padding: 26px 28px 28px; border-radius: ' + cr + 'px; animation: sheetIn .26s cubic-bezier(.2,.8,.2,1); background: ' + (vesta ? '#1D1E22' : 'linear-gradient(180deg, rgba(34,40,58,0.985), rgba(22,27,40,0.99))') + '; box-shadow: inset 0 1px 0 rgba(255,255,255,' + (vesta ? '0.08' : '0.12') + '), inset 0 0 0 1px rgba(255,255,255,0.07), 0 20px 50px rgba(0,0,0,0.6);',
+      pClose: pbtn('setClose', 'width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; color: #C7CEDB; ' + glassSmall(1)),
+      swatches: swatches, accentName: accName,
+      tLite: { pressed: lite ? 'true' : 'false', pick: function () { self.setState({ lite: !self.state.lite }); }, down: qLite.down, up: qLite.up, tint: qLite.tint,
+        style: qLite.fx + 'flex: 0 0 auto; width: 76px; height: 44px; border-radius: 999px; padding: 0; cursor: pointer; ' + (lite ? accentDome(0.35) : recessed),
+        knob: 'position: absolute; top: 5px; left: ' + (lite ? 37 : 5) + 'px; width: 34px; height: 34px; border-radius: 50%; transition: left 130ms cubic-bezier(.2,.8,.2,1); background: linear-gradient(180deg, #FFFFFF, #DCE1EA); box-shadow: 0 2px 5px rgba(0,0,0,0.35);' },
+      isVesta: vesta, edge: s.edge,
+      edgeLabel: s.edge === 0 ? 'Flat' : s.edge >= 100 ? 'Full dome' : s.edge + '%',
+      onEdge: function (e) { self.setState({ edge: parseInt(e.target.value, 10) || 0 }); },
+      edgeTrack: 'background: linear-gradient(90deg, ' + accent + ' 0%, ' + accent + ' ' + s.edge + '%, rgba(255,255,255,0.08) ' + s.edge + '%, rgba(255,255,255,0.08) 100%); box-shadow: inset 0 1px 3px rgba(0,0,0,0.55);',
+      homeOpts: makeSeg('home', [[60, '1 min'], [120, '2 min'], [300, '5 min']], s.homeAfter, function (v) { self.setState({ homeAfter: v }); })
+    };
+  }
+}
+</script>
+</body>
+</html>

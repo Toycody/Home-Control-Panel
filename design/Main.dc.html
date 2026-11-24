@@ -1,0 +1,1397 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Home Dashboard — Home screen</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0E131D}
+*{-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+input{-webkit-user-select:text;user-select:text}
+a{color:inherit}
+button,select,input{font-family:inherit}
+button:focus,a:focus,select:focus,input:focus,div:focus{outline:none}
+button::-moz-focus-inner{border:0}
+select option{background:#1A2130;color:#E9EDF5}
+@keyframes shopArrive{from{opacity:0;transform:translateY(28px)}}
+@keyframes dropIn{from{opacity:0;transform:translateY(-8px)}}
+@keyframes sheetIn{from{opacity:0;transform:translateY(-12px) scale(.98)}}
+@keyframes fadeIn{from{opacity:0}}
+.noscroll{scrollbar-width:none}.noscroll::-webkit-scrollbar{display:none}
+</style>
+</helmet>
+<div style="{{rootStyle}}">
+
+  <header style="position: relative; display: flex; flex-direction: column; gap: 22px">
+    <button type="button" aria-label="Settings" onClick="{{openSettings}}" style="{{pGear.style}}" onPointerDown="{{pGear.down}}" onPointerUp="{{pGear.up}}" onPointerLeave="{{pGear.up}}" onPointerCancel="{{pGear.up}}">
+      <span aria-hidden="true" style="{{pGear.tint}}"></span>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"></path><circle cx="16" cy="7" r="2"></circle><circle cx="10" cy="17" r="2"></circle></svg>
+    </button>
+    <div style="display: flex; justify-content: space-between; align-items: flex-end">
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <div style="font-size: 132px; font-weight: 300; line-height: 1; letter-spacing: -4px">{{clockText}}<span style="{{ampmStyle}}">{{ampm}}</span></div>
+        <div style="font-size: 30px; font-weight: 400; color: #A9B2C3">Sunday 22 November</div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 20px; padding-bottom: 6px">
+        <svg width="76" height="76" viewBox="0 0 24 24" fill="none" stroke="#F2B35B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3v1.5M3.5 8H2M4.6 4.6l1 1M12.4 4.6l-1 1M10.5 9.2A3.5 3.5 0 0 0 5 8.3"></path><path d="M9 20h8a3.5 3.5 0 0 0 .5-7A5 5 0 0 0 8 13a3.5 3.5 0 0 0 1 7z" stroke="#C7CEDB"></path></svg>
+        <div style="display: flex; flex-direction: column; align-items: flex-end">
+          <div style="font-size: 72px; font-weight: 300; line-height: 1">27°</div>
+          <div style="font-size: 22px; color: #A9B2C3">Partly cloudy · 31° / 22°</div>
+        </div>
+      </div>
+    </div>
+    <div style="display: flex; gap: 12px; flex-wrap: wrap">
+      <sc-if value="{{showAlert}}" hint-placeholder-val="{{ true }}">
+      <button type="button" onClick="{{openServers}}" style="{{chipAlert}}" onPointerDown="{{pAlert.down}}" onPointerUp="{{pAlert.up}}" onPointerLeave="{{pAlert.up}}" onPointerCancel="{{pAlert.up}}">
+        <span aria-hidden="true" style="{{pAlert.tint}}"></span>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FF5C62" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5.5M12 16.5h.01"></path></svg>
+        NAS backup down · 14 min
+      </button>
+      </sc-if>
+      <div style="{{chip}}">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F2B35B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7z"></path></svg>
+        Exporting 2.1 kW
+      </div>
+      <div style="{{chip}}">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7FD1A6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 11h12v10H6zM8 11V7a4 4 0 0 1 8 0v4"></path></svg>
+        All doors locked
+      </div>
+    </div>
+  </header>
+
+  <section aria-label="Quick controls" style="display: flex; flex-direction: column; gap: 16px">
+    <div style="display: flex; justify-content: space-between; align-items: baseline; padding: 0 4px">
+      <h2 style="margin: 0; font-size: 26px; font-weight: 600; letter-spacing: -0.2px">Quick controls</h2>
+      <a href="#rooms" draggable="false" style="{{roomsLink}}">All rooms ›</a>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px">
+      <sc-for list="{{tiles}}" as="t" hint-placeholder-count="8">
+        <sc-if value="{{t.isLight}}" hint-placeholder-val="{{ false }}">
+          <div style="{{t.boxStyle}}">
+            <span aria-hidden="true" style="{{t.tint}}"></span>
+            <button type="button" onClick="{{t.toggle}}" onPointerDown="{{t.down}}" onPointerUp="{{t.up}}" onPointerLeave="{{t.up}}" aria-pressed="{{t.pressed}}" style="{{t.mainStyle}}">
+              <span style="{{t.iconWrap}}">
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{t.icon}}"></path></svg>
+              </span>
+              <span style="display: flex; flex-direction: column; gap: 4px; text-align: left">
+                <span style="font-size: 23px; font-weight: 600; line-height: 1.15">{{t.name}}</span>
+                <span style="{{t.subStyle}}">{{t.sub}}</span>
+              </span>
+            </button>
+            <div onPointerDown="{{t.sDown}}" onPointerMove="{{t.sMove}}" onPointerUp="{{t.sUp}}" onPointerCancel="{{t.sUp}}" style="{{t.trackStyle}}">
+              <span style="{{t.fillStyle}}"></span>
+              <sc-for list="{{t.ticks}}" as="tk" hint-placeholder-count="9">
+                <span style="{{tk.style}}"></span>
+              </sc-for>
+              <button type="button" aria-label="{{t.upLabel}}" onClick="{{t.stepUp}}" style="position: absolute; left: 0; right: 0; top: 0; height: 50%; border: 0; padding: 8px 0 0; background: transparent; color: rgba(255,255,255,0.62); display: flex; justify-content: center; align-items: flex-start; cursor: pointer">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"></path></svg>
+              </button>
+              <button type="button" aria-label="{{t.downLabel}}" onClick="{{t.stepDown}}" style="position: absolute; left: 0; right: 0; bottom: 0; height: 50%; border: 0; padding: 0 0 8px; background: transparent; color: rgba(255,255,255,0.62); display: flex; justify-content: center; align-items: flex-end; cursor: pointer">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+              </button>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{t.notLight}}" hint-placeholder-val="{{ true }}">
+          <button type="button" onClick="{{t.toggle}}" onPointerDown="{{t.down}}" onPointerUp="{{t.up}}" onPointerLeave="{{t.up}}" aria-pressed="{{t.pressed}}" style="{{t.style}}">
+            <span aria-hidden="true" style="{{t.tint}}"></span>
+            <span style="{{t.iconWrap}}">
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{t.icon}}"></path></svg>
+            </span>
+            <span style="display: flex; flex-direction: column; gap: 4px; text-align: left">
+              <span style="font-size: 23px; font-weight: 600; line-height: 1.15">{{t.name}}</span>
+              <span style="{{t.subStyle}}">{{t.sub}}</span>
+            </span>
+          </button>
+        </sc-if>
+      </sc-for>
+    </div>
+  </section>
+
+  <section aria-label="Status" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px">
+    <a href="#energy" draggable="false" style="{{pE.style}}" onPointerDown="{{pE.down}}" onPointerUp="{{pE.up}}" onPointerLeave="{{pE.up}}" onPointerCancel="{{pE.up}}">
+      <span aria-hidden="true" style="{{pE.tint}}"></span>
+      <div style="display: flex; align-items: center; gap: 10px; font-size: 20px; color: #A9B2C3; font-weight: 500">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F2B35B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7z"></path></svg>Energy
+      </div>
+      <div style="display: flex; align-items: baseline; gap: 8px"><span style="font-size: 46px; font-weight: 500; line-height: 1">3.2</span><span style="font-size: 22px; color: #A9B2C3">kW solar</span></div>
+      <div style="font-size: 19px; color: #A9B2C3">Home 1.1 kW · 14.6 kWh today</div>
+    </a>
+    <a href="#network" draggable="false" style="{{pN.style}}" onPointerDown="{{pN.down}}" onPointerUp="{{pN.up}}" onPointerLeave="{{pN.up}}" onPointerCancel="{{pN.up}}">
+      <span aria-hidden="true" style="{{pN.tint}}"></span>
+      <div style="display: flex; align-items: center; gap: 10px; font-size: 20px; color: #A9B2C3; font-weight: 500">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8FB8F5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 8.5a15 15 0 0 1 20 0M5 12a10.5 10.5 0 0 1 14 0M8.5 15.5a5.5 5.5 0 0 1 7 0M12 19h.01"></path></svg>Network
+      </div>
+      <div style="display: flex; align-items: baseline; gap: 8px"><span style="font-size: 46px; font-weight: 500; line-height: 1">26</span><span style="font-size: 22px; color: #A9B2C3">clients</span></div>
+      <div style="display: flex; align-items: center; gap: 8px; font-size: 19px; color: #A9B2C3"><span style="width: 10px; height: 10px; border-radius: 50%; background: #4CC38A"></span>WAN up · 9 ms · 0% loss</div>
+    </a>
+    <button type="button" onClick="{{openServers}}" aria-label="Servers: 11 of 12 up. Open Uptime Kuma overview" style="{{pS.style}}" onPointerDown="{{pS.down}}" onPointerUp="{{pS.up}}" onPointerLeave="{{pS.up}}" onPointerCancel="{{pS.up}}">
+      <span aria-hidden="true" style="{{pS.tint}}"></span>
+      <div style="display: flex; align-items: center; gap: 10px; font-size: 20px; color: #A9B2C3; font-weight: 500">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#B8C0CE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v6H4zM4 14h16v6H4zM8 7h.01M8 17h.01"></path></svg>Servers
+      </div>
+      <div style="display: flex; align-items: baseline; gap: 8px"><span style="font-size: 46px; font-weight: 500; line-height: 1">11/12</span><span style="font-size: 22px; color: #A9B2C3">up</span></div>
+      <div style="display: flex; align-items: center; gap: 8px; font-size: 19px; color: #FFA6A9"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF5C62" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>NAS backup down</div>
+    </button>
+  </section>
+
+  <div style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); grid-template-rows: 432px; gap: 16px">
+
+    <section aria-label="Shopping list" style="{{panelShop}}">
+      <div style="display: flex; gap: 12px; align-items: center">
+        <span style="position: relative; display: block; flex: 1 1 auto; min-width: 0">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{accSoft}}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; left: 14px; top: 15px; pointer-events: none"><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6.2"></path><circle cx="10" cy="20.5" r="1"></circle><circle cx="17" cy="20.5" r="1"></circle></svg>
+          <select value="{{listName}}" onChange="{{onPickList}}" aria-label="Shopping list" style="{{selectStyle}}">
+            <sc-for list="{{listNames}}" as="ln" hint-placeholder-count="3">
+              <option value="{{ln}}">{{ln}}</option>
+            </sc-for>
+          </select>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A9B2C3" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; right: 14px; top: 15px; pointer-events: none"><path d="M6 9l6 6 6-6"></path></svg>
+        </span>
+        <button type="button" aria-label="Add item" onClick="{{openKb}}" style="{{pPlus.style}}" onPointerDown="{{pPlus.down}}" onPointerUp="{{pPlus.up}}" onPointerLeave="{{pPlus.up}}" onPointerCancel="{{pPlus.up}}">
+          <span aria-hidden="true" style="{{pPlus.tint}}"></span>
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+        </button>
+      </div>
+      <div class="noscroll" style="flex: 1 1 0; min-height: 0; overflow-y: auto; overscroll-behavior: contain; margin: 0 -8px; padding: 0 8px">
+        <div style="display: flex; flex-direction: column; gap: 2px; min-height: 100%">
+          <sc-for list="{{openRows}}" as="it" hint-placeholder-count="5">
+            <button type="button" onClick="{{it.toggle}}" aria-pressed="{{it.pressed}}" onPointerDown="{{it.down}}" onPointerUp="{{it.up}}" onPointerLeave="{{it.up}}" onPointerCancel="{{it.up}}" style="{{it.rowStyle}}">
+              <span aria-hidden="true" style="{{it.tint}}"></span>
+              <span style="{{it.boxStyle}}">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" style="{{it.checkPath}}"></path></svg>
+              </span>
+              <span style="{{it.textWrap}}"><span style="{{it.titleStyle}}">{{it.name}}</span></span>
+              <span style="font-size: 16px; color: #8E98AA; margin-left: auto; white-space: nowrap">{{it.qty}}</span>
+            </button>
+          </sc-for>
+          <sc-if value="{{noOpen}}" hint-placeholder-val="{{ false }}">
+            <div style="padding: 14px 4px; font-size: 18px; color: #8E98AA">All sorted. Tap + to add.</div>
+          </sc-if>
+          <div style="flex: 1 1 auto; min-height: 10px"></div>
+          <button type="button" aria-expanded="{{doneExpanded}}" onClick="{{toggleDone}}" style="{{pDone.style}}" onPointerDown="{{pDone.down}}" onPointerUp="{{pDone.up}}" onPointerLeave="{{pDone.up}}" onPointerCancel="{{pDone.up}}">
+            <span aria-hidden="true" style="{{pDone.tint}}"></span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="{{doneChevron}}"><path d="M9 6l6 6-6 6"></path></svg>
+            <span>Completed · {{doneCount}}</span>
+          </button>
+          <sc-if value="{{showDone}}" hint-placeholder-val="{{ false }}">
+            <div style="display: flex; flex-direction: column; gap: 2px; padding-top: 6px; animation: dropIn .28s ease">
+              <sc-for list="{{doneRows}}" as="it" hint-placeholder-count="2">
+                <button type="button" onClick="{{it.toggle}}" aria-pressed="{{it.pressed}}" onPointerDown="{{it.down}}" onPointerUp="{{it.up}}" onPointerLeave="{{it.up}}" onPointerCancel="{{it.up}}" style="{{it.rowStyle}}">
+                  <span aria-hidden="true" style="{{it.tint}}"></span>
+                  <span style="{{it.boxStyle}}">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" style="{{it.checkPath}}"></path></svg>
+                  </span>
+                  <span style="{{it.textWrap}}"><span style="{{it.titleStyle}}">{{it.name}}</span></span>
+                  <span style="font-size: 15px; color: #7C8698; margin-left: auto; white-space: nowrap">{{it.ago}}</span>
+                </button>
+              </sc-for>
+              <div style="padding: 8px 4px 4px; font-size: 14px; color: #7C8698">{{clearNote}}</div>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+    </section>
+
+    <section aria-label="Internet throughput" style="{{panelInternet}}">
+      <div style="display: flex; justify-content: space-between; align-items: center">
+        <div style="display: flex; flex-direction: column; gap: 2px">
+          <h2 style="margin: 0; font-size: 26px; font-weight: 600">Internet</h2>
+          <span style="font-size: 16px; color: #A9B2C3">{{netSubtitle}}</span>
+        </div>
+        <div role="group" aria-label="Time window" style="{{segWrap}}">
+          <button type="button" onClick="{{pick2h}}" aria-pressed="{{is2h}}" style="{{p2h.style}}" onPointerDown="{{p2h.down}}" onPointerUp="{{p2h.up}}" onPointerLeave="{{p2h.up}}" onPointerCancel="{{p2h.up}}"><span aria-hidden="true" style="{{p2h.tint}}"></span>2 h</button>
+          <button type="button" onClick="{{pick12h}}" aria-pressed="{{is12h}}" style="{{p12h.style}}" onPointerDown="{{p12h.down}}" onPointerUp="{{p12h.up}}" onPointerLeave="{{p12h.up}}" onPointerCancel="{{p12h.up}}"><span aria-hidden="true" style="{{p12h.tint}}"></span>12 h</button>
+        </div>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px">
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <span style="display: flex; align-items: center; gap: 6px; font-size: 15px; color: #A9B2C3"><span style="width: 12px; height: 3px; border-radius: 2px; background: #4F8EE8"></span>Down now</span>
+          <span style="font-size: 28px; font-weight: 500">{{nowDl}} <span style="font-size: 15px; color: #A9B2C3; font-weight: 400">Mbps</span></span>
+          <span style="font-size: 14px; color: #8E98AA">{{nowDlSub}}</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <span style="display: flex; align-items: center; gap: 6px; font-size: 15px; color: #A9B2C3"><span style="width: 12px; height: 3px; border-radius: 2px; background: #C9733C"></span>Up now</span>
+          <span style="font-size: 28px; font-weight: 500">{{nowUl}} <span style="font-size: 15px; color: #A9B2C3; font-weight: 400">Mbps</span></span>
+          <span style="font-size: 14px; color: #8E98AA">{{nowUlSub}}</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <span style="font-size: 15px; color: #A9B2C3">Peak ↓ {{winLabel}}</span>
+          <span style="font-size: 28px; font-weight: 500">{{peakDl}} <span style="font-size: 15px; color: #A9B2C3; font-weight: 400">Mbps</span></span>
+          <span style="font-size: 14px; color: #8E98AA">{{peakSub}}</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <span style="font-size: 15px; color: #A9B2C3">Avg ↓ {{winLabel}}</span>
+          <span style="font-size: 28px; font-weight: 500">{{avgDl}} <span style="font-size: 15px; color: #A9B2C3; font-weight: 400">Mbps</span></span>
+          <span style="font-size: 14px; color: #8E98AA">{{avgSub}}</span>
+        </div>
+      </div>
+      <div style="position: relative; width: 600px; height: 220px">
+        <svg width="600" height="220" viewBox="0 0 600 220" role="img" aria-label="{{chartLabel}}" style="display: block">
+          <line x1="44" x2="600" y1="{{g0}}" y2="{{g0}}" stroke="rgba(255,255,255,0.14)" stroke-width="1"></line>
+          <line x1="44" x2="600" y1="{{g1}}" y2="{{g1}}" stroke="rgba(255,255,255,0.07)" stroke-width="1"></line>
+          <line x1="44" x2="600" y1="{{g2}}" y2="{{g2}}" stroke="rgba(255,255,255,0.07)" stroke-width="1"></line>
+          <text x="36" y="{{g0t}}" text-anchor="end" fill="#8E98AA" font-size="14">0</text>
+          <text x="36" y="{{g1t}}" text-anchor="end" fill="#8E98AA" font-size="14">{{yMid}}</text>
+          <text x="36" y="{{g2t}}" text-anchor="end" fill="#8E98AA" font-size="14">{{yMax}}</text>
+          <sc-if value="{{showPlan}}" hint-placeholder-val="{{ true }}">
+            <line x1="44" x2="600" y1="{{planDlY}}" y2="{{planDlY}}" stroke="#A9C6F2" stroke-width="1.5" stroke-dasharray="2 5" stroke-linecap="round" opacity="0.75"></line>
+            <line x1="44" x2="600" y1="{{planUlY}}" y2="{{planUlY}}" stroke="#E2B08E" stroke-width="1.5" stroke-dasharray="2 5" stroke-linecap="round" opacity="0.75"></line>
+            <text x="596" y="{{planDlLabelY}}" text-anchor="end" fill="#A9C6F2" font-size="13" opacity="0.9">{{planDl}} plan</text>
+            <text x="596" y="{{planUlLabelY}}" text-anchor="end" fill="#E2B08E" font-size="13" opacity="0.9">{{planUl}} up plan</text>
+          </sc-if>
+          <path d="{{dlArea}}" fill="rgba(79,142,232,0.16)"></path>
+          <path d="{{ulArea}}" fill="rgba(201,115,60,0.18)"></path>
+          <path d="{{dlLine}}" fill="none" stroke="#4F8EE8" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"></path>
+          <path d="{{ulLine}}" fill="none" stroke="#C9733C" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"></path>
+          <text x="44" y="214" fill="#8E98AA" font-size="14">{{xStart}}</text>
+          <text x="322" y="214" text-anchor="middle" fill="#8E98AA" font-size="14">{{xMid}}</text>
+          <text x="600" y="214" text-anchor="end" fill="#8E98AA" font-size="14">Now</text>
+          <sc-if value="{{hasHover}}" hint-placeholder-val="{{ false }}">
+            <line x1="{{hx}}" x2="{{hx}}" y1="8" y2="{{g0}}" stroke="rgba(255,255,255,0.45)" stroke-width="1"></line>
+            <circle cx="{{hx}}" cy="{{hDlY}}" r="6" fill="#4F8EE8" stroke="#1A2130" stroke-width="2"></circle>
+            <circle cx="{{hx}}" cy="{{hUlY}}" r="6" fill="#C9733C" stroke="#1A2130" stroke-width="2"></circle>
+          </sc-if>
+          <rect x="44" y="0" width="556" height="196" fill="transparent" onPointerMove="{{onMove}}" onPointerLeave="{{onLeave}}"></rect>
+        </svg>
+        <sc-if value="{{hasHover}}" hint-placeholder-val="{{ false }}">
+          <div style="{{tipStyle}}">
+            <div style="font-size: 15px; color: #A9B2C3; margin-bottom: 6px">{{hTime}}</div>
+            <div style="display: flex; align-items: center; gap: 8px; font-size: 17px"><span style="width: 12px; height: 3px; border-radius: 2px; background: #4F8EE8"></span>Down <span style="margin-left: auto; font-weight: 600">{{hDl}} Mbps</span></div>
+            <div style="display: flex; align-items: center; gap: 8px; font-size: 17px"><span style="width: 12px; height: 3px; border-radius: 2px; background: #C9733C"></span>Up <span style="margin-left: auto; font-weight: 600">{{hUl}} Mbps</span></div>
+          </div>
+        </sc-if>
+      </div>
+    </section>
+  </div>
+
+  <sc-if value="{{kbClosed}}" hint-placeholder-val="{{ true }}">
+    <section aria-label="Weather" style="{{panelWeather}}">
+      <div style="display: flex; justify-content: space-between; align-items: baseline">
+        <h2 style="margin: 0; font-size: 26px; font-weight: 600">Next 12 hours</h2>
+        <span style="font-size: 19px; color: #A9B2C3">Rain from 4 pm</span>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 4px">
+        <sc-for list="{{hours}}" as="h" hint-placeholder-count="12">
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 10px 0; border-radius: 18px">
+            <span style="font-size: 17px; color: #A9B2C3">{{h.t}}</span>
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="{{h.c}}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{h.icon}}"></path></svg>
+            <span style="font-size: 22px; font-weight: 500">{{h.temp}}°</span>
+            <span style="{{h.rainStyle}}">{{h.rain}}</span>
+          </div>
+        </sc-for>
+      </div>
+      <div style="height: 1px; background: rgba(255,255,255,0.09)"></div>
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <sc-for list="{{days}}" as="d" hint-placeholder-count="3">
+          <div style="display: grid; grid-template-columns: 150px 44px 1fr 90px 60px 260px 60px; align-items: center; gap: 14px; height: 48px">
+            <span style="font-size: 22px; font-weight: 500">{{d.name}}</span>
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="{{d.c}}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{d.icon}}"></path></svg>
+            <span style="font-size: 20px; color: #A9B2C3">{{d.cond}}</span>
+            <span style="font-size: 19px; color: #8FB8F5; text-align: right">{{d.rain}}</span>
+            <span style="font-size: 21px; color: #A9B2C3; text-align: right">{{d.lo}}°</span>
+            <span style="position: relative; height: 8px; border-radius: 999px; background: rgba(255,255,255,0.09)"><span style="{{d.bar}}"></span></span>
+            <span style="font-size: 21px; font-weight: 500">{{d.hi}}°</span>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+  </sc-if>
+
+  <sc-if value="{{kbOpen}}" hint-placeholder-val="{{ false }}">
+    <section aria-label="Add to shopping list" style="{{panelKb}}">
+      <div style="display: flex; gap: 12px; align-items: center">
+        <span style="position: relative; flex: 0 0 220px; display: block">
+          <select value="{{kbList}}" onChange="{{onPickKbList}}" aria-label="Target list" style="{{kbSelectStyle}}">
+            <sc-for list="{{listNames}}" as="ln" hint-placeholder-count="3">
+              <option value="{{ln}}">{{ln}}</option>
+            </sc-for>
+          </select>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A9B2C3" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; right: 14px; top: 19px; pointer-events: none"><path d="M6 9l6 6 6-6"></path></svg>
+        </span>
+        <input type="text" value="{{kbText}}" onChange="{{onType}}" inputMode="none" autoComplete="off" spellCheck="false" aria-label="New item" placeholder="Try: 2L milk for Saturday #groceries !!" style="{{inputStyle}}">
+        <button type="button" aria-label="Add to list" onClick="{{addItem}}" style="{{pAdd.style}}" onPointerDown="{{pAdd.down}}" onPointerUp="{{pAdd.up}}" onPointerLeave="{{pAdd.up}}" onPointerCancel="{{pAdd.up}}">
+          <span aria-hidden="true" style="{{pAdd.tint}}"></span>
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+        </button>
+      </div>
+      <div style="display: flex; gap: 8px; align-items: center; min-height: 34px; flex-wrap: wrap">
+        <span style="font-size: 15px; color: #8E98AA; margin-right: 4px">Parsed</span>
+        <sc-for list="{{chips}}" as="c" hint-placeholder-count="3">
+          <span style="{{c.style}}">{{c.label}}</span>
+        </sc-for>
+        <sc-if value="{{noChips}}" hint-placeholder-val="{{ true }}">
+          <span style="font-size: 16px; color: #7C8698">Item, quantity, due day, #list and !priority are picked up as you type</span>
+        </sc-if>
+      </div>
+      <div style="font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 15px; color: #A9B2C3; padding: 8px 12px; border-radius: 12px; background: rgba(0,0,0,0.22); white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{mdLine}}</div>
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <sc-for list="{{kbRows}}" as="row" hint-placeholder-count="5">
+          <div style="display: grid; grid-template-columns: repeat(20, minmax(0, 1fr)); gap: 8px">
+            <sc-for list="{{row.keys}}" as="k" hint-placeholder-count="10">
+              <button type="button" aria-label="{{k.aria}}" onClick="{{k.press}}" onPointerDown="{{k.down}}" onPointerUp="{{k.up}}" onPointerLeave="{{k.up}}" onPointerCancel="{{k.up}}" style="{{k.style}}">
+                <span aria-hidden="true" style="{{k.tintStyle}}"></span>
+                <span style="position: relative; display: flex; align-items: center; justify-content: center">
+                  <sc-if value="{{k.hasIcon}}" hint-placeholder-val="{{ false }}">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{k.icon}}"></path></svg>
+                  </sc-if>
+                  <sc-if value="{{k.noIcon}}" hint-placeholder-val="{{ true }}">{{k.label}}</sc-if>
+                </span>
+              </button>
+            </sc-for>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+  </sc-if>
+  <sc-if value="{{serversOpen}}" hint-placeholder-val="{{ false }}">
+    <button type="button" aria-label="Close servers" onClick="{{closeServers}}" style="position: absolute; inset: 0; border: 0; padding: 0; background: rgba(5,8,14,0.62); cursor: default; animation: fadeIn .2s ease"></button>
+    <section role="dialog" aria-label="Servers" style="{{serversPanel}}">
+      <div style="display: flex; justify-content: space-between; align-items: center">
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <h2 style="margin: 0; font-size: 28px; font-weight: 600">Servers</h2>
+          <span style="font-size: 16px; color: #A9B2C3">Uptime Kuma · 12 monitors · checks every 60 s</span>
+        </div>
+        <button type="button" aria-label="Close servers" onClick="{{closeServers}}" style="{{pSrvClose.style}}" onPointerDown="{{pSrvClose.down}}" onPointerUp="{{pSrvClose.up}}" onPointerLeave="{{pSrvClose.up}}" onPointerCancel="{{pSrvClose.up}}">
+          <span aria-hidden="true" style="{{pSrvClose.tint}}"></span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+        </button>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px">
+        <sc-for list="{{srvStats}}" as="st" hint-placeholder-count="4">
+          <div style="{{st.style}}">
+            <span style="font-size: 15px; color: #A9B2C3">{{st.label}}</span>
+            <span style="font-size: 32px; font-weight: 500; line-height: 1.1">{{st.value}}</span>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display: grid; grid-template-columns: 280px 1fr 90px 90px; gap: 16px; padding: 0 16px; font-size: 14px; color: #8E98AA">
+        <span>Monitor</span><span>Last 40 checks</span><span style="text-align: right">24 h</span><span style="text-align: right">Resp.</span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <sc-for list="{{monitors}}" as="m" hint-placeholder-count="12">
+          <div style="{{m.rowStyle}}">
+            <div style="display: flex; align-items: center; gap: 12px; min-width: 0">
+              <span style="{{m.dot}}"></span>
+              <div style="display: flex; flex-direction: column; min-width: 0">
+                <span style="font-size: 19px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{m.name}}</span>
+                <span style="font-size: 14px; color: #8E98AA; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{m.meta}}</span>
+              </div>
+            </div>
+            <div style="display: flex; gap: 3px; align-items: center; height: 28px">
+              <sc-for list="{{m.beats}}" as="b" hint-placeholder-count="40">
+                <span style="{{b.style}}"></span>
+              </sc-for>
+            </div>
+            <span style="{{m.upStyle}}">{{m.uptime}}</span>
+            <span style="font-size: 18px; color: #A9B2C3; text-align: right">{{m.resp}}</span>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+  </sc-if>
+
+  <sc-if value="{{settingsOpen}}" hint-placeholder-val="{{ false }}">
+    <button type="button" aria-label="Close settings" onClick="{{closeSettings}}" style="position: absolute; inset: 0; border: 0; padding: 0; background: rgba(5,8,14,0.62); cursor: default; animation: fadeIn .2s ease"></button>
+    <section role="dialog" aria-label="Settings" style="{{settingsPanel}}">
+      <div style="display: flex; justify-content: space-between; align-items: center">
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <h2 style="margin: 0; font-size: 28px; font-weight: 600">Settings</h2>
+          <span style="font-size: 15px; color: #8E98AA">More options at kiosk.lan/settings · keys and passwords via SSH</span>
+        </div>
+        <button type="button" aria-label="Close settings" onClick="{{closeSettings}}" style="{{pClose.style}}" onPointerDown="{{pClose.down}}" onPointerUp="{{pClose.up}}" onPointerLeave="{{pClose.up}}" onPointerCancel="{{pClose.up}}">
+          <span aria-hidden="true" style="{{pClose.tint}}"></span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+        </button>
+      </div>
+      <div class="noscroll" style="flex: 1 1 0; min-height: 0; overflow-y: auto; overscroll-behavior: contain; display: flex; flex-direction: column; gap: 22px; margin: 0 -6px; padding: 4px 6px 8px">
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <h3 style="margin: 0 0 4px; font-size: 15px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{accSoft}}">Appearance</h3>
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 20px; min-height: 56px">
+            <div style="display: flex; flex-direction: column; gap: 3px; min-width: 0">
+              <span style="font-size: 19px; font-weight: 500">Accent colour</span>
+              <span style="font-size: 15px; color: #8E98AA">{{accentName}} · themes the whole screen</span>
+            </div>
+
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 12px; padding: 4px 0">
+            <sc-for list="{{swatches}}" as="sw" hint-placeholder-count="8">
+              <button type="button" aria-label="{{sw.name}}" aria-pressed="{{sw.pressed}}" onClick="{{sw.pick}}" style="{{sw.style}}"></button>
+            </sc-for>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 20px; min-height: 56px">
+            <div style="display: flex; flex-direction: column; gap: 3px; min-width: 0">
+              <span style="font-size: 19px; font-weight: 500">Clock</span>
+              <span style="font-size: 15px; color: #8E98AA">Header time format</span>
+            </div>
+            <div role="group" style="{{segWrap}}">
+              <sc-for list="{{clockOpts}}" as="o" hint-placeholder-count="3">
+                <button type="button" aria-pressed="{{o.pressed}}" onClick="{{o.pick}}" style="{{o.style}}" onPointerDown="{{o.down}}" onPointerUp="{{o.up}}" onPointerLeave="{{o.up}}" onPointerCancel="{{o.up}}"><span aria-hidden="true" style="{{o.tint}}"></span>{{o.label}}</button>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+        <div style="flex: 0 0 auto; height: 1px; background: rgba(255,255,255,0.07)"></div>
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <h3 style="margin: 0 0 4px; font-size: 15px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{accSoft}}">Display &amp; wake</h3>
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 20px; min-height: 56px">
+            <div style="display: flex; flex-direction: column; gap: 3px; min-width: 0">
+              <span style="font-size: 19px; font-weight: 500">Sleep after</span>
+              <span style="font-size: 15px; color: #8E98AA">Idle time before the screen fades out</span>
+            </div>
+            <div role="group" style="{{segWrap}}">
+              <sc-for list="{{idleOpts}}" as="o" hint-placeholder-count="3">
+                <button type="button" aria-pressed="{{o.pressed}}" onClick="{{o.pick}}" style="{{o.style}}" onPointerDown="{{o.down}}" onPointerUp="{{o.up}}" onPointerLeave="{{o.up}}" onPointerCancel="{{o.up}}"><span aria-hidden="true" style="{{o.tint}}"></span>{{o.label}}</button>
+              </sc-for>
+            </div>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 20px; min-height: 56px">
+            <div style="display: flex; flex-direction: column; gap: 3px; min-width: 0">
+              <span style="font-size: 19px; font-weight: 500">Wake on</span>
+              <span style="font-size: 15px; color: #8E98AA">What brings the screen back</span>
+            </div>
+            <div role="group" style="{{segWrap}}">
+              <sc-for list="{{wakeOpts}}" as="o" hint-placeholder-count="3">
+                <button type="button" aria-pressed="{{o.pressed}}" onClick="{{o.pick}}" style="{{o.style}}" onPointerDown="{{o.down}}" onPointerUp="{{o.up}}" onPointerLeave="{{o.up}}" onPointerCancel="{{o.up}}"><span aria-hidden="true" style="{{o.tint}}"></span>{{o.label}}</button>
+              </sc-for>
+            </div>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 20px; min-height: 56px">
+            <div style="display: flex; flex-direction: column; gap: 3px; min-width: 0">
+              <span style="font-size: 19px; font-weight: 500">Night mode</span>
+              <span style="font-size: 15px; color: #8E98AA">Behaviour during night hours</span>
+            </div>
+            <div role="group" style="{{segWrap}}">
+              <sc-for list="{{nightOpts}}" as="o" hint-placeholder-count="3">
+                <button type="button" aria-pressed="{{o.pressed}}" onClick="{{o.pick}}" style="{{o.style}}" onPointerDown="{{o.down}}" onPointerUp="{{o.up}}" onPointerLeave="{{o.up}}" onPointerCancel="{{o.up}}"><span aria-hidden="true" style="{{o.tint}}"></span>{{o.label}}</button>
+              </sc-for>
+            </div>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 20px; min-height: 56px">
+            <div style="display: flex; flex-direction: column; gap: 3px; min-width: 0">
+              <span style="font-size: 19px; font-weight: 500">Night starts</span>
+              <span style="font-size: 15px; color: #8E98AA">Half-hour steps</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px">
+              <button type="button" aria-label="{{nightStart.decLabel}}" onClick="{{nightStart.dec}}" style="{{nightStart.decBtn.style}}" onPointerDown="{{nightStart.decBtn.down}}" onPointerUp="{{nightStart.decBtn.up}}" onPointerLeave="{{nightStart.decBtn.up}}" onPointerCancel="{{nightStart.decBtn.up}}"><span aria-hidden="true" style="{{nightStart.decBtn.tint}}"></span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg></button>
+              <span style="min-width: 104px; text-align: center; font-size: 19px; font-weight: 600">{{nightStart.label}}</span>
+              <button type="button" aria-label="{{nightStart.incLabel}}" onClick="{{nightStart.inc}}" style="{{nightStart.incBtn.style}}" onPointerDown="{{nightStart.incBtn.down}}" onPointerUp="{{nightStart.incBtn.up}}" onPointerLeave="{{nightStart.incBtn.up}}" onPointerCancel="{{nightStart.incBtn.up}}"><span aria-hidden="true" style="{{nightStart.incBtn.tint}}"></span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+            </div>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 20px; min-height: 56px">
+            <div style="display: flex; flex-direction: column; gap: 3px; min-width: 0">
+              <span style="font-size: 19px; font-weight: 500">Night ends</span>
+              <span style="font-size: 15px; color: #8E98AA">Half-hour steps</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px">
+              <button type="button" aria-label="{{nightEnd.decLabel}}" onClick="{{nightEnd.dec}}" style="{{nightEnd.decBtn.style}}" onPointerDown="{{nightEnd.decBtn.down}}" onPointerUp="{{nightEnd.decBtn.up}}" onPointerLeave="{{nightEnd.decBtn.up}}" onPointerCancel="{{nightEnd.decBtn.up}}"><span aria-hidden="true" style="{{nightEnd.decBtn.tint}}"></span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg></button>
+              <span style="min-width: 104px; text-align: center; font-size: 19px; font-weight: 600">{{nightEnd.label}}</span>
+              <button type="button" aria-label="{{nightEnd.incLabel}}" onClick="{{nightEnd.inc}}" style="{{nightEnd.incBtn.style}}" onPointerDown="{{nightEnd.incBtn.down}}" onPointerUp="{{nightEnd.incBtn.up}}" onPointerLeave="{{nightEnd.incBtn.up}}" onPointerCancel="{{nightEnd.incBtn.up}}"><span aria-hidden="true" style="{{nightEnd.incBtn.tint}}"></span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+            </div>
+          </div>
+        </div>
+        <div style="flex: 0 0 auto; height: 1px; background: rgba(255,255,255,0.07)"></div>
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <h3 style="margin: 0 0 4px; font-size: 15px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{accSoft}}">Quick controls</h3>
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 20px; min-height: 56px">
+            <div style="display: flex; flex-direction: column; gap: 3px; min-width: 0">
+              <span style="font-size: 19px; font-weight: 500">Tiles</span>
+              <span style="font-size: 15px; color: #8E98AA">Pick devices and order at kiosk.lan/settings</span>
+            </div>
+            <span style="font-size: 18px; font-weight: 600; color: #A9B2C3">8 of 8 set</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 20px; min-height: 56px">
+            <div style="display: flex; flex-direction: column; gap: 3px; min-width: 0">
+              <span style="font-size: 19px; font-weight: 500">Brightness sliders</span>
+              <span style="font-size: 15px; color: #8E98AA">Show sliders on light tiles</span>
+            </div>
+            <button type="button" aria-pressed="{{tSliders.pressed}}" aria-label="{{tSliders.aria}}" onClick="{{tSliders.pick}}" style="{{tSliders.style}}" onPointerDown="{{tSliders.down}}" onPointerUp="{{tSliders.up}}" onPointerLeave="{{tSliders.up}}" onPointerCancel="{{tSliders.up}}"><span aria-hidden="true" style="{{tSliders.tint}}"></span><span style="{{tSliders.knob}}"></span></button>
+          </div>
+        </div>
+        <div style="flex: 0 0 auto; height: 1px; background: rgba(255,255,255,0.07)"></div>
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <h3 style="margin: 0 0 4px; font-size: 15px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{accSoft}}">Alerts</h3>
+          <span style="font-size: 15px; color: #8E98AA">Monitors that can raise the red header alert when down</span>
+          <div style="display: flex; flex-wrap: wrap; gap: 10px">
+            <sc-for list="{{alertChips}}" as="c" hint-placeholder-count="6">
+              <button type="button" aria-pressed="{{c.pressed}}" onClick="{{c.pick}}" style="{{c.style}}" onPointerDown="{{c.down}}" onPointerUp="{{c.up}}" onPointerLeave="{{c.up}}" onPointerCancel="{{c.up}}"><span aria-hidden="true" style="{{c.tint}}"></span>{{c.label}}</button>
+            </sc-for>
+          </div>
+        </div>
+        <div style="flex: 0 0 auto; height: 1px; background: rgba(255,255,255,0.07)"></div>
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <h3 style="margin: 0 0 4px; font-size: 15px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{accSoft}}">Internet</h3>
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 20px; min-height: 56px">
+            <div style="display: flex; flex-direction: column; gap: 3px; min-width: 0">
+              <span style="font-size: 19px; font-weight: 500">Plan download</span>
+              <span style="font-size: 15px; color: #8E98AA">Shown as the dotted capacity line</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px">
+              <button type="button" aria-label="{{planDlStep.decLabel}}" onClick="{{planDlStep.dec}}" style="{{planDlStep.decBtn.style}}" onPointerDown="{{planDlStep.decBtn.down}}" onPointerUp="{{planDlStep.decBtn.up}}" onPointerLeave="{{planDlStep.decBtn.up}}" onPointerCancel="{{planDlStep.decBtn.up}}"><span aria-hidden="true" style="{{planDlStep.decBtn.tint}}"></span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg></button>
+              <span style="min-width: 104px; text-align: center; font-size: 19px; font-weight: 600">{{planDlStep.label}}</span>
+              <button type="button" aria-label="{{planDlStep.incLabel}}" onClick="{{planDlStep.inc}}" style="{{planDlStep.incBtn.style}}" onPointerDown="{{planDlStep.incBtn.down}}" onPointerUp="{{planDlStep.incBtn.up}}" onPointerLeave="{{planDlStep.incBtn.up}}" onPointerCancel="{{planDlStep.incBtn.up}}"><span aria-hidden="true" style="{{planDlStep.incBtn.tint}}"></span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+            </div>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 20px; min-height: 56px">
+            <div style="display: flex; flex-direction: column; gap: 3px; min-width: 0">
+              <span style="font-size: 19px; font-weight: 500">Plan upload</span>
+              <span style="font-size: 15px; color: #8E98AA">Shown as the dotted capacity line</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px">
+              <button type="button" aria-label="{{planUlStep.decLabel}}" onClick="{{planUlStep.dec}}" style="{{planUlStep.decBtn.style}}" onPointerDown="{{planUlStep.decBtn.down}}" onPointerUp="{{planUlStep.decBtn.up}}" onPointerLeave="{{planUlStep.decBtn.up}}" onPointerCancel="{{planUlStep.decBtn.up}}"><span aria-hidden="true" style="{{planUlStep.decBtn.tint}}"></span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg></button>
+              <span style="min-width: 104px; text-align: center; font-size: 19px; font-weight: 600">{{planUlStep.label}}</span>
+              <button type="button" aria-label="{{planUlStep.incLabel}}" onClick="{{planUlStep.inc}}" style="{{planUlStep.incBtn.style}}" onPointerDown="{{planUlStep.incBtn.down}}" onPointerUp="{{planUlStep.incBtn.up}}" onPointerLeave="{{planUlStep.incBtn.up}}" onPointerCancel="{{planUlStep.incBtn.up}}"><span aria-hidden="true" style="{{planUlStep.incBtn.tint}}"></span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+            </div>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 20px; min-height: 56px">
+            <div style="display: flex; flex-direction: column; gap: 3px; min-width: 0">
+              <span style="font-size: 19px; font-weight: 500">Show plan lines</span>
+              <span style="font-size: 15px; color: #8E98AA">Dotted capacity lines on the graph</span>
+            </div>
+            <button type="button" aria-pressed="{{tPlan.pressed}}" aria-label="{{tPlan.aria}}" onClick="{{tPlan.pick}}" style="{{tPlan.style}}" onPointerDown="{{tPlan.down}}" onPointerUp="{{tPlan.up}}" onPointerLeave="{{tPlan.up}}" onPointerCancel="{{tPlan.up}}"><span aria-hidden="true" style="{{tPlan.tint}}"></span><span style="{{tPlan.knob}}"></span></button>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 20px; min-height: 56px">
+            <div style="display: flex; flex-direction: column; gap: 3px; min-width: 0">
+              <span style="font-size: 19px; font-weight: 500">Update every</span>
+              <span style="font-size: 15px; color: #8E98AA">Router throughput sampling</span>
+            </div>
+            <div role="group" style="{{segWrap}}">
+              <sc-for list="{{pollOpts}}" as="o" hint-placeholder-count="3">
+                <button type="button" aria-pressed="{{o.pressed}}" onClick="{{o.pick}}" style="{{o.style}}" onPointerDown="{{o.down}}" onPointerUp="{{o.up}}" onPointerLeave="{{o.up}}" onPointerCancel="{{o.up}}"><span aria-hidden="true" style="{{o.tint}}"></span>{{o.label}}</button>
+              </sc-for>
+            </div>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 20px; min-height: 56px">
+            <div style="display: flex; flex-direction: column; gap: 3px; min-width: 0">
+              <span style="font-size: 19px; font-weight: 500">Starlink health</span>
+              <span style="font-size: 15px; color: #8E98AA">Uptime and latency from the dish via HA</span>
+            </div>
+            <button type="button" aria-pressed="{{tStarlink.pressed}}" aria-label="{{tStarlink.aria}}" onClick="{{tStarlink.pick}}" style="{{tStarlink.style}}" onPointerDown="{{tStarlink.down}}" onPointerUp="{{tStarlink.up}}" onPointerLeave="{{tStarlink.up}}" onPointerCancel="{{tStarlink.up}}"><span aria-hidden="true" style="{{tStarlink.tint}}"></span><span style="{{tStarlink.knob}}"></span></button>
+          </div>
+        </div>
+        <div style="flex: 0 0 auto; height: 1px; background: rgba(255,255,255,0.07)"></div>
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <h3 style="margin: 0 0 4px; font-size: 15px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{accSoft}}">Shopping list</h3>
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 20px; min-height: 56px">
+            <div style="display: flex; flex-direction: column; gap: 3px; min-width: 0">
+              <span style="font-size: 19px; font-weight: 500">Default list</span>
+              <span style="font-size: 15px; color: #8E98AA">Shown first when the panel wakes</span>
+            </div>
+            <span style="position: relative; display: block; width: 240px">
+              <select value="{{defaultList}}" onChange="{{onDefaultList}}" aria-label="Default list" style="{{settingsSelect}}">
+                <sc-for list="{{visibleListNames}}" as="ln" hint-placeholder-count="3">
+                  <option value="{{ln}}">{{ln}}</option>
+                </sc-for>
+              </select>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A9B2C3" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; right: 12px; top: 14px; pointer-events: none"><path d="M6 9l6 6 6-6"></path></svg>
+            </span>
+          </div>
+          <span style="font-size: 15px; color: #8E98AA; margin-top: 4px">Lists shown on the panel</span>
+          <div style="display: flex; flex-wrap: wrap; gap: 10px">
+            <sc-for list="{{listChips}}" as="c" hint-placeholder-count="6">
+              <button type="button" aria-pressed="{{c.pressed}}" onClick="{{c.pick}}" style="{{c.style}}" onPointerDown="{{c.down}}" onPointerUp="{{c.up}}" onPointerLeave="{{c.up}}" onPointerCancel="{{c.up}}"><span aria-hidden="true" style="{{c.tint}}"></span>{{c.label}}</button>
+            </sc-for>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 20px; min-height: 56px">
+            <div style="display: flex; flex-direction: column; gap: 3px; min-width: 0">
+              <span style="font-size: 19px; font-weight: 500">Clear completed after</span>
+              <span style="font-size: 15px; color: #8E98AA">Hidden from the panel, kept in Obsidian</span>
+            </div>
+            <div role="group" style="{{segWrap}}">
+              <sc-for list="{{clearOpts}}" as="o" hint-placeholder-count="3">
+                <button type="button" aria-pressed="{{o.pressed}}" onClick="{{o.pick}}" style="{{o.style}}" onPointerDown="{{o.down}}" onPointerUp="{{o.up}}" onPointerLeave="{{o.up}}" onPointerCancel="{{o.up}}"><span aria-hidden="true" style="{{o.tint}}"></span>{{o.label}}</button>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+        <div style="flex: 0 0 auto; height: 1px; background: rgba(255,255,255,0.07)"></div>
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <h3 style="margin: 0 0 4px; font-size: 15px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{accSoft}}">Weather</h3>
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 20px; min-height: 56px">
+            <div style="display: flex; flex-direction: column; gap: 3px; min-width: 0">
+              <span style="font-size: 19px; font-weight: 500">Location</span>
+              <span style="font-size: 15px; color: #8E98AA">Set at kiosk.lan/settings</span>
+            </div>
+            <span style="font-size: 18px; font-weight: 600; color: #A9B2C3">Not set</span>
+          </div>
+        </div>
+        <div style="flex: 0 0 auto; height: 1px; background: rgba(255,255,255,0.07)"></div>
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <h3 style="margin: 0 0 4px; font-size: 15px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: {{accSoft}}">System</h3>
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 20px; min-height: 56px">
+            <div style="display: flex; flex-direction: column; gap: 3px; min-width: 0">
+              <span style="font-size: 19px; font-weight: 500">Diagnostics</span>
+              <span style="font-size: 15px; color: #8E98AA">Read-only status and recent logs · shell is SSH only</span>
+            </div>
+            <button type="button" onClick="{{openTerminal}}" style="{{pTerm.style}}" onPointerDown="{{pTerm.down}}" onPointerUp="{{pTerm.up}}" onPointerLeave="{{pTerm.up}}" onPointerCancel="{{pTerm.up}}"><span aria-hidden="true" style="{{pTerm.tint}}"></span>Show</button>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 20px; min-height: 56px">
+            <div style="display: flex; flex-direction: column; gap: 3px; min-width: 0">
+              <span style="font-size: 19px; font-weight: 500">Reset dashboard</span>
+              <span style="font-size: 15px; color: #8E98AA">Restores settings, accent and sample data</span>
+            </div>
+            <button type="button" onClick="{{resetTap}}" style="{{pReset.style}}" onPointerDown="{{pReset.down}}" onPointerUp="{{pReset.up}}" onPointerLeave="{{pReset.up}}" onPointerCancel="{{pReset.up}}"><span aria-hidden="true" style="{{pReset.tint}}"></span>{{resetLabel}}</button>
+          </div>
+          <div style="display: grid; grid-template-columns: 150px 1fr; row-gap: 8px; font-size: 16px; padding-top: 8px">
+            <span style="color: #8E98AA">Version</span><span>Home Dashboard 0.1.0 · mockup</span>
+            <span style="color: #8E98AA">UI build</span><span>2026-11-22</span>
+            <span style="color: #8E98AA">LAN settings</span><span>kiosk.lan/settings</span>
+            <span style="color: #8E98AA">Access</span><span>SSH key auth · secrets in /etc/dashboard/secrets.env</span>
+            <span style="color: #8E98AA">Sources</span><span>HA · Omada · Uptime Kuma · Starlink · Obsidian (all mock)</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </sc-if>
+
+  <sc-if value="{{terminalOpen}}" hint-placeholder-val="{{ false }}">
+    <section role="dialog" aria-label="Diagnostics" style="{{terminalPanel}}">
+      <div style="display: flex; justify-content: space-between; align-items: center">
+        <div style="display: flex; align-items: center; gap: 12px">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{accSoft}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 17l6-5-6-5M12 19h8"></path></svg>
+          <h2 style="margin: 0; font-size: 22px; font-weight: 600">Diagnostics · dashboard-service</h2>
+        </div>
+        <button type="button" onClick="{{closeTerminal}}" style="{{pTermClose.style}}" onPointerDown="{{pTermClose.down}}" onPointerUp="{{pTermClose.up}}" onPointerLeave="{{pTermClose.up}}" onPointerCancel="{{pTermClose.up}}"><span aria-hidden="true" style="{{pTermClose.tint}}"></span>Close</button>
+      </div>
+      <div class="noscroll" style="flex: 1 1 auto; overflow-y: auto; padding: 18px 20px; border-radius: 18px; background: rgba(0,0,0,0.45); box-shadow: inset 0 2px 6px rgba(0,0,0,0.5); font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 16px; line-height: 1.6; color: #C8D0DC; white-space: pre-wrap">
+        <sc-for list="{{termLines}}" as="ln" hint-placeholder-count="10">
+          <div style="{{ln.style}}">{{ln.text}}</div>
+        </sc-for>
+      </div>
+    </section>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#8B7CF6","options":["#8B7CF6","#E8705F","#4CC38A","#5B9BF5"]},"depth":{"editor":"range","default":1,"min":0,"max":2,"step":0.1},"edge":{"editor":"range","default":1.75,"min":1,"max":3,"step":0.05,"unit":"×"},"corner":{"editor":"range","default":28,"min":16,"max":56,"step":1,"unit":"px"},"$preview":{"width":1080,"height":1920}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = this.initialState();
+    this.drag = null;
+    this.shopTimers = {};
+    var seed = 1337;
+    function rnd() { seed |= 0; seed = seed + 0x6D2B79F5 | 0; var t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }
+    var dl = [], ul = [], burst = 0, level = 0, ulLevel = 0;
+    for (var i = 0; i < 1440; i++) {
+      var base = 22 + 10 * Math.sin(i / 55) + 6 * Math.sin(i / 13) + rnd() * 9;
+      var ubase = 3.5 + 1.5 * Math.sin(i / 40) + rnd() * 2;
+      if (burst <= 0 && rnd() < 0.025) { burst = 3 + Math.floor(rnd() * 16); level = 90 + rnd() * 170; ulLevel = rnd() < 0.4 ? 10 + rnd() * 18 : 0; }
+      if (burst > 0) { burst--; base = Math.max(base, level * (0.85 + rnd() * 0.15)); if (ulLevel) ubase = Math.max(ubase, ulLevel * (0.8 + rnd() * 0.2)); }
+      dl.push(base); ul.push(ubase);
+    }
+    dl[1439] = 64; ul[1439] = 7;
+    this.raw = { dl: dl, ul: ul };
+  }
+
+  window() {
+    var dl = this.raw.dl, ul = this.raw.ul;
+    if (this.state.win === '2h') return { dl: dl.slice(1200), ul: ul.slice(1200), step: 0.5, rawDl: dl.slice(1200) };
+    var bd = [], bu = [];
+    for (var i = 0; i < 1440; i += 4) { bd.push(Math.max(dl[i], dl[i+1], dl[i+2], dl[i+3])); bu.push(Math.max(ul[i], ul[i+1], ul[i+2], ul[i+3])); }
+    return { dl: bd, ul: bu, step: 2, rawDl: dl };
+  }
+
+  backspaceOnce() {
+    var t = this.state.kbText;
+    if (!t) { this.stopBackspace(); return; }
+    this.setState({ kbText: t.slice(0, -1) });
+  }
+  startBackspace() {
+    var self = this;
+    this.stopBackspace();
+    this.bsFromPointer = true;
+    this.backspaceOnce();
+    this.bsDelay = setTimeout(function () {
+      self.bsRepeat = setInterval(function () { self.backspaceOnce(); }, 70);
+    }, 450);
+  }
+  stopBackspace() {
+    if (this.bsDelay) { clearTimeout(this.bsDelay); this.bsDelay = null; }
+    if (this.bsRepeat) { clearInterval(this.bsRepeat); this.bsRepeat = null; }
+  }
+  componentWillUnmount() { this.stopBackspace(); var T = this.shopTimers; Object.keys(T).forEach(function (key) { clearTimeout(T[key]); }); }
+
+  initialState() {
+    var DAY = 86400000, now = Date.now(), n = 0;
+    var lists = {
+      Groceries: [
+        { name: 'Milk', qty: '2 L', done: false },
+        { name: 'Eggs', qty: '×12', done: false },
+        { name: 'Sourdough', qty: '', done: false },
+        { name: 'Bananas', qty: '×6', done: false },
+        { name: 'Coffee beans', qty: '1 kg', done: false },
+        { name: 'Baby spinach', qty: '', done: false },
+        { name: 'Greek yoghurt', qty: '1 kg', done: false },
+        { name: 'Butter', qty: '', done: true, doneAt: now - 1 * DAY },
+        { name: 'Olive oil', qty: '1 L', done: true, doneAt: now - 3 * DAY },
+        { name: 'Paper towel', qty: '', done: true, doneAt: now - 10 * DAY }
+      ],
+      Hardware: [
+        { name: 'Picture hooks', qty: '', done: false },
+        { name: 'AA batteries', qty: '×8', done: false },
+        { name: 'Cable ties', qty: '', done: false },
+        { name: 'Wood glue', qty: '', done: true, doneAt: now - 2 * DAY }
+      ],
+      Pharmacy: [
+        { name: 'Sunscreen SPF50', qty: '', done: false },
+        { name: 'Toothpaste', qty: '×2', done: false }
+      ]
+    };
+    Object.keys(lists).forEach(function (key) { lists[key] = lists[key].map(function (x) { n++; return Object.assign({ id: 'seed' + n, doneAt: null }, x); }); });
+    return {
+      win: '2h', hover: null, pressedId: null,
+      on: { living: true, kitchen: false, bedroom: false, porch: true, aircon: true, door: true, garage: false, movie: false },
+      level: { living: 80, kitchen: 100, bedroom: 40, porch: 100 },
+      lists: lists, listName: 'Groceries', phase: {}, showDone: false,
+      kbOpen: false, kbText: '', kbList: 'Groceries', shift: false, numMode: false, pressedKey: null,
+      settingsOpen: false, serversOpen: false, terminalOpen: false, accentIdx: null, clearDays: 14, resetArmed: false,
+      clock24: true, idleSec: 60, wake: 'both', night: 'dim', nightStart: 1320, nightEnd: 360, showSliders: true,
+      alertMon: { 'Home Assistant': true, 'Jellyfin': false, 'Omada Controller': true, 'Sonarr': false, 'Radarr': false, 'Prowlarr': false, 'qBittorrent': false, 'Immich': false, 'Nginx Proxy Manager': true, 'AdGuard Home': true, 'Syncthing (vault)': true, 'NAS backup': true },
+      planDl: 300, planUl: 30, showPlan: true, pollSec: 30, starlink: true,
+      visibleLists: { Groceries: true, Hardware: true, Pharmacy: true }, defaultList: 'Groceries'
+    };
+  }
+  resetAll() {
+    this.stopBackspace();
+    var T = this.shopTimers; Object.keys(T).forEach(function (key) { clearTimeout(T[key]); }); this.shopTimers = {};
+    if (this.resetTimer) clearTimeout(this.resetTimer);
+    this.setState(this.initialState());
+  }
+
+  armRelease() {
+    if (this.releaseArmed) return;
+    var self = this;
+    this.releaseArmed = true;
+    var clear = function () {
+      self.releaseArmed = false;
+      window.removeEventListener('pointerup', clear, true);
+      window.removeEventListener('pointercancel', clear, true);
+      window.removeEventListener('blur', clear);
+      self.stopBackspace();
+      if (self.state.pressedId || self.state.pressedKey) self.setState({ pressedId: null, pressedKey: null });
+    };
+    window.addEventListener('pointerup', clear, true);
+    window.addEventListener('pointercancel', clear, true);
+    window.addEventListener('blur', clear);
+  }
+
+  setPhase(id, ph) {
+    var next = Object.assign({}, this.state.phase);
+    if (ph) next[id] = ph; else delete next[id];
+    this.setState({ phase: next });
+  }
+  patchItem(list, id, patch) {
+    var lists = Object.assign({}, this.state.lists);
+    lists[list] = (lists[list] || []).map(function (x) { return x.id === id ? Object.assign({}, x, patch) : x; });
+    this.setState({ lists: lists });
+  }
+  buzz(ms) { try { if (navigator.vibrate) navigator.vibrate(ms); } catch (e) {} }
+  shopTap(list, id) {
+    var self = this, T = this.shopTimers;
+    var it = (this.state.lists[list] || []).find(function (x) { return x.id === id; });
+    if (!it) return;
+    var ph = this.state.phase[id];
+    if (!it.done) {
+      if (ph === 'checked') { clearTimeout(T[id]); delete T[id]; this.setPhase(id, null); return; }
+      if (ph) return;
+      this.setPhase(id, 'checked'); this.buzz(12);
+      T[id] = setTimeout(function () {
+        self.setPhase(id, 'leaving');
+        T[id] = setTimeout(function () { delete T[id]; self.patchItem(list, id, { done: true, doneAt: Date.now() }); self.setPhase(id, null); }, 400);
+      }, 2500);
+    } else {
+      if (ph) return;
+      this.setPhase(id, 'unchecking'); this.buzz(8);
+      T[id] = setTimeout(function () {
+        self.setPhase(id, 'leavingUp');
+        T[id] = setTimeout(function () {
+          self.patchItem(list, id, { done: false, doneAt: null }); self.setPhase(id, 'arriving');
+          T[id] = setTimeout(function () { delete T[id]; self.setPhase(id, null); }, 440);
+        }, 280);
+      }, 420);
+    }
+  }
+
+  setLevel(id, v) {
+    v = Math.max(0, Math.min(100, Math.round(v / 10) * 10));
+    var lv = Object.assign({}, this.state.level); var on = Object.assign({}, this.state.on);
+    if (v === 0) { on[id] = false; } else { lv[id] = v; on[id] = true; }
+    this.setState({ level: lv, on: on });
+  }
+  step(id, dir) {
+    var cur = this.state.on[id] ? this.state.level[id] : 0;
+    this.setLevel(id, cur + dir * 10);
+  }
+
+  parse(raw, curList, names) {
+    var s = ' ' + raw + ' ';
+    var out = { list: curList, listIsNew: false, prio: 0, due: null, qty: '', name: '' };
+    var m = s.match(/\s#([A-Za-z][\w-]*)(?=\s)/);
+    if (m) {
+      var hit = names.find(function (n) { return n.toLowerCase() === m[1].toLowerCase(); });
+      out.list = hit || (m[1].charAt(0).toUpperCase() + m[1].slice(1));
+      out.listIsNew = !hit;
+      s = s.replace(m[0], ' ');
+    }
+    m = s.match(/\s(!{1,3})(?=\s)/);
+    if (m) { out.prio = m[1].length; s = s.replace(m[0], ' '); }
+    m = s.match(/\s(?:(?:on|by|for|this|next)\s+)?(today|tonight|tomorrow|tmrw|weekend|week|sunday|sun|monday|mon|tuesday|tues|tue|wednesday|wed|thursday|thurs|thu|friday|fri|saturday|sat)(?=\s)/i);
+    if (m && !(m[1].toLowerCase() === 'week' && !/next\s+week/i.test(m[0]))) {
+      var w = m[1].toLowerCase();
+      var d = new Date(2026, 10, 22);
+      var dayIdx = { sun: 0, mon: 1, tue: 2, wed: 3, thu: 4, fri: 5, sat: 6 };
+      if (w === 'tomorrow' || w === 'tmrw') d.setDate(d.getDate() + 1);
+      else if (w === 'weekend') d.setDate(d.getDate() + (((6 - d.getDay()) + 7) % 7 || 7));
+      else if (w === 'week') d.setDate(d.getDate() + (((1 - d.getDay()) + 7) % 7 || 7));
+      else if (w !== 'today' && w !== 'tonight') { var di = dayIdx[w.slice(0, 3)]; d.setDate(d.getDate() + (((di - d.getDay()) + 7) % 7 || 7)); }
+      out.due = d;
+      s = s.replace(m[0], ' ');
+    }
+    m = s.match(/\s(?:x|×)\s?(\d+)(?=\s)/i);
+    if (m) { out.qty = '×' + m[1]; s = s.replace(m[0], ' '); }
+    else {
+      m = s.match(/\s(\d+(?:\.\d+)?)\s?(kg|g|ml|l|lt|litres?|liters?|pk|packs?|dozen|x|×)?(?=\s)/i);
+      if (m) {
+        var n = m[1], u = (m[2] || '').toLowerCase();
+        if (u === 'l' || u === 'lt' || u.indexOf('lit') === 0) out.qty = n + ' L';
+        else if (u === 'kg' || u === 'g' || u === 'ml') out.qty = n + ' ' + u;
+        else if (u.indexOf('p') === 0) out.qty = n + ' pk';
+        else if (u === 'dozen') out.qty = '×' + (parseFloat(n) * 12);
+        else out.qty = '×' + n;
+        s = s.replace(m[0], ' ');
+      } else {
+        m = s.match(/\s(?:a\s+)?dozen(?=\s)/i);
+        if (m) { out.qty = '×12'; s = s.replace(m[0], ' '); }
+      }
+    }
+    var name = s.replace(/\s+/g, ' ').trim().replace(/^(of|some)\s+/i, '');
+    out.name = name ? name.charAt(0).toUpperCase() + name.slice(1) : '';
+    return out;
+  }
+
+  renderVals() {
+    var self = this;
+    var s = this.state;
+    var ACCENTS = [['#8B7CF6', 'Violet'], ['#6366F1', 'Indigo'], ['#3B82F6', 'Blue'], ['#14B8A6', 'Teal'], ['#22C55E', 'Green'], ['#EC4899', 'Rose'], ['#F97316', 'Ember'], ['#71717A', 'Graphite']];
+    var accent = s.accentIdx != null ? ACCENTS[s.accentIdx][0] : (this.props.accent ?? '#8B7CF6');
+    var dp = this.props.depth ?? 1;
+    var ed = this.props.edge ?? 1.75;
+    var cr = this.props.corner ?? 28;
+    var hx6 = accent.replace('#', '');
+    if (hx6.length === 3) hx6 = hx6[0] + hx6[0] + hx6[1] + hx6[1] + hx6[2] + hx6[2];
+    var ar = parseInt(hx6.slice(0, 2), 16), ag = parseInt(hx6.slice(2, 4), 16), ab = parseInt(hx6.slice(4, 6), 16);
+    function acc(o) { return 'rgba(' + ar + ',' + ag + ',' + ab + ',' + Math.max(0, Math.min(1, o)).toFixed(3) + ')'; }
+    var lr = Math.round(ar + (255 - ar) * 0.4), lg = Math.round(ag + (255 - ag) * 0.4), lb = Math.round(ab + (255 - ab) * 0.4);
+    function mixHex(t, r2, g2, b2) { function c(a, b) { var v = Math.round(a + (b - a) * t); return (v < 16 ? '0' : '') + v.toString(16); } return '#' + c(ar, r2) + c(ag, g2) + c(ab, b2); }
+    function mixRgba(t, r2, g2, b2, o) { return 'rgba(' + Math.round(ar + (r2 - ar) * t) + ',' + Math.round(ag + (g2 - ag) * t) + ',' + Math.round(ab + (b2 - ab) * t) + ',' + o + ')'; }
+    var accSoft = mixHex(0.55, 255, 255, 255), accPale = mixHex(0.75, 255, 255, 255);
+    var bgBase = 'rgb(' + Math.round(14 + (ar - 14) * 0.05) + ',' + Math.round(19 + (ag - 19) * 0.05) + ',' + Math.round(29 + (ab - 29) * 0.05) + ')';
+    function lightAcc(o) { return 'rgba(' + lr + ',' + lg + ',' + lb + ',' + o.toFixed(3) + ')'; }
+    function k(x) { return Math.max(0, Math.min(1, x * dp)).toFixed(3); }
+    function px(v) { return v.toFixed(1) + 'px'; }
+    function bevel(topHi, botSh, scale) {
+      var e = ed * (scale || 1);
+      return 'inset 0 ' + px(1.5 * e) + ' 0 rgba(255,255,255,' + k(topHi) + '), inset 0 ' + px(3 * e) + ' ' + px(4 * e) + ' rgba(255,255,255,' + k(topHi * 0.25) + '), inset 0 ' + px(-3 * e) + ' ' + px(6 * e) + ' rgba(0,0,0,' + k(botSh) + ')';
+    }
+    function drop(lift, m) {
+      return '0 ' + px(2 * lift) + ' ' + px(3 * lift) + ' rgba(0,0,0,' + k(0.35 * lift * m) + '), 0 ' + px(14 * lift) + ' ' + px(32 * lift) + ' rgba(0,0,0,' + k(0.30 * lift * m) + ')';
+    }
+    var glassBg = 'background: radial-gradient(130% 90% at 30% 0%, rgba(255,255,255,' + k(0.10) + ') 0%, rgba(255,255,255,0) 55%), linear-gradient(180deg, rgba(255,255,255,' + (0.06 + 0.05 * dp).toFixed(3) + ') 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0.025) 100%); ';
+    function glass(lift) { return glassBg + 'border: 0; box-shadow: ' + bevel(0.22, 0.32) + ', inset 0 0 0 1px rgba(255,255,255,0.09), ' + drop(lift, 1) + '; '; }
+    function glassOn(lift) {
+      return 'background: radial-gradient(130% 90% at 30% 0%, rgba(255,255,255,' + k(0.12) + ') 0%, rgba(255,255,255,0) 55%), linear-gradient(180deg, ' + acc(0.34) + ' 0%, ' + acc(0.22) + ' 55%, ' + acc(0.14) + ' 100%), rgba(22,26,40,0.55); border: 0; ' +
+        'box-shadow: ' + bevel(0.30, 0.34) + ', inset 0 0 0 1px ' + acc(0.45) + ', ' + drop(lift, 1.1) + ', 0 0 ' + px(28 * lift) + ' ' + acc(0.22 * dp) + '; ';
+    }
+    function glassSmall(lift) { return glassBg + 'border: 0; box-shadow: ' + bevel(0.22, 0.30, 0.6) + ', inset 0 0 0 1px rgba(255,255,255,0.09), 0 ' + px(2 * lift) + ' ' + px(3 * lift) + ' rgba(0,0,0,' + k(0.30) + '), 0 ' + px(8 * lift) + ' ' + px(18 * lift) + ' rgba(0,0,0,' + k(0.22) + '); '; }
+    function accentDome(glow) {
+      return 'color: #FFFFFF; background: radial-gradient(90% 70% at 35% 15%, rgba(255,255,255,' + k(0.35) + ') 0%, rgba(255,255,255,0) 60%), ' + accent + '; border: 0; box-shadow: inset 0 ' + px(1.2 * ed) + ' 0 rgba(255,255,255,' + k(0.45) + '), inset 0 ' + px(-2 * ed) + ' ' + px(4 * ed) + ' rgba(0,0,0,' + k(0.28) + '), 0 3px 10px ' + acc((glow || 0.45) * Math.min(1, dp)) + '; ';
+    }
+    function press(id, variant) {
+      var isDown = s.pressedId === id;
+      var bg = 'linear-gradient(180deg, ' + lightAcc(0.30) + ', ' + lightAcc(0.16) + '); box-shadow: inset 0 0 0 1px ' + lightAcc(0.40) + '; ';
+      return {
+        isDown: isDown,
+        down: function () { self.setState({ pressedId: id }); self.armRelease(); },
+        up: function () { if (self.state.pressedId) self.setState({ pressedId: null }); },
+        tint: 'position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none; will-change: opacity; background: ' + bg + (isDown ? 'opacity: 1; transition: opacity 45ms ease-out;' : 'opacity: 0; transition: opacity 95ms ease-out;'),
+        fx: 'position: relative; isolation: isolate; transition: transform 90ms cubic-bezier(.2,.8,.2,1), box-shadow 90ms; ' + (isDown ? 'transform: translateY(1px) scale(0.985); ' : 'transform: none; ')
+      };
+    }
+    var recessed = 'background: rgba(0,0,0,0.24); border: 0; box-shadow: inset 0 ' + px(1.5 * ed) + ' ' + px(3 * ed) + ' rgba(0,0,0,' + k(0.40) + '), inset 0 -1px 0 rgba(255,255,255,' + k(0.10) + '); ';
+
+    var w = this.window();
+    var n = w.dl.length;
+    var peak = Math.max.apply(null, w.rawDl);
+    var avg = w.rawDl.reduce(function (a, b) { return a + b; }, 0) / w.rawDl.length;
+    var nice = [50, 100, 200, 250, 400, 500, 600, 1000];
+    var PLAN_DL = s.planDl, PLAN_UL = s.planUl;
+    var ymax = nice.find(function (v) { return v >= Math.max(peak, s.showPlan ? PLAN_DL : 0) * 1.08; }) || 1000;
+    var x0 = 44, x1 = 600, yTop = 10, yBot = 192;
+    function X(i) { return x0 + (i / (n - 1)) * (x1 - x0); }
+    function Y(v) { return yBot - (v / ymax) * (yBot - yTop); }
+    function line(arr) { var d = ''; for (var i = 0; i < arr.length; i++) d += (i ? 'L' : 'M') + X(i).toFixed(1) + ',' + Y(arr[i]).toFixed(1); return d; }
+    function area(arr) { return line(arr) + 'L' + x1 + ',' + yBot + 'L' + x0 + ',' + yBot + 'Z'; }
+    function fmt(mins) { var t = ((10 * 60 + 12 + Math.round(mins)) % 1440 + 1440) % 1440; var h = Math.floor(t / 60), m = t % 60; return (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m; }
+    var span = (n - 1) * w.step;
+    var hv = s.hover;
+    var hasHover = hv !== null && hv >= 0 && hv < n;
+    var hx = hasHover ? X(hv) : 0;
+    var tipLeft = hasHover ? (hx > 380 ? hx - 222 : hx + 14) : 0;
+
+    var bulb = 'M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.4 1 1.1 1 1.9V16h5v-.2c0-.8.4-1.5 1-1.9A6 6 0 0 0 12 3z';
+    var defs = [
+      { id: 'living', name: 'Living lights', kind: 'light', icon: bulb },
+      { id: 'kitchen', name: 'Kitchen', kind: 'light', icon: bulb },
+      { id: 'bedroom', name: 'Bedroom', kind: 'light', icon: bulb },
+      { id: 'porch', name: 'Porch', kind: 'light', icon: bulb },
+      { id: 'aircon', name: 'Air con', kind: 'climate', icon: 'M12 2v20M4.9 7l14.2 10M4.9 17L19.1 7M9 4l3 3 3-3M9 20l3-3 3 3', onTxt: 'Cooling · 22°', offTxt: 'Off · 26° inside' },
+      { id: 'door', name: 'Front door', kind: 'lock', icon: 'M6 11h12v10H6zM8 11V7a4 4 0 0 1 8 0v4', onTxt: 'Locked', offTxt: 'Unlocked' },
+      { id: 'garage', name: 'Garage', kind: 'cover', icon: 'M3 21V9l9-6 9 6v12M7 21v-8h10v8M7 16h10', onTxt: 'Open', offTxt: 'Closed' },
+      { id: 'movie', name: 'Movie night', kind: 'scene', icon: 'M12 3l1.8 4.6L18 9l-4.2 1.4L12 15l-1.8-4.6L6 9l4.2-1.4zM19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9z', onTxt: 'Running', offTxt: 'Scene' }
+    ];
+    var tiles = defs.map(function (d) {
+      var on = !!s.on[d.id];
+      var isLightKind = d.kind === 'light';
+      var isLight = isLightKind && s.showSliders;
+      var lvl = isLightKind ? (s.level[d.id] || 0) : 0;
+      var shown = on ? lvl : 0;
+      var active = on && d.kind !== 'lock';
+      var isPressed = s.pressedId === d.id;
+      var tp = press(d.id, active ? 'white' : 'accent');
+      var lift = isPressed ? 0.45 : 1;
+      var iconBase = 'width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; ';
+      var iconHi = 'inset 0 ' + px(1.2 * ed) + ' 0 rgba(255,255,255,';
+      var iconWrap;
+      if (active) iconWrap = iconBase + accentDome();
+      else if (d.kind === 'lock' && on) iconWrap = iconBase + 'color: #7FD1A6; background: linear-gradient(180deg, rgba(76,195,138,0.26), rgba(76,195,138,0.12)); box-shadow: ' + iconHi + k(0.22) + '), inset 0 ' + px(-2 * ed) + ' ' + px(3 * ed) + ' rgba(0,0,0,' + k(0.25) + ');';
+      else iconWrap = iconBase + 'color: #C7CEDB; background: linear-gradient(180deg, rgba(255,255,255,' + (0.08 + 0.04 * dp).toFixed(3) + '), rgba(255,255,255,0.04)); box-shadow: ' + iconHi + k(0.18) + '), inset 0 ' + px(-2 * ed) + ' ' + px(3 * ed) + ' rgba(0,0,0,' + k(0.25) + ');';
+      var surface = (isPressed ? 'transform: translateY(1px) scale(0.985); ' : 'transform: none; ') + (active ? glassOn(lift) : glass(lift));
+      var ticks = [];
+      for (var i = 1; i <= 9; i++) {
+        var lit = i * 10 <= shown;
+        ticks.push({ style: 'position: absolute; left: 13px; right: 13px; height: 2px; border-radius: 1px; bottom: calc(' + (i * 10) + '% - 1px); background: ' + (lit ? 'rgba(255,255,255,0.38)' : 'rgba(255,255,255,0.14)') + '; pointer-events: none;' });
+      }
+      return {
+        isLight: isLight,
+        notLight: !isLight,
+        name: d.name,
+        icon: d.icon,
+        sub: isLightKind ? (on ? 'On · ' + lvl + '%' : 'Off') : (on ? d.onTxt : d.offTxt),
+        pressed: on ? 'true' : 'false',
+        toggle: function () {
+          var next = Object.assign({}, self.state.on); next[d.id] = !next[d.id];
+          var lv = self.state.level;
+          if (isLightKind && next[d.id] && !lv[d.id]) { lv = Object.assign({}, lv); lv[d.id] = 50; }
+          self.setState({ on: next, level: lv });
+        },
+        down: function () { self.setState({ pressedId: d.id }); self.armRelease(); },
+        up: function () { if (self.state.pressedId) self.setState({ pressedId: null }); },
+        style: 'position: relative; isolation: isolate; height: 176px; box-sizing: border-box; padding: 22px; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; border-radius: ' + cr + 'px; cursor: pointer; color: #E9EDF5; transition: transform 90ms cubic-bezier(.2,.8,.2,1), box-shadow 90ms, background 130ms; ' + surface,
+        boxStyle: 'position: relative; isolation: isolate; height: 176px; box-sizing: border-box; border-radius: ' + cr + 'px; color: #E9EDF5; transition: transform 90ms cubic-bezier(.2,.8,.2,1), box-shadow 90ms, background 130ms; ' + surface,
+        mainStyle: 'position: absolute; left: 0; top: 0; bottom: 0; right: 58px; box-sizing: border-box; padding: 22px 0 22px 22px; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; background: transparent; border: 0; color: inherit; cursor: pointer; text-align: left',
+        iconWrap: iconWrap,
+        tint: tp.tint,
+        subStyle: 'font-size: 19px; ' + (active ? 'color: ' + accPale + ';' : 'color: #A9B2C3;'),
+        trackStyle: 'position: absolute; top: 14px; bottom: 14px; right: 14px; width: 40px; border-radius: 20px; overflow: hidden; touch-action: none; cursor: ns-resize; ' + recessed,
+        fillStyle: 'position: absolute; left: 0; right: 0; bottom: 0; height: ' + shown + '%; border-radius: ' + (shown >= 100 ? '20px' : '0 0 20px 20px') + '; transition: height 75ms cubic-bezier(.2,.8,.2,1); pointer-events: none; background: radial-gradient(120% 40% at 40% 0%, rgba(255,255,255,' + k(0.30) + ') 0%, rgba(255,255,255,0) 70%), ' + accent + '; box-shadow: inset 0 ' + px(1.2 * ed) + ' 0 rgba(255,255,255,' + k(0.40) + ');',
+        ticks: ticks,
+        upLabel: 'Brighten ' + d.name + ' by 10%',
+        downLabel: 'Dim ' + d.name + ' by 10%',
+        stepUp: function () { if (self.suppressClick) { self.suppressClick = false; return; } self.step(d.id, 1); },
+        stepDown: function () { if (self.suppressClick) { self.suppressClick = false; return; } self.step(d.id, -1); },
+        sDown: function (e) { self.drag = { id: d.id, y0: e.clientY, moved: false, el: e.currentTarget, pid: e.pointerId }; self.suppressClick = false; },
+        sMove: function (e) {
+          var dr = self.drag; if (!dr || dr.id !== d.id) return;
+          if (!dr.moved && Math.abs(e.clientY - dr.y0) < 6) return;
+          if (!dr.moved) { dr.moved = true; try { dr.el.setPointerCapture(dr.pid); } catch (err) {} }
+          var r = dr.el.getBoundingClientRect();
+          var ratio = 1 - (e.clientY - r.top) / r.height;
+          self.setLevel(d.id, ratio * 100);
+        },
+        sUp: function () { if (self.drag && self.drag.moved) self.suppressClick = true; self.drag = null; }
+      };
+    });
+
+    var allListNames = Object.keys(s.lists);
+    var listNames = allListNames.filter(function (n) { return s.visibleLists[n] !== false; });
+    var curItems = s.lists[s.listName] || [];
+    var nowMs = Date.now(), DAYMS = 86400000;
+    function agoLabel(t) {
+      if (!t) return '';
+      var d = Math.floor((nowMs - t) / DAYMS);
+      if (d <= 0) return 'Today'; if (d === 1) return 'Yesterday'; return d + ' days ago';
+    }
+    function makeRow(it) {
+      var ph = s.phase[it.id];
+      var ip = press('shop:' + it.id);
+      var checkedLook = it.done ? (ph !== 'unchecking' && ph !== 'leavingUp') : (ph === 'checked' || ph === 'leaving');
+      var row = 'flex: 0 0 auto; display: flex; align-items: center; gap: 12px; height: 46px; box-sizing: border-box; overflow: hidden; padding: 0 8px; margin: 0 -4px; border: 0; border-radius: 12px; background: transparent; color: inherit; text-align: left; cursor: pointer; ' + ip.fx +
+        'transition: transform .38s ease, opacity .35s, height .38s ease; ';
+      if (ph === 'leaving') row += 'height: 0; opacity: 0; transform: translateY(24px) scale(0.98); pointer-events: none; ';
+      else if (ph === 'leavingUp') row += 'height: 0; opacity: 0; transform: translateY(-28px) scale(0.98); transition-duration: .26s; pointer-events: none; ';
+      else if (it.done && !ph) row += 'opacity: 0.6; ';
+      else row += 'opacity: 1; ';
+      if (ph === 'arriving') row += 'animation: shopArrive .42s cubic-bezier(.2,.8,.2,1); ';
+      return {
+        name: it.name, qty: it.qty, ago: agoLabel(it.doneAt), pressed: checkedLook ? 'true' : 'false',
+        down: ip.down, up: ip.up, tint: ip.tint,
+        rowStyle: row,
+        boxStyle: 'flex: 0 0 auto; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; transition: background .2s, box-shadow .2s, border-color .2s, transform .15s; ' +
+          (ip.isDown ? 'transform: scale(0.85); ' : 'transform: none; ') +
+          (checkedLook ? 'border: 2px solid ' + accent + '; background: ' + accent + '; box-shadow: 0 0 10px ' + acc(0.45) + ', inset 0 1px 0 rgba(255,255,255,0.35);' : 'border: 2px solid rgba(255,255,255,0.30); background: transparent; box-shadow: inset 0 1px 2px rgba(0,0,0,0.35);'),
+        checkPath: 'stroke-dasharray: 22; stroke-dashoffset: ' + (checkedLook ? 0 : 22) + '; transition: stroke-dashoffset .3s .1s;',
+        textWrap: 'flex: 1 1 auto; min-width: 0; font-size: 20px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;',
+        titleStyle: 'background-image: linear-gradient(currentColor, currentColor); background-position: 0 58%; background-repeat: no-repeat; background-size: ' + (checkedLook ? '100%' : '0%') + ' 1.5px; transition: background-size .35s ease, color .35s; color: ' + (checkedLook ? '#7C8698' : '#E9EDF5') + ';',
+        toggle: function () { self.shopTap(self.state.listName, it.id); }
+      };
+    }
+    var openRows = curItems.filter(function (x) { return !x.done; }).map(makeRow);
+    var cutoff = s.clearDays ? nowMs - s.clearDays * DAYMS : -Infinity;
+    var doneVisible = curItems.filter(function (x) { return x.done && (x.doneAt || 0) >= cutoff; }).sort(function (a, b) { return (b.doneAt || 0) - (a.doneAt || 0); });
+    var doneRows = doneVisible.map(makeRow);
+    var pDoneQ = press('donehead');
+    var P = this.parse(s.kbText, s.kbList, allListNames);
+    var chips = [];
+    var chipBase = 'display: inline-flex; align-items: center; height: 34px; padding: 0 14px; border-radius: 999px; font-size: 16px; ';
+    if (P.name) chips.push({ label: P.name, style: chipBase + 'font-weight: 600; ' + accentDome(0.25) });
+    if (P.qty) chips.push({ label: 'Qty ' + P.qty, style: chipBase + 'color: #D5DBE6; ' + glassSmall(0.6) });
+    var dueLbl = '';
+    if (P.due) {
+      var DN = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], MN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      dueLbl = DN[P.due.getDay()] + ' ' + P.due.getDate() + ' ' + MN[P.due.getMonth()];
+      chips.push({ label: 'Due ' + dueLbl, style: chipBase + 'color: #D5DBE6; ' + glassSmall(0.6) });
+    }
+    if (s.kbText.trim()) chips.push({ label: (P.listIsNew ? 'New list ' : 'List ') + P.list, style: chipBase + 'color: #D5DBE6; ' + glassSmall(0.6) });
+    if (P.prio) chips.push({ label: ['', 'Priority medium', 'Priority high', 'Priority highest'][P.prio], style: chipBase + 'color: #FFE1C7; background: rgba(201,115,60,0.22); box-shadow: inset 0 0 0 1px rgba(201,115,60,0.5);' });
+    function iso(d) { var m = d.getMonth() + 1, dd = d.getDate(); return d.getFullYear() + '-' + (m < 10 ? '0' : '') + m + '-' + (dd < 10 ? '0' : '') + dd; }
+    var mdLine = P.name
+      ? '- [ ] ' + P.name + (P.qty ? ' (' + P.qty + ')' : '') + (P.prio ? ' ' + ['', '🔼', '⏫', '🔺'][P.prio] : '') + (P.due ? ' 📅 ' + iso(P.due) : '') + ' #shopping/' + P.list.toLowerCase().replace(/\s+/g, '-')
+      : 'Obsidian Tasks line preview appears here';
+
+    function addFromParse() {
+      var p = self.parse(self.state.kbText, self.state.kbList, Object.keys(self.state.lists));
+      if (!p.name) return;
+      var lists = Object.assign({}, self.state.lists);
+      var nid = 'n' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+      lists[p.list] = [{ id: nid, name: p.name, qty: p.qty, done: false }].concat(lists[p.list] || []);
+      var phs = Object.assign({}, self.state.phase); phs[nid] = 'arriving';
+      setTimeout(function () { self.setPhase(nid, null); }, 440);
+      self.setState({ lists: lists, phase: phs, listName: p.list, kbList: p.list, kbText: '', shift: false });
+    }
+    function typeChar(ch) { var c = self.state.shift ? ch.toUpperCase() : ch; self.setState({ kbText: self.state.kbText + c, shift: false }); }
+
+    var keyBase = 'position: relative; overflow: hidden; height: 46px; border-radius: 14px; font-size: 22px; font-weight: 500; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; transition: transform 45ms ease-out, box-shadow 45ms ease-out, filter 45ms ease-out; touch-action: manipulation; ';
+    var keyStyle = keyBase + 'color: #E9EDF5; ' + glassSmall(0.7);
+    var keyMod = keyBase + 'color: #B8C0CE; font-size: 18px; background: rgba(255,255,255,0.03); border: 0; box-shadow: ' + bevel(0.14, 0.30, 0.6) + ', inset 0 0 0 1px rgba(255,255,255,0.07);';
+    var keyAccent = keyBase + 'font-size: 19px; font-weight: 600; ' + accentDome(0.35);
+    var keyPressed = ' transform: translateY(1px) scale(0.975); box-shadow: inset 0 ' + px(0.6 * ed) + ' ' + px(1.5 * ed) + ' rgba(0,0,0,' + k(0.30) + '), 0 1px 2px rgba(0,0,0,' + k(0.28) + ');';
+    var tintBase = 'position: absolute; inset: 0; border-radius: inherit; pointer-events: none; will-change: opacity; background: linear-gradient(180deg, ' + acc(0.24) + ', ' + acc(0.14) + '); box-shadow: inset 0 0 0 1px ' + acc(0.35) + '; ';
+    function letter(ch, startCol) {
+      var label = (s.shift && /[a-z]/.test(ch)) ? ch.toUpperCase() : ch;
+      return { id: 'c:' + ch, label: label, aria: label, hasIcon: false, noIcon: true, icon: '', press: function () { typeChar(ch); }, style: keyStyle + 'grid-column: ' + (startCol ? startCol + ' / ' : '') + 'span 2;' };
+    }
+    function special(o) { return Object.assign({ id: 's:' + (o.aria || o.label), hasIcon: !!o.icon, noIcon: !o.icon, icon: o.icon || '', label: o.label || '' }, o); }
+    var rowsChars = s.numMode
+      ? [['-','/',':',';','(',')','$','&','@','"'], ['.',',','?','!','\'','+','%','*','='], ['_','<','>','[',']','{','}']]
+      : [['q','w','e','r','t','y','u','i','o','p'], ['a','s','d','f','g','h','j','k','l'], ['z','x','c','v','b','n','m']];
+    var r0 = ['1','2','3','4','5','6','7','8','9','0'].map(function (c) { return letter(c); });
+    var r1 = rowsChars[0].map(function (c) { return letter(c); });
+    var r2 = rowsChars[1].map(function (c, i) { return letter(c, i === 0 ? 2 : null); });
+    var shiftKey = s.numMode
+      ? special({ label: 'ABC', aria: 'Letters', press: function () { self.setState({ numMode: false }); }, style: keyMod + 'grid-column: span 3;' })
+      : special({ icon: 'M12 4l8 8h-4.5v8h-7v-8H4z', aria: 'Shift', press: function () { self.setState({ shift: !self.state.shift }); }, style: (s.shift ? keyAccent : keyMod) + 'grid-column: span 3;' });
+    var r3 = [shiftKey].concat(rowsChars[2].map(function (c) { return letter(c); })).concat([
+      special({ icon: 'M21 5H9l-6 7 6 7h12zM17 9l-5 6M12 9l5 6', aria: 'Backspace', hold: true, press: function () { if (self.bsFromPointer) { self.bsFromPointer = false; return; } self.backspaceOnce(); }, style: keyMod + 'grid-column: span 3;' })
+    ]);
+    var r4 = [
+      special({ label: s.numMode ? 'ABC' : '#+=', aria: s.numMode ? 'Letters' : 'Symbols', press: function () { self.setState({ numMode: !self.state.numMode }); }, style: keyMod + 'grid-column: span 3;' }),
+      special({ label: 'space', aria: 'Space', press: function () { self.setState({ kbText: self.state.kbText + ' ', numMode: false }); }, style: keyStyle + 'font-size: 18px; color: #A9B2C3; grid-column: span 9;' }),
+      special({ label: '#', aria: 'Hash, list tag', press: function () { typeChar('#'); }, style: keyStyle + 'grid-column: span 2;' }),
+      special({ label: 'Add', aria: 'Add to list', press: addFromParse, style: keyAccent + 'grid-column: span 3;' }),
+      special({ icon: 'M3 5h18v10H3zM7 9h.01M11 9h.01M15 9h.01M8 12h8M9 18l3 3 3-3', aria: 'Lower keyboard', press: function () { self.stopBackspace(); self.setState({ kbOpen: false, shift: false, numMode: false, pressedKey: null }); }, style: keyMod + 'grid-column: span 3;' })
+    ];
+    [r0, r1, r2, r3, r4].forEach(function (row) {
+      row.forEach(function (key) {
+        var kid = key.id;
+        var isDown = s.pressedKey === kid;
+        if (isDown) key.style = key.style + keyPressed;
+        key.tintStyle = tintBase + (isDown ? 'opacity: 1; transition: opacity 45ms ease-out;' : 'opacity: 0; transition: opacity 95ms ease-out;');
+        var hold = !!key.hold;
+        key.down = function () { self.setState({ pressedKey: kid }); self.armRelease(); if (hold) self.startBackspace(); };
+        key.up = function () { if (hold) self.stopBackspace(); if (self.state.pressedKey) self.setState({ pressedKey: null }); };
+      });
+    });
+    var kbRows = [{ keys: r0 }, { keys: r1 }, { keys: r2 }, { keys: r3 }, { keys: r4 }];
+
+    var I = {
+      sun: 'M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zM12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4',
+      partly: 'M8 3v1.5M3.5 8H2M4.6 4.6l1 1M12.4 4.6l-1 1M10.5 9.2A3.5 3.5 0 0 0 5 8.3M9 20h8a3.5 3.5 0 0 0 .5-7A5 5 0 0 0 8 13a3.5 3.5 0 0 0 1 7z',
+      cloud: 'M7 18h10a4 4 0 0 0 .6-8A6 6 0 0 0 6.2 9.5 4.3 4.3 0 0 0 7 18z',
+      rain: 'M7 15h10a4 4 0 0 0 .6-8A6 6 0 0 0 6.2 6.5 4.3 4.3 0 0 0 7 15zM9 18l-1 3M13 18l-1 3M17 18l-1 3',
+      moon: 'M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z'
+    };
+    var C = { sun: '#F2B35B', partly: '#E3C48A', cloud: '#C7CEDB', rain: '#8FB8F5', moon: accSoft };
+    var hourly = [['11', 'sun', 28, 0], ['12', 'sun', 30, 0], ['1', 'partly', 31, 5], ['2', 'partly', 31, 10], ['3', 'cloud', 30, 30], ['4', 'rain', 27, 70], ['5', 'rain', 25, 80], ['6', 'rain', 24, 60], ['7', 'cloud', 24, 30], ['8', 'cloud', 23, 10], ['9', 'moon', 23, 0], ['10', 'moon', 22, 0]];
+    var hours = hourly.map(function (h, i) {
+      return { t: h[0] + (i < 1 ? ' am' : ' pm'), icon: I[h[1]], c: C[h[1]], temp: h[2], rain: h[3] ? h[3] + '%' : '–', rainStyle: 'font-size: 16px; ' + (h[3] >= 30 ? 'color: #8FB8F5; font-weight: 500;' : 'color: #7C8698;') };
+    });
+    var lo = 18, hi = 35;
+    var days = [['Mon 23', 'partly', 'Partly cloudy', 10, 21, 32], ['Tue 24', 'rain', 'Showers', 70, 20, 27], ['Wed 25', 'sun', 'Sunny', 0, 19, 33]].map(function (d) {
+      var l = (d[4] - lo) / (hi - lo) * 100, r = (d[5] - lo) / (hi - lo) * 100;
+      return { name: d[0], icon: I[d[1]], c: C[d[1]], cond: d[2], rain: d[3] ? d[3] + '% rain' : '', lo: d[4], hi: d[5], bar: 'position: absolute; top: 0; bottom: 0; left: ' + l.toFixed(1) + '%; width: ' + (r - l).toFixed(1) + '%; border-radius: 999px; background: #E3C48A;' };
+    });
+
+    var tabDefs = [['Home', '#home', 'M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z'], ['Rooms', '#rooms', 'M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z'], ['Energy', '#energy', 'M13 2L4 14h7l-1 8 9-12h-7z'], ['Network', '#network', 'M2 8.5a15 15 0 0 1 20 0M5 12a10.5 10.5 0 0 1 14 0M8.5 15.5a5.5 5.5 0 0 1 7 0M12 19h.01'], ['Servers', '#servers', 'M4 4h16v6H4zM4 14h16v6H4zM8 7h.01M8 17h.01']];
+    var tabs = tabDefs.map(function (t, i) {
+      var cur = i === 0;
+      var tbp = press('tab:' + i, cur ? 'white' : 'accent');
+      return { label: t[0], href: t[1], icon: t[2], current: cur ? 'page' : 'false', down: tbp.down, up: tbp.up, tint: tbp.tint, style: tbp.fx + 'height: 88px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; border-radius: ' + Math.max(12, cr - 6) + 'px; text-decoration: none; ' + (cur ? glassOn(0.5) + 'color: #FFFFFF;' : 'color: #B8C0CE;') };
+    });
+
+    var segBase = 'height: 44px; min-width: 72px; padding: 0 16px; border: 0; border-radius: 999px; font-size: 18px; font-weight: 600; cursor: pointer; ';
+    var segOn = segBase + accentDome(0.40);
+    var segOff = segBase + 'background: transparent; color: #B8C0CE;';
+    var chipHdr = 'display: flex; align-items: center; gap: 10px; height: 52px; padding: 0 22px 0 16px; border-radius: 999px; font-size: 21px; text-decoration: none; ';
+    var selectBase = 'appearance: none; -webkit-appearance: none; width: 100%; height: 52px; border-radius: 16px; padding: 0 44px 0 16px; font-size: 20px; font-weight: 600; color: #E9EDF5; cursor: pointer; ';
+
+    var cardBase = 'display: flex; flex-direction: column; gap: 14px; padding: 26px 26px 24px; border-radius: ' + cr + 'px; color: inherit; text-decoration: none; ';
+    function card(id) { var q = press(id, 'accent'); return { down: q.down, up: q.up, tint: q.tint, style: cardBase + 'font: inherit; text-align: left; cursor: pointer; ' + glass(q.isDown ? 0.45 : 1) + q.fx }; }
+    function pbtn(id, base) { var q = press(id, 'white'); return { down: q.down, up: q.up, tint: q.tint, style: q.fx + base }; }
+    var pAlertQ = press('alert', 'white');
+    var swatches = ACCENTS.map(function (a, i) {
+      var sel = accent.toLowerCase() === a[0].toLowerCase();
+      return { name: a[1], pressed: sel ? 'true' : 'false', pick: function () { self.setState({ accentIdx: i }); },
+        style: 'width: 52px; height: 52px; border-radius: 50%; border: 0; padding: 0; cursor: pointer; background: radial-gradient(90% 70% at 35% 15%, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0) 60%), ' + a[0] + '; box-shadow: inset 0 2px 0 rgba(255,255,255,0.35), inset 0 -3px 6px rgba(0,0,0,0.30), 0 4px 10px rgba(0,0,0,0.35)' + (sel ? ', 0 0 0 3px #0E131D, 0 0 0 5px #FFFFFF' : '') + ';' };
+    });
+    var accName = (ACCENTS.find(function (a) { return a[0].toLowerCase() === accent.toLowerCase(); }) || [accent, 'Custom'])[1];
+    var clearOpts = [[7, '7 days'], [14, '14 days'], [0, 'Never']].map(function (o) {
+      var q = press('clear:' + o[0]);
+      return { label: o[1], pressed: s.clearDays === o[0] ? 'true' : 'false', pick: function () { self.setState({ clearDays: o[0] }); }, down: q.down, up: q.up, tint: q.tint, style: q.fx + (s.clearDays === o[0] ? segOn : segOff) };
+    });
+    var pillBase = 'height: 52px; padding: 0 22px; border-radius: 999px; font-size: 18px; font-weight: 600; cursor: pointer; white-space: nowrap; ';
+    var termLines = [
+      ['● HA ws  ● Omada  ● Kuma  ● Starlink  ● Obsidian — all connected', '#7FD1A6'],
+      ['10:11:02 omada    poll ok  wan1 rx=58.4 Mbps tx=6.9 Mbps (412 ms)', ''],
+      ['10:11:05 starlink ping 31 ms  drop 0.4%  obstruction 0.0%', ''],
+      ['10:11:02 kuma    socket ok  12 monitors, 1 down (nas-backup)', ''],
+      ['10:11:15 ha      ws connected  1,284 entities subscribed', ''],
+      ['10:11:20 obsidian vault ok  Shopping/Groceries.md (7 open, 3 done)', ''],
+      ['10:11:32 omada    poll ok  wan1 rx=61.2 Mbps tx=7.4 Mbps (398 ms)', ''],
+      ['10:11:41 kuma     WARN nas-backup down for 14m (timeout 48s)', '#F5C46B'],
+      ['10:12:02 omada    poll ok  wan1 rx=64.0 Mbps tx=7.0 Mbps (405 ms)', ''],
+      ['10:12:04 display motion -> wake (ddc brightness 70)', ''],
+      ['SSH: dashboard@kiosk.lan (key auth only)', accSoft]
+    ].map(function (l) { return { text: l[0], style: l[1] ? 'color: ' + l[1] + ';' : '' }; });
+    function pPill(id, base) { var q = press(id); return { down: q.down, up: q.up, tint: q.tint, style: pillBase + q.fx + base }; }
+    var MON = [
+      ['Home Assistant', 'HTTP · ha.lan:8123', 99.98, 42, null],
+      ['Jellyfin', 'HTTP · media.lan:8096', 99.91, 88, [17]],
+      ['Omada Controller', 'HTTPS · omada.lan:8043', 100, 61, null],
+      ['Sonarr', "'Arr stack · :8989", 99.95, 34, null],
+      ['Radarr', "'Arr stack · :7878", 99.95, 37, null],
+      ['Prowlarr', "'Arr stack · :9696", 99.87, 29, [9]],
+      ['qBittorrent', "'Arr stack · :8080", 99.62, 112, [23, 24]],
+      ['Immich', 'HTTP · photos.lan:2283', 99.93, 95, null],
+      ['Nginx Proxy Manager', 'HTTP · proxy.lan:81', 100, 18, null],
+      ['AdGuard Home', 'DNS · 10.0.0.2', 100, 4, null],
+      ['Syncthing (vault)', 'HTTP · sync.lan:8384', 99.89, 52, null],
+      ['NAS backup', 'Push · nightly job', 97.2, null, 'down']
+    ];
+    var monitors = MON.map(function (m) {
+      var down = m[4] === 'down';
+      var beats = [];
+      for (var i = 0; i < 40; i++) {
+        var bad = down ? i >= 26 : (Array.isArray(m[4]) && m[4].indexOf(i) >= 0);
+        beats.push({ style: 'flex: 1 1 0; height: ' + (bad ? 28 : 22) + 'px; border-radius: 3px; background: ' + (bad ? '#E8434A' : '#4CC38A') + '; opacity: ' + (bad ? 1 : 0.85) + ';' });
+      }
+      return {
+        name: m[0], meta: m[1], beats: beats,
+        uptime: m[2].toFixed(m[2] === 100 ? 0 : 2) + '%',
+        resp: down ? '—' : m[3] + ' ms',
+        dot: 'flex: 0 0 auto; width: 14px; height: 14px; border-radius: 50%; background: ' + (down ? '#E8434A' : '#4CC38A') + '; box-shadow: 0 0 10px ' + (down ? 'rgba(232,67,74,0.7)' : 'rgba(76,195,138,0.45)') + ';',
+        upStyle: 'font-size: 18px; font-weight: 600; text-align: right; color: ' + (down ? '#FF8A8E' : (m[2] < 99.7 ? '#F5C46B' : '#E9EDF5')) + ';',
+        rowStyle: 'display: grid; grid-template-columns: 280px 1fr 90px 90px; gap: 16px; align-items: center; height: 60px; padding: 0 16px; border-radius: 16px; ' + (down ? 'background: linear-gradient(180deg, rgba(232,62,68,0.20), rgba(232,62,68,0.10)); box-shadow: inset 0 0 0 1px rgba(236,72,78,0.45);' : 'background: rgba(255,255,255,0.035); box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);')
+      };
+    });
+    var statBox = 'display: flex; flex-direction: column; gap: 6px; padding: 16px 18px; border-radius: 18px; ' + glassSmall(0.6);
+    var srvStats = [
+      { label: 'Up', value: '11 / 12', style: statBox },
+      { label: 'Down', value: '1', style: statBox + 'color: #FFDADA; background: linear-gradient(180deg, rgba(232,62,68,0.30), rgba(232,62,68,0.14)); box-shadow: inset 0 0 0 1px rgba(236,72,78,0.55);' },
+      { label: 'Avg uptime 30 d', value: '99.7%', style: statBox },
+      { label: 'Avg response', value: '52 ms', style: statBox }
+    ];
+    function setK(key, val) { var o = {}; o[key] = val; self.setState(o); }
+    function makeSeg(id, opts, cur, key) {
+      return opts.map(function (o) {
+        var q = press(id + ':' + o[0]); var on = cur === o[0];
+        return { label: o[1], pressed: on ? 'true' : 'false', pick: function () { setK(key, o[0]); }, down: q.down, up: q.up, tint: q.tint, style: q.fx + (on ? segOn : segOff) };
+      });
+    }
+    function makeToggle(id, on, key, aria) {
+      var q = press(id);
+      return { pressed: on ? 'true' : 'false', aria: aria, pick: function () { setK(key, !self.state[key]); }, down: q.down, up: q.up, tint: q.tint,
+        style: q.fx + 'flex: 0 0 auto; width: 68px; height: 38px; border-radius: 999px; padding: 0; cursor: pointer; ' + (on ? accentDome(0.35) : recessed),
+        knob: 'position: absolute; top: 4px; left: ' + (on ? 34 : 4) + 'px; width: 30px; height: 30px; border-radius: 50%; transition: left 130ms cubic-bezier(.2,.8,.2,1); background: linear-gradient(180deg, #FFFFFF, #DCE1EA); box-shadow: 0 2px 5px rgba(0,0,0,0.35), inset 0 -2px 3px rgba(0,0,0,0.12);' };
+    }
+    var smallBtn = 'width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; color: #E9EDF5; ' + glassSmall(0.8);
+    function makeStepper(id, label, decLabel, incLabel, dec, inc) {
+      return { label: label, decLabel: decLabel, incLabel: incLabel, dec: dec, inc: inc, decBtn: pbtn(id + ':dec', smallBtn), incBtn: pbtn(id + ':inc', smallBtn) };
+    }
+    function hhmm(m) { m = ((m % 1440) + 1440) % 1440; var h = Math.floor(m / 60), mm = m % 60; return (h < 10 ? '0' : '') + h + ':' + (mm < 10 ? '0' : '') + mm; }
+    function bump(key, d, lo, hi, wrap) { return function () { var v = self.state[key] + d; if (wrap) v = ((v % 1440) + 1440) % 1440; else v = Math.max(lo, Math.min(hi, v)); setK(key, v); }; }
+    function makeChips(id, items) {
+      return items.map(function (it) {
+        var q = press(id + ':' + it.key);
+        return { label: it.label, pressed: it.on ? 'true' : 'false', pick: it.pick, down: q.down, up: q.up, tint: q.tint,
+          style: q.fx + 'height: 44px; padding: 0 18px; border-radius: 999px; font-size: 16px; font-weight: 500; cursor: pointer; ' + (it.on ? 'color: #FFFFFF; background: linear-gradient(180deg, ' + acc(0.45) + ', ' + acc(0.28) + '); border: 0; box-shadow: inset 0 1px 0 rgba(255,255,255,0.25), inset 0 0 0 1px ' + acc(0.6) + ';' : 'color: #A9B2C3; ' + glassSmall(0.5)) };
+      });
+    }
+    var alertChips = makeChips('al', MON.map(function (m) {
+      return { key: m[0], label: m[0], on: !!s.alertMon[m[0]], pick: function () { var a = Object.assign({}, self.state.alertMon); a[m[0]] = !a[m[0]]; self.setState({ alertMon: a }); } };
+    }));
+    var listChips = makeChips('ls', allListNames.map(function (n) {
+      return { key: n, label: n, on: s.visibleLists[n] !== false, pick: function () {
+        var v = Object.assign({}, self.state.visibleLists); var on = v[n] !== false;
+        var visibleCount = Object.keys(self.state.lists).filter(function (x) { return v[x] !== false; }).length;
+        if (on && visibleCount <= 1) return;
+        v[n] = !on;
+        var vis = Object.keys(self.state.lists).filter(function (x) { return v[x] !== false; });
+        var patch = { visibleLists: v };
+        if (vis.indexOf(self.state.listName) < 0) patch.listName = vis[0];
+        if (vis.indexOf(self.state.defaultList) < 0) patch.defaultList = vis[0];
+        if (vis.indexOf(self.state.kbList) < 0) patch.kbList = vis[0];
+        self.setState(patch);
+      } };
+    }));
+    return {
+      clockText: s.clock24 ? '10:12' : '10:12',
+      ampm: s.clock24 ? '' : 'am',
+      ampmStyle: 'font-size: 44px; font-weight: 400; letter-spacing: 0; margin-left: 10px; color: #A9B2C3;',
+      showAlert: !!s.alertMon['NAS backup'],
+      clockOpts: makeSeg('clk', [[true, '24 h'], [false, '12 h']], s.clock24, 'clock24'),
+      idleOpts: makeSeg('idle', [[30, '30 s'], [60, '1 min'], [120, '2 min'], [300, '5 min']], s.idleSec, 'idleSec'),
+      wakeOpts: makeSeg('wake', [['both', 'Motion + touch'], ['touch', 'Touch only']], s.wake, 'wake'),
+      nightOpts: makeSeg('night', [['dim', 'Wake dimmed'], ['nowake', 'No motion wake'], ['off', 'Off']], s.night, 'night'),
+      pollOpts: makeSeg('poll', [[30, '30 s'], [60, '60 s']], s.pollSec, 'pollSec'),
+      nightStart: makeStepper('ns', hhmm(s.nightStart), 'Night starts 30 minutes earlier', 'Night starts 30 minutes later', bump('nightStart', -30, 0, 0, true), bump('nightStart', 30, 0, 0, true)),
+      nightEnd: makeStepper('ne', hhmm(s.nightEnd), 'Night ends 30 minutes earlier', 'Night ends 30 minutes later', bump('nightEnd', -30, 0, 0, true), bump('nightEnd', 30, 0, 0, true)),
+      planDlStep: makeStepper('pd', s.planDl + ' Mbps', 'Lower plan download by 10', 'Raise plan download by 10', bump('planDl', -10, 10, 1000), bump('planDl', 10, 10, 1000)),
+      planUlStep: makeStepper('pu', s.planUl + ' Mbps', 'Lower plan upload by 5', 'Raise plan upload by 5', bump('planUl', -5, 5, 200), bump('planUl', 5, 5, 200)),
+      tSliders: makeToggle('tsl', s.showSliders, 'showSliders', 'Brightness sliders'),
+      tPlan: makeToggle('tpl', s.showPlan, 'showPlan', 'Show plan lines'),
+      tStarlink: makeToggle('tsk', s.starlink, 'starlink', 'Starlink health'),
+      alertChips: alertChips, listChips: listChips,
+      visibleListNames: listNames, defaultList: s.defaultList,
+      onDefaultList: function (e) { self.setState({ defaultList: e.target.value, listName: e.target.value, kbList: e.target.value }); },
+      settingsSelect: 'appearance: none; -webkit-appearance: none; width: 100%; height: 48px; border-radius: 14px; padding: 0 40px 0 16px; font-size: 18px; font-weight: 600; color: #E9EDF5; cursor: pointer; ' + recessed,
+      rootStyle: 'position: relative; width: 1080px; height: 1920px; box-sizing: border-box; padding: 44px 40px 40px; display: flex; flex-direction: column; gap: 24px; font-family: Inter, system-ui, sans-serif; color: #E9EDF5; font-variant-numeric: tabular-nums; overflow: hidden; background-color: ' + bgBase + '; background-image: radial-gradient(900px 700px at 8% 4%, ' + mixRgba(0.35, 0, 0, 0, 0.40) + ', rgba(0,0,0,0) 70%), radial-gradient(800px 800px at 96% 38%, ' + mixRgba(0.5, 40, 96, 150, 0.30) + ', rgba(0,0,0,0) 70%), radial-gradient(900px 700px at 30% 96%, ' + mixRgba(0.55, 150, 84, 60, 0.20) + ', rgba(0,0,0,0) 70%); transition: background-color .4s;',
+      roomsLink: 'font-size: 21px; text-decoration: none; color: ' + accSoft + ';',
+      accSoft: accSoft,
+      serversOpen: s.serversOpen,
+      openServers: function () { self.setState({ serversOpen: true, settingsOpen: false, kbOpen: false }); },
+      closeServers: function () { self.setState({ serversOpen: false }); },
+      serversPanel: 'position: absolute; left: 40px; right: 40px; top: 300px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px; padding: 28px 30px 30px; border-radius: ' + cr + 'px; animation: sheetIn .26s cubic-bezier(.2,.8,.2,1); ' + glass(1) + 'background: radial-gradient(130% 50% at 30% 0%, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0) 55%), linear-gradient(180deg, rgba(30,36,54,0.98), rgba(20,25,38,0.99));',
+      pSrvClose: pbtn('srvClose', 'width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; color: #C7CEDB; ' + glassSmall(1)),
+      monitors: monitors, srvStats: srvStats,
+      showPlan: s.showPlan, planDl: PLAN_DL, planUl: PLAN_UL,
+      planDlY: Y(PLAN_DL), planUlY: Y(PLAN_UL), planDlLabelY: Y(PLAN_DL) - 6, planUlLabelY: Y(PLAN_UL) - 6,
+      nowDlSub: s.showPlan ? Math.round(this.raw.dl[1439] / PLAN_DL * 100) + '% of ' + PLAN_DL + ' plan' : 'download',
+      nowUlSub: s.showPlan ? Math.round(this.raw.ul[1439] / PLAN_UL * 100) + '% of ' + PLAN_UL + ' plan' : 'upload',
+      peakSub: s.showPlan ? Math.round(peak / PLAN_DL * 100) + '% of plan' : 'busiest 30 s',
+      avgSub: s.showPlan ? Math.round(avg / PLAN_DL * 100) + '% of plan' : 'mean over window',
+      netSubtitle: 'Starlink via ER605 · ' + s.pollSec + ' s samples' + (s.starlink ? ' · dish up 99.6% · 31 ms' : ''),
+      pGear: pbtn('gear', 'position: absolute; top: 0; right: 0; z-index: 2; width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; color: #C7CEDB; ' + glassSmall(1)),
+      pClose: pbtn('setClose', 'width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; color: #C7CEDB; ' + glassSmall(1)),
+      pTerm: pPill('term', 'color: #E9EDF5; ' + glassSmall(1)),
+      pTermClose: pPill('termClose', 'color: #E9EDF5; ' + glassSmall(1)),
+      pReset: pPill('reset', s.resetArmed ? 'color: #FFE3E3; background: linear-gradient(180deg, rgba(229,72,77,0.40), rgba(229,72,77,0.22)); border: 0; box-shadow: inset 0 0 0 1px rgba(229,72,77,0.6), 0 0 18px rgba(229,72,77,0.25);' : 'color: #FFB4B6; ' + glassSmall(1)),
+      resetLabel: s.resetArmed ? 'Tap again to reset' : 'Reset',
+      resetTap: function () {
+        if (self.state.resetArmed) { self.resetAll(); return; }
+        self.setState({ resetArmed: true });
+        if (self.resetTimer) clearTimeout(self.resetTimer);
+        self.resetTimer = setTimeout(function () { self.setState({ resetArmed: false }); }, 3000);
+      },
+      settingsOpen: s.settingsOpen, terminalOpen: s.terminalOpen,
+      openSettings: function () { self.setState({ settingsOpen: true, kbOpen: false }); },
+      closeSettings: function () { self.setState({ settingsOpen: false, resetArmed: false }); },
+      openTerminal: function () { self.setState({ settingsOpen: false, terminalOpen: true }); },
+      closeTerminal: function () { self.setState({ terminalOpen: false }); },
+      settingsPanel: 'position: absolute; top: 116px; right: 40px; bottom: 40px; width: 720px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px; padding: 28px 30px 24px; border-radius: ' + cr + 'px; animation: sheetIn .26s cubic-bezier(.2,.8,.2,1); ' + glass(1) + 'background: radial-gradient(130% 40% at 30% 0%, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 55%), linear-gradient(180deg, rgba(34,40,58,0.985), rgba(22,27,40,0.99));',
+      terminalPanel: 'position: absolute; left: 40px; right: 40px; bottom: 40px; height: 760px; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px; padding: 24px 26px; border-radius: ' + cr + 'px; animation: sheetIn .26s cubic-bezier(.2,.8,.2,1); ' + glass(1) + 'background: linear-gradient(180deg, rgba(24,29,42,0.98), rgba(14,18,28,0.99));',
+      termLines: termLines,
+      swatches: swatches, accentName: accName,
+      clearOpts: clearOpts,
+      openRows: openRows, doneRows: doneRows, noOpen: openRows.length === 0,
+      showDone: s.showDone, doneExpanded: s.showDone ? 'true' : 'false', doneCount: doneVisible.length,
+      toggleDone: function () { self.setState({ showDone: !self.state.showDone }); },
+      pDone: { down: pDoneQ.down, up: pDoneQ.up, tint: pDoneQ.tint, style: 'flex: 0 0 auto; display: flex; align-items: center; gap: 10px; height: 46px; padding: 0 18px 0 16px; border-radius: 999px; font-size: 17px; font-weight: 600; color: #A9B2C3; cursor: pointer; align-self: flex-start; ' + pDoneQ.fx + glassSmall(0.8) },
+      doneChevron: 'transition: transform .25s; transform: rotate(' + (s.showDone ? 90 : 0) + 'deg);',
+      clearNote: s.clearDays ? 'Completed items clear after ' + s.clearDays + ' days' : 'Completed items are kept',
+      pE: card('card:energy'), pN: card('card:network'), pS: card('card:servers'),
+      pPlus: pbtn('plus', 'width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; ' + accentDome()),
+      pAdd: pbtn('plusBig', 'flex: 0 0 auto; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; ' + accentDome()),
+      p2h: pbtn('seg2h', s.win === '2h' ? segOn : segOff),
+      p12h: pbtn('seg12h', s.win === '12h' ? segOn : segOff),
+      pAlert: { down: pAlertQ.down, up: pAlertQ.up, tint: pAlertQ.tint },
+      statusCard: 'display: flex; flex-direction: column; gap: 14px; padding: 26px 26px 24px; border-radius: ' + cr + 'px; color: inherit; text-decoration: none; ' + glass(1),
+      panelInternet: 'display: flex; flex-direction: column; gap: 16px; padding: 26px 28px 22px; border-radius: ' + cr + 'px; ' + glass(1),
+      panelShop: 'display: flex; flex-direction: column; gap: 14px; padding: 22px 22px 18px; border-radius: ' + cr + 'px; min-width: 0; min-height: 0; overflow: hidden; ' + glass(1),
+      panelWeather: 'flex: 1 1 auto; display: flex; flex-direction: column; gap: 16px; padding: 26px 32px 24px; border-radius: ' + cr + 'px; ' + glass(1),
+      panelKb: 'flex: 1 1 auto; display: flex; flex-direction: column; gap: 10px; padding: 18px 24px; border-radius: ' + cr + 'px; ' + glass(1) + 'background: linear-gradient(180deg, rgba(30,36,54,0.96), rgba(20,25,38,0.98));',
+      segWrap: 'display: flex; padding: 4px; border-radius: 999px; ' + recessed,
+      chip: chipHdr + 'color: #D5DBE6; ' + glassSmall(1),
+      chipAlert: pAlertQ.fx + chipHdr + 'color: #FFDADA; font-weight: 500; background: radial-gradient(130% 90% at 30% 0%, rgba(255,255,255,' + k(0.10) + ') 0%, rgba(255,255,255,0) 55%), linear-gradient(180deg, rgba(232,62,68,0.38), rgba(232,62,68,0.18)); border: 0; box-shadow: ' + bevel(0.22, 0.30, 0.6) + ', inset 0 0 0 1px rgba(236,72,78,0.62), 0 2px 3px rgba(0,0,0,' + k(0.30) + '), 0 0 20px rgba(232,62,68,' + k(0.24) + ');',
+      plusStyle: 'width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; ' + accentDome(),
+      plusBigStyle: 'flex: 0 0 auto; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; ' + accentDome(),
+      selectStyle: selectBase + 'padding-left: 46px; font-size: 22px; ' + recessed,
+      kbSelectStyle: selectBase + 'height: 60px; ' + recessed,
+      inputStyle: 'flex: 1 1 auto; min-width: 0; height: 60px; box-sizing: border-box; padding: 0 18px; border-radius: 16px; font-size: 22px; color: #E9EDF5; caret-color: ' + accent + '; ' + recessed,
+      listNames: listNames,
+      listName: s.listName,
+      onPickList: function (e) { self.setState({ listName: e.target.value, kbList: e.target.value }); },
+      openKb: function () { self.setState({ kbOpen: true, kbList: self.state.listName }); },
+      kbOpen: s.kbOpen, kbClosed: !s.kbOpen,
+      kbText: s.kbText, kbList: s.kbList,
+      onType: function (e) { self.setState({ kbText: e.target.value }); },
+      onPickKbList: function (e) { self.setState({ kbList: e.target.value }); },
+      addItem: addFromParse,
+      chips: chips, noChips: chips.length === 0, mdLine: mdLine,
+      kbRows: kbRows,
+      tiles: tiles, hours: hours, days: days, tabs: tabs,
+      is2h: s.win === '2h' ? 'true' : 'false', is12h: s.win === '12h' ? 'true' : 'false',
+      seg2hStyle: s.win === '2h' ? segOn : segOff, seg12hStyle: s.win === '12h' ? segOn : segOff,
+      pick2h: function () { self.setState({ win: '2h', hover: null }); },
+      pick12h: function () { self.setState({ win: '12h', hover: null }); },
+      winLabel: s.win === '2h' ? '2 h' : '12 h',
+      nowDl: Math.round(this.raw.dl[1439]), nowUl: Math.round(this.raw.ul[1439]),
+      peakDl: Math.round(peak), avgDl: Math.round(avg),
+      dlLine: line(w.dl), ulLine: line(w.ul), dlArea: area(w.dl), ulArea: area(w.ul),
+      g0: yBot, g1: Y(ymax / 2), g2: Y(ymax), g0t: yBot + 5, g1t: Y(ymax / 2) + 5, g2t: Y(ymax) + 5,
+      yMid: ymax / 2, yMax: ymax,
+      xStart: fmt(-span), xMid: fmt(-span / 2),
+      chartLabel: 'Download and upload throughput over the last ' + (s.win === '2h' ? '2 hours' : '12 hours') + '. Peak download ' + Math.round(peak) + ' Mbps, average ' + Math.round(avg) + ' Mbps.',
+      onMove: function (e) {
+        var r = e.currentTarget.getBoundingClientRect();
+        var ratio = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width));
+        self.setState({ hover: Math.round(ratio * (n - 1)) });
+      },
+      onLeave: function () { self.setState({ hover: null }); },
+      hasHover: hasHover,
+      hx: hx, hDlY: hasHover ? Y(w.dl[hv]) : 0, hUlY: hasHover ? Y(w.ul[hv]) : 0,
+      hDl: hasHover ? Math.round(w.dl[hv]) : 0, hUl: hasHover ? Math.round(w.ul[hv]) : 0,
+      hTime: hasHover ? (w.step === 2 ? fmt(-(n - 1 - hv) * 2) + ' · 2 min max' : fmt(-(n - 1 - hv) * 0.5)) : '',
+      tipStyle: 'position: absolute; top: 4px; left: ' + tipLeft.toFixed(0) + 'px; width: 208px; box-sizing: border-box; padding: 12px 14px; border-radius: 16px; background: rgba(20,26,38,0.96); border: 1px solid rgba(255,255,255,0.16); box-shadow: 0 8px 24px rgba(0,0,0,0.35); display: flex; flex-direction: column; gap: 4px; pointer-events: none;'
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Button study — domed edge</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0E131D}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 720px; height: 460px; box-sizing: border-box; padding: 48px 56px; display: flex; flex-direction: column; gap: 28px; font-family: Inter, system-ui, sans-serif; color: #E9EDF5; background-color: #0E131D; background-image: radial-gradient(600px 460px at 10% 0%, rgba(86,76,170,0.38), rgba(86,76,170,0) 70%), radial-gradient(520px 520px at 100% 100%, rgba(40,96,150,0.30), rgba(40,96,150,0) 70%)">
+  <div style="display: flex; flex-direction: column; gap: 6px">
+    <h1 style="margin: 0; font-size: 22px; font-weight: 600">Living lights tile</h1>
+    <p style="margin: 0; font-size: 16px; color: #A9B2C3">Tap to toggle · press and hold to see the pressed state · Depth, Edge width and Corner are tweaks</p>
+  </div>
+  <div style="display: flex; gap: 48px; align-items: flex-start">
+    <div style="display: flex; flex-direction: column; gap: 14px; align-items: center">
+      <button type="button" onClick="{{toggle}}" onPointerDown="{{down}}" onPointerUp="{{up}}" onPointerLeave="{{up}}" aria-pressed="{{pressedAttr}}" style="{{tileStyle}}">
+        <span style="{{iconStyle}}">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.4 1 1.1 1 1.9V16h5v-.2c0-.8.4-1.5 1-1.9A6 6 0 0 0 12 3z"></path></svg>
+        </span>
+        <span style="display: flex; flex-direction: column; gap: 4px; text-align: left">
+          <span style="font-size: 23px; font-weight: 600; line-height: 1.15">Living lights</span>
+          <span style="{{subStyle}}">{{sub}}</span>
+        </span>
+      </button>
+      <span style="font-size: 15px; color: #8E98AA">Interactive · {{stateLabel}}</span>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 14px; align-items: center">
+      <div aria-hidden="true" style="{{otherStyle}}">
+        <span style="{{otherIconStyle}}">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.4 1 1.1 1 1.9V16h5v-.2c0-.8.4-1.5 1-1.9A6 6 0 0 0 12 3z"></path></svg>
+        </span>
+        <span style="display: flex; flex-direction: column; gap: 4px; text-align: left">
+          <span style="font-size: 23px; font-weight: 600; line-height: 1.15">Living lights</span>
+          <span style="{{otherSubStyle}}">{{otherSub}}</span>
+        </span>
+      </div>
+      <span style="font-size: 15px; color: #8E98AA">Reference · {{otherLabel}}</span>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"depth":{"editor":"range","default":1,"min":0,"max":2,"step":0.1},"edge":{"editor":"range","default":1.75,"min":1,"max":3,"step":0.05,"unit":"×"},"corner":{"editor":"range","default":28,"min":16,"max":56,"step":1,"unit":"px"},"accent":{"editor":"color","default":"#8B7CF6","options":["#8B7CF6","#E8705F","#4CC38A","#5B9BF5"]},"$preview":{"width":720,"height":460}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { on: true, pressed: false };
+  }
+  renderVals() {
+    var self = this;
+    var d = this.props.depth ?? 1;
+    var e = this.props.edge ?? 1.75;
+    var r = this.props.corner ?? 28;
+    var accent = this.props.accent ?? '#8B7CF6';
+    var h = accent.replace('#', '');
+    if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+    var ar = parseInt(h.slice(0, 2), 16), ag = parseInt(h.slice(2, 4), 16), ab = parseInt(h.slice(4, 6), 16);
+    function acc(o) { return 'rgba(' + ar + ',' + ag + ',' + ab + ',' + Math.max(0, Math.min(1, o)).toFixed(3) + ')'; }
+    function a(x) { return Math.max(0, Math.min(1, x * d)).toFixed(3); }
+    function px(v) { return v.toFixed(1) + 'px'; }
+
+    function bevel(topHi, botSh) {
+      return 'inset 0 ' + px(1.5 * e) + ' 0 rgba(255,255,255,' + a(topHi) + '), ' +
+        'inset 0 ' + px(3 * e) + ' ' + px(4 * e) + ' rgba(255,255,255,' + a(topHi * 0.25) + '), ' +
+        'inset 0 ' + px(-3 * e) + ' ' + px(6 * e) + ' rgba(0,0,0,' + a(botSh) + ')';
+    }
+    function drop(lift, k) {
+      return '0 ' + px(2 * lift) + ' ' + px(3 * lift) + ' rgba(0,0,0,' + a(0.35 * lift * k) + '), 0 ' + px(14 * lift) + ' ' + px(32 * lift) + ' rgba(0,0,0,' + a(0.30 * lift * k) + ')';
+    }
+    function tile(on, pressed) {
+      var base = 'width: 236px; height: 176px; box-sizing: border-box; padding: 22px; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; border-radius: ' + r + 'px; cursor: pointer; border: 0; color: #E9EDF5; transition: transform 140ms cubic-bezier(.2,.8,.2,1), box-shadow 140ms, background 200ms; ';
+      var lift = pressed ? 0.45 : 1;
+      var t = pressed ? 'transform: translateY(1px) scale(0.985); ' : 'transform: none; ';
+      if (on) {
+        return base + t +
+          'background: radial-gradient(130% 90% at 30% 0%, rgba(255,255,255,' + a(0.12) + ') 0%, rgba(255,255,255,0) 55%), linear-gradient(180deg, ' + acc(0.34) + ' 0%, ' + acc(0.22) + ' 55%, ' + acc(0.14) + ' 100%), rgba(22,26,40,0.55); ' +
+          'box-shadow: ' + bevel(0.30, 0.34) + ', inset 0 0 0 1px ' + acc(0.45) + ', ' + drop(lift, 1.1) + ', 0 0 ' + px(28 * lift) + ' ' + acc(0.22 * d) + ';';
+      }
+      return base + t +
+        'background: radial-gradient(130% 90% at 30% 0%, rgba(255,255,255,' + a(0.10) + ') 0%, rgba(255,255,255,0) 55%), linear-gradient(180deg, rgba(255,255,255,' + (0.06 + 0.05 * d).toFixed(3) + ') 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0.025) 100%); ' +
+        'box-shadow: ' + bevel(0.22, 0.32) + ', inset 0 0 0 1px rgba(255,255,255,0.09), ' + drop(lift, 1) + ';';
+    }
+    function icon(on) {
+      var base = 'width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; ';
+      var ib = 'inset 0 ' + px(1.5 * e * 0.8) + ' 0 rgba(255,255,255,';
+      if (on) {
+        return base + 'color: #FFFFFF; background: radial-gradient(90% 70% at 35% 15%, rgba(255,255,255,' + a(0.35) + ') 0%, rgba(255,255,255,0) 60%), ' + accent + '; ' +
+          'box-shadow: ' + ib + a(0.45) + '), inset 0 ' + px(-2 * e) + ' ' + px(4 * e) + ' rgba(0,0,0,' + a(0.28) + '), 0 3px 10px ' + acc(0.45 * Math.min(1, d)) + ';';
+      }
+      return base + 'color: #C7CEDB; background: linear-gradient(180deg, rgba(255,255,255,' + (0.08 + 0.04 * d).toFixed(3) + '), rgba(255,255,255,0.04)); ' +
+        'box-shadow: ' + ib + a(0.18) + '), inset 0 ' + px(-2 * e) + ' ' + px(3 * e) + ' rgba(0,0,0,' + a(0.25) + ');';
+    }
+    function sub(on) { return 'font-size: 19px; ' + (on ? 'color: #DCD7FF;' : 'color: #A9B2C3;'); }
+
+    var on = this.state.on;
+    return {
+      tileStyle: tile(on, this.state.pressed),
+      iconStyle: icon(on),
+      subStyle: sub(on),
+      sub: on ? 'On · 80%' : 'Off',
+      stateLabel: on ? 'on' : 'off',
+      pressedAttr: on ? 'true' : 'false',
+      otherStyle: tile(!on, false).replace('cursor: pointer; ', ''),
+      otherIconStyle: icon(!on),
+      otherSubStyle: sub(!on),
+      otherSub: !on ? 'On · 80%' : 'Off',
+      otherLabel: !on ? 'on' : 'off',
+      toggle: function () { self.setState({ on: !self.state.on }); },
+      down: function () { self.setState({ pressed: true }); },
+      up: function () { if (self.state.pressed) self.setState({ pressed: false }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

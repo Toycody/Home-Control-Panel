@@ -1,0 +1,59 @@
+{
+  "v": 3,
+  "attachments": {},
+  "boards": {
+    "ButtonStudy.dc.html": {
+      "h": 460,
+      "is_interactive": true,
+      "radius": 12,
+      "title": "Button study · domed edge (actual size)",
+      "w": 720,
+      "x": 1160,
+      "y": 0
+    },
+    "Main.dc.html": {
+      "h": 1920,
+      "is_interactive": true,
+      "radius": 12,
+      "title": "Home screen · 24\" portrait 1080×1920",
+      "w": 1080,
+      "x": 0,
+      "y": 0
+    },
+    "Tablet.dc.html": {
+      "h": 1280,
+      "w": 800,
+      "x": 1160,
+      "y": 580,
+      "is_interactive": true,
+      "radius": 12,
+      "title": "Lenovo Tab · portrait · domed glass"
+    },
+    "TabletVesta.dc.html": {
+      "h": 1280,
+      "w": 800,
+      "x": 2040,
+      "y": 580,
+      "is_interactive": true,
+      "radius": 12,
+      "title": "Lenovo Tab · portrait · Vesta style (test)"
+    }
+  },
+  "createdOnFiles": {
+    "at": "2026-11-22T01:15:00Z",
+    "v": 1
+  },
+  "designSystems": [],
+  "launch": {
+    "view": "canvas"
+  },
+  "notes": {},
+  "order": [
+    "Main.dc.html",
+    "ButtonStudy.dc.html",
+    "Tablet.dc.html",
+    "TabletVesta.dc.html"
+  ],
+  "pages": [],
+  "title": "Home Dashboard — Home Screen"
+}

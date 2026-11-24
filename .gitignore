@@ -1,0 +1,24 @@
+# Secrets — never commit (decision D26: secrets live on the host, edited over SSH)
+.env
+.env.*
+*.env
+secrets.*
+config.local.*
+
+# Dependencies and build output
+node_modules/
+dist/
+build/
+.cache/
+
+# Runtime data
+*.sqlite
+*.sqlite3
+*.db
+*.log
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
