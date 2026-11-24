@@ -50,7 +50,7 @@ Uptime Kuma, Omada/Starlink figures (glance card shows placeholders), Energy, Sh
 | # | Decision |
 |---|---|
 | D33 | **Energy entirely from Home Assistant** (Shelly dual-channel clamp: *Shelly Inverter* = solar, *Shelly Meter Main* = grid). Home use = solar + import − export. |
-| D34 | **Month / Quarter / Year toggle** on Energy shows **average kWh per day** (solar vs used) for the last 12 months / 8 quarters / 4 years, from HA long-term statistics. Tap a bar for import, export and self-supplied %. |
+| D34 | **Month / Quarter / Year toggle** on Energy shows **actual totals**: kWh per day for the last 30 days / per week for the last 13 weeks / per month for the last 12 months. Tap a bar for import, export and self-supplied %. *(v0.3: replaced the earlier per-day averages, at the user's request.)* |
 | D35 | **Internet usage = Starlink dish throughput via HA**, not the Omada API (supersedes P7 for WAN). 2 h graph from raw history, 12 h from 5-minute statistics. Omada only returns later if LAN stats are wanted. |
 | D36 | **Uptime Kuma via its status-page JSON** (`/api/status-page/<slug>` + `/heartbeat/<slug>`), proxied by nginx at `/kuma/`. No embed/iframe, no API key. Slug: `obsidian`. |
 | D37 | Shopping list **deferred** until the vault-sync LXC is set up. It's now the only piece that needs a backend. |
@@ -71,3 +71,8 @@ Tiles fall back to the main-stream snapshot when the sub-stream entity is missin
 
 ## Config
 `index.html` loads `config.example.js` as defaults, then the host's `config.js` overrides section by section, so new sections (energy, starlink, plan, kuma) work without editing an existing `config.js`.
+
+# Phase 2b — tidy-up (v0.3, 2026-11-24)
+- **Energy totals now come from the power sensors** (time-weighted means in HA long-term statistics, kWh = mean W × hours). On the real system, solar and "used" came out identical, which means the grid energy counters weren't contributing (most likely not resolving or not counting as expected). The power sensors drive the 24 h graph the user confirmed is right, so totals now match it. Grid import/export still come from the meter's energy counters when they resolve; otherwise they're simply not shown.
+- Solar sign is detected from the last 24 h of the inverter's power (generation dominates). `solarFrom: 'energy' | 'returned'` in config still forces it.
+- **Background speckles** (small whitish squares, intermittent): most likely GPU compositing glitches in the Android WebView. Removed `will-change` from the ~50 press overlays so the browser isn't keeping a separate layer for each. If they persist, try Fully → Advanced Web Settings → hardware acceleration off/on to confirm it's the device.
