@@ -77,6 +77,13 @@ function fakeStats(m) {
       for (let t = Math.ceil(start / step) * step; t < end; t += step) {
         const h = new Date(t).getHours() + new Date(t).getMinutes() / 60, sun = Math.max(0, Math.sin((h - 6) / 13 * Math.PI));
         const r = { start: t, end: t + step };
+        if (m.period === 'day') {
+          const season = 0.5 + 0.5 * Math.cos(new Date(t).getMonth() / 12 * 2 * Math.PI), wobble = 0.7 + 0.6 * Math.random();
+          if (id.includes('inverter_power')) r.mean = -(400 + 1200 * season) * wobble;
+          else if (id.includes('meter_main_power')) r.mean = 700 - (400 + 1200 * season) * wobble * 0.55;
+          else r.change = id.includes('total_active') ? 6 - 3 * season : id.includes('total_returned') ? 4 + 10 * season : 0.3;
+          rows.push(r); continue;
+        }
         if (id.includes('inverter_power')) r.mean = -sun * 4200;
         else if (id.includes('meter_main_power')) r.mean = (600 + (h > 17 && h < 22 ? 1500 : 0)) - sun * 4200;
         else if (id.includes('downlink')) { r.mean = 20 + 40 * Math.random(); r.max = r.mean + 120 * Math.random(); }

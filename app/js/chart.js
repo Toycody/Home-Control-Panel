@@ -92,7 +92,7 @@ function fmtAxis(v) { return v >= 1000 ? (v / 1000).toFixed(v >= 10000 ? 0 : 1) 
 export function barChart(el, o) {
   const W = o.width, H = o.height, L = 40, R = 6, T = 26, B = 30;
   const sc = niceScale(Math.max(0.1, ...o.groups.flatMap((g) => g.values.filter((v) => v != null))) * 1.04), max = sc.max;
-  const n = o.groups.length, gw = (W - L - R) / Math.max(1, n), bw = Math.min(26, (gw - 10) / o.colors.length);
+  const n = o.groups.length, gw = (W - L - R) / Math.max(1, n), bw = Math.max(3, Math.min(26, (gw - (gw > 30 ? 10 : 5)) / o.colors.length - 1));
   const Y = (v) => H - B - (v / max) * (H - B - T);
   let g = '';
   for (let i = 0; i <= sc.n; i++) { const v = sc.step * i, y = Y(v).toFixed(1); g += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + y + '" y2="' + y + '" stroke="rgba(255,255,255,' + (i ? 0.06 : 0.14) + ')"/><text x="' + (L - 8) + '" y="' + (+y + 4) + '" text-anchor="end" font-size="12" fill="#8A8A90">' + fmtAxis(v) + '</text>'; }
@@ -103,7 +103,8 @@ export function barChart(el, o) {
     grp.values.forEach((v, si) => {
       if (v == null) return;
       const x = cx - (bw * o.colors.length + 2 * (o.colors.length - 1)) / 2 + si * (bw + 2), y = Y(v), h = Math.max(0, H - B - y);
-      g += '<path d="M' + x.toFixed(1) + ',' + (H - B) + 'V' + (y + Math.min(4, h)).toFixed(1) + 'q0,-4 4,-4h' + (bw - 8).toFixed(1) + 'q4,0 4,4V' + (H - B) + 'Z" fill="' + o.colors[si] + '"' + (sel || o.selected == null ? '' : ' fill-opacity="0.7"') + '/>';
+      const rr = Math.min(4, bw / 2, h);
+      g += '<path d="M' + x.toFixed(1) + ',' + (H - B) + 'V' + (y + rr).toFixed(1) + 'q0,' + (-rr) + ' ' + rr + ',' + (-rr) + 'h' + Math.max(0, bw - 2 * rr).toFixed(1) + 'q' + rr + ',0 ' + rr + ',' + rr + 'V' + (H - B) + 'Z" fill="' + o.colors[si] + '"' + (sel || o.selected == null ? '' : ' fill-opacity="0.7"') + '/>';
     });
     g += '<text x="' + cx.toFixed(1) + '" y="' + (H - 9) + '" text-anchor="middle" font-size="12" fill="' + (sel ? '#F2F2F2' : '#8A8A90') + '"' + (sel ? ' font-weight="600"' : '') + '>' + grp.label + '</text>';
     g += '<rect data-bar="' + gi + '" x="' + (L + gi * gw) + '" y="0" width="' + gw + '" height="' + H + '" fill="transparent"/>';
